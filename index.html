@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>我的私密笔记</title>
+    <title>我的应用</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         body {
@@ -10,115 +10,26 @@
             margin: 0 auto;
             padding: 20px;
             background: #f5f5f5;
+            text-align: center;
         }
-        .note {
-            background: white;
+        .menu-btn {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
             padding: 15px;
-            margin: 10px 0;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .note-time {
-            color: #666;
-            font-size: 12px;
-            margin-bottom: 5px;
-        }
-        textarea {
-            width: 100%;
-            height: 100px;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        button {
-            padding: 8px 16px;
             background: #4CAF50;
             color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #45a049;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 18px;
         }
     </style>
 </head>
 <body>
-    <h1>📝 我的私密笔记</h1>
+    <h1>📱 我的应用</h1>
     
-    <div>
-        <textarea id="newNote" placeholder="写下你的想法..."></textarea>
-        <button onclick="addNote()">保存笔记</button>
-    </div>
+    <a href="notes.html" class="menu-btn">📝 便签</a>
+    <!-- 以后可以在这里加其他功能的链接 -->
     
-    <div id="notesContainer"></div>
-    
-    <script>
-        // 加载已有笔记
-        function loadNotes() {
-            const notes = JSON.parse(localStorage.getItem('myNotes') || '[]');
-            const container = document.getElementById('notesContainer');
-            
-            container.innerHTML = notes.map((note, i) => {
-                // 如果笔记是纯文本（旧数据），转换成新格式
-                if (typeof note === 'string') {
-                    note = {
-                        content: note,
-                        time: new Date().toLocaleString()
-                    };
-                    notes[i] = note;
-                }
-                
-                return `
-                    <div class="note">
-                        <div class="note-time">📅 ${note.time}</div>
-                        <p>${note.content}</p>
-                        <button onclick="deleteNote(${i})">删除</button>
-                    </div>
-                `;
-            }).join('');
-            
-            // 保存转换后的数据
-            localStorage.setItem('myNotes', JSON.stringify(notes));
-        }
-        
-        // 添加新笔记
-        function addNote() {
-            const text = document.getElementById('newNote').value;
-            if (!text.trim()) return;
-            
-            const notes = JSON.parse(localStorage.getItem('myNotes') || '[]');
-            
-            // 获取当前时间：2024年1月15日 14:30
-            const now = new Date();
-            const timeStr = now.getFullYear() + '年' + 
-                           (now.getMonth() + 1) + '月' + 
-                           now.getDate() + '日 ' + 
-                           now.getHours() + ':' + 
-                           (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
-            
-            notes.push({
-                content: text,
-                time: timeStr
-            });
-            
-            localStorage.setItem('myNotes', JSON.stringify(notes));
-            
-            document.getElementById('newNote').value = '';
-            loadNotes();
-        }
-        
-        // 删除笔记
-        function deleteNote(index) {
-            const notes = JSON.parse(localStorage.getItem('myNotes') || '[]');
-            notes.splice(index, 1);
-            localStorage.setItem('myNotes', JSON.stringify(notes));
-            loadNotes();
-        }
-        
-        // 页面加载时显示笔记
-        window.onload = loadNotes;
-    </script>
 </body>
 </html>
