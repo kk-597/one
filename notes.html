@@ -83,6 +83,7 @@
             border-bottom: 1px solid #ddd;
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
         }
         .editor-toolbar button {
             background: #f0f0f0;
@@ -103,6 +104,16 @@
             padding: 10px;
             margin-top: 10px;
         }
+        .version-tag {
+            position: fixed;
+            bottom: 5px;
+            right: 5px;
+            font-size: 10px;
+            color: #999;
+            background: rgba(255,255,255,0.8);
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
     </style>
 </head>
 <body>
@@ -114,17 +125,67 @@
     <!-- 全屏编辑器 -->
     <div id="fullscreenEditor" class="fullscreen-editor hidden">
         <div class="editor-toolbar">
+            <button onclick="undo()">↩️ 撤销</button>
+            <button onclick="redo()">↪️ 反撤销</button>
             <button onclick="insertImage()">🖼️ 插入图片</button>
             <button onclick="saveNote()">💾 保存</button>
             <button onclick="hideFullscreenEditor()">✖️ 关闭</button>
         </div>
-        <textarea id="editorContent" placeholder="写下你的想法..." autofocus></textarea>
+        <textarea id="editorContent" placeholder="写下你的想法..." oninput="saveToHistory()" autofocus></textarea>
         <div id="imagePreview"></div>
     </div>
     
     <div id="notesContainer"></div>
     
+    <div class="version-tag">v2.0 - 2024.3.2 16:30 (历史记录50步，改这里)</div>
+    
     <script>
+        // 历史记录 - 想改步数就改下面这个数字
+        const MAX_HISTORY = 50;  // ← 改成你想要的数字，比如 100、200
+        
+        let history = [];
+        let historyIndex = -1;
+
+        // 保存当前内容到历史
+        function saveToHistory() {
+            const current = document.getElementById('editorContent').value;
+            
+            // 如果当前内容和历史最后一条相同，不保存
+            if (history.length > 0 && history[history.length - 1] === current) {
+                return;
+            }
+            
+            // 删除当前位置之后的历史
+            if (historyIndex < history.length - 1) {
+                history = history.slice(0, historyIndex + 1);
+            }
+            
+            history.push(current);
+            historyIndex = history.length - 1;
+            
+            // 限制历史记录数量（用 MAX_HISTORY 控制）
+            if (history.length > MAX_HISTORY) {
+                history.shift();
+                historyIndex--;
+            }
+        }
+
+        // 撤销
+        function undo() {
+            if (historyIndex > 0) {
+                historyIndex--;
+                document.getElementById('editorContent').value = history[historyIndex];
+            }
+        }
+
+        // 反撤销
+        function redo() {
+            if (historyIndex < history.length - 1) {
+                historyIndex++;
+                document.getElementById('editorContent').value = history[historyIndex];
+            }
+        }
+        
         let currentEditIndex = -1;  // -1 表示新建，其他数字表示编辑第几个
         
         // 显示全屏编辑器（新建）
@@ -134,6 +195,11 @@
             document.getElementById('imagePreview').innerHTML = '';
             document.getElementById('fullscreenEditor').classList.remove('hidden');
             document.getElementById('editorContent').focus();
+            
+            // 初始化历史记录
+            history = [];
+            historyIndex = -1;
+            saveToHistory();
         }
         
         // 显示全屏编辑器（编辑已有笔记）
@@ -162,6 +228,11 @@
             
             document.getElementById('fullscreenEditor').classList.remove('hidden');
             document.getElementById('editorContent').focus();
+            
+            // 初始化历史记录
+            history = [];
+            historyIndex = -1;
+            saveToHistory();
         }
         
         // 隐藏编辑器
@@ -294,8 +365,5 @@
         // 页面加载
         window.onload = loadNotes;
     </script>
-<div style="position: fixed; bottom: 5px; right: 5px; font-size: 10px; color: #999; background: rgba(255,255,255,0.8); padding: 2px 5px; border-radius: 3px;">
-    v1.0 - 2024.3.2 15:30
-</div>
 </body>
 </html>
