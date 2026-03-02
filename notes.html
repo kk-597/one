@@ -21,27 +21,17 @@
         .note small {
             color: #666;
             font-size: 12px;
-        }
-        .new-note-area {
-            display: none;
-            margin: 20px 0;
-        }
-        textarea {
-            width: 100%;
-            height: 100px;
-            padding: 10px;
+            display: block;
             margin-bottom: 10px;
-            border: 1px solid #ddd;
+        }
+        .note img {
+            max-width: 100%;
+            margin: 10px 0;
             border-radius: 4px;
         }
-        button {
-            padding: 8px 16px;
-            background: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-right: 10px;
+        .note-content {
+            white-space: pre-wrap;
+            line-height: 1.5;
         }
         .top-bar {
             display: flex;
@@ -52,32 +42,185 @@
         .back-btn {
             background: #666;
         }
+        button {
+            padding: 8px 16px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        
+        /* 全屏编辑模式 */
+        .fullscreen-editor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+            z-index: 1000;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .fullscreen-editor textarea {
+            flex: 1;
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            border: none;
+            outline: none;
+            resize: none;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+        .editor-toolbar {
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 10px;
+        }
+        .editor-toolbar button {
+            background: #f0f0f0;
+            color: #333;
+        }
+        .image-preview {
+            max-width: 100%;
+            max-height: 200px;
+            margin: 10px 0;
+        }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
     <div class="top-bar">
         <a href="index.html"><button class="back-btn">← 返回首页</button></a>
-        <button onclick="showNewNote()">➕ 新建便签</button>
+        <button onclick="showFullscreenEditor()">✏️ 新建便签</button>
     </div>
     
-    <div id="newNoteArea" class="new-note-area">
-        <textarea id="noteContent" placeholder="写下你的想法..."></textarea>
-        <button onclick="addNote()">保存</button>
-        <button onclick="hideNewNote()">取消</button>
+    <!-- 全屏编辑器 -->
+    <div id="fullscreenEditor" class="fullscreen-editor hidden">
+        <div class="editor-toolbar">
+            <button onclick="insertImage()">🖼️ 插入图片</button>
+            <button onclick="saveNote()">💾 保存</button>
+            <button onclick="hideFullscreenEditor()">✖️ 关闭</button>
+        </div>
+        <textarea id="editorContent" placeholder="写下你的想法..."></textarea>
+        <div id="imagePreview"></div>
     </div>
     
     <div id="notesContainer"></div>
     
     <script>
-        // 显示新建区域
-        function showNewNote() {
-            document.getElementById('newNoteArea').style.display = 'block';
+        let currentEditIndex = -1;  // -1 表示新建，其他数字表示编辑第几个
+        
+        // 显示全屏编辑器（新建）
+        function showFullscreenEditor() {
+            currentEditIndex = -1;
+            document.getElementById('editorContent').value = '';
+            document.getElementById('imagePreview').innerHTML = '';
+            document.getElementById('fullscreenEditor').classList.remove('hidden');
         }
         
-        // 隐藏新建区域
-        function hideNewNote() {
-            document.getElementById('newNoteArea').style.display = 'none';
-            document.getElementById('noteContent').value = '';
+        // 显示全屏编辑器（编辑已有笔记）
+        function editNote(index) {
+            const notes = JSON.parse(localStorage.getItem('myNotes') || '[]');
+            const note = notes[index];
+            
+            currentEditIndex = index;
+            
+            // 如果是旧格式（纯文本）
+            if (typeof note === 'string') {
+                document.getElementById('editorContent').value = note;
+                document.getElementById('imagePreview').innerHTML = '';
+            } else {
+                document.getElementById('editorContent').value = note.content || '';
+                // 显示已有图片
+                if (note.images && note.images.length > 0) {
+                    const preview = document.getElementById('imagePreview');
+                    preview.innerHTML = note.images.map(img => 
+                        `<img src="${img}" class="image-preview">`
+                    ).join('');
+                } else {
+                    document.getElementById('imagePreview').innerHTML = '';
+                }
+            }
+            
+            document.getElementById('fullscreenEditor').classList.remove('hidden');
+        }
+        
+        // 隐藏编辑器
+        function hideFullscreenEditor() {
+            document.getElementById('fullscreenEditor').classList.add('hidden');
+        }
+        
+        // 插入图片
+        function insertImage() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(event) {
+                    const imgUrl = event.target.result;
+                    
+                    // 显示预览
+                    const preview = document.getElementById('imagePreview');
+                    preview.innerHTML += `<img src="${imgUrl}" class="image-preview">`;
+                };
+                
+                reader.readAsDataURL(file);
+            };
+            
+            input.click();
+        }
+        
+        // 保存笔记
+        function saveNote() {
+            const text = document.getElementById('editorContent').value.trim();
+            if (!text) return;
+            
+            // 获取所有图片
+            const images = [];
+            document.querySelectorAll('#imagePreview img').forEach(img => {
+                images.push(img.src);
+            });
+            
+            const notes = JSON.parse(localStorage.getItem('myNotes') || '[]');
+            
+            const newNote = {
+                content: text,
+                time: new Date().toLocaleString(),
+                images: images
+            };
+            
+            if (currentEditIndex === -1) {
+                // 新建
+                notes.push(newNote);
+            } else {
+                // 更新
+                notes[currentEditIndex] = newNote;
+            }
+            
+            localStorage.setItem('myNotes', JSON.stringify(notes));
+            hideFullscreenEditor();
+            loadNotes();
+        }
+        
+        // 删除笔记
+        function deleteNote(index) {
+            if (!confirm('确定删除这条便签吗？')) return;
+            
+            const notes = JSON.parse(localStorage.getItem('myNotes') || '[]');
+            notes.splice(index, 1);
+            localStorage.setItem('myNotes', JSON.stringify(notes));
+            loadNotes();
         }
         
         // 加载笔记
@@ -91,42 +234,37 @@
             }
             
             container.innerHTML = notes.map((note, i) => {
-                // 兼容旧格式（没有time的）
-                const content = note.content || note;
-                const time = note.time || '未知时间';
+                // 兼容旧格式
+                let content = '';
+                let time = '';
+                let images = [];
+                
+                if (typeof note === 'string') {
+                    content = note;
+                    time = '未知时间';
+                } else {
+                    content = note.content || '';
+                    time = note.time || '未知时间';
+                    images = note.images || [];
+                }
+                
+                // 生成图片HTML
+                const imagesHtml = images.map(img => 
+                    `<img src="${img}" onclick="window.open(this.src)">`
+                ).join('');
                 
                 return `
                     <div class="note">
                         <small>${time}</small>
-                        <p>${content}</p>
-                        <button onclick="deleteNote(${i})">删除</button>
+                        <div class="note-content">${content.replace(/\n/g, '<br>')}</div>
+                        ${imagesHtml}
+                        <div style="margin-top: 10px;">
+                            <button onclick="editNote(${i})">✏️ 编辑</button>
+                            <button onclick="deleteNote(${i})">🗑️ 删除</button>
+                        </div>
                     </div>
                 `;
             }).join('');
-        }
-        
-        // 添加笔记
-        function addNote() {
-            const text = document.getElementById('noteContent').value;
-            if (!text.trim()) return;
-            
-            const notes = JSON.parse(localStorage.getItem('myNotes') || '[]');
-            notes.push({
-                content: text,
-                time: new Date().toLocaleString()
-            });
-            localStorage.setItem('myNotes', JSON.stringify(notes));
-            
-            hideNewNote();
-            loadNotes();
-        }
-        
-        // 删除笔记
-        function deleteNote(index) {
-            const notes = JSON.parse(localStorage.getItem('myNotes') || '[]');
-            notes.splice(index, 1);
-            localStorage.setItem('myNotes', JSON.stringify(notes));
-            loadNotes();
         }
         
         // 页面加载
