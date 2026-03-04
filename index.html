@@ -61,6 +61,18 @@
     <a href="notes.html" class="menu-btn notes">📝 便签</a>
     <a href="moments.html" class="menu-btn moments">📱 动态</a>
     <!-- 以后可以在这里加其他功能的链接 -->
+    <!-- 在现有按钮后面加上 -->
+<div style="margin-top: 40px; border-top: 1px solid #ddd; padding-top: 20px;">
+    <h3 style="color: #666;">📦 数据管理</h3>
+    <div style="display: flex; gap: 10px; justify-content: center;">
+        <button onclick="showBackupDialog()" style="background: #9C27B0; padding:12px 24px; border:none; border-radius:8px; color:white; cursor:pointer; font-size:16px;">
+            💾 备份数据
+        </button>
+        <button onclick="showRestoreDialog()" style="background: #FF9800; padding:12px 24px; border:none; border-radius:8px; color:white; cursor:pointer; font-size:16px;">
+            📥 恢复数据
+        </button>
+    </div>
+</div>
     
     <div class="version-tag">v1.0 - 2024.3.4</div>
 </body>
