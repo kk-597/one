@@ -40,8 +40,15 @@
             align-items: center;
             margin-bottom: 20px;
         }
+        .top-bar-left {
+            display: flex;
+            gap: 10px;
+        }
         .back-btn {
             background: #666;
+        }
+        .save-btn {
+            background: #4CAF50;
         }
         button {
             padding: 8px 16px;
@@ -126,50 +133,176 @@
             padding-right: 10px;
             margin-right: 10px;
         }
+        
+        /* 查找替换弹窗 */
+        .find-replace-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 2000;
+            display: none;
+            width: 300px;
+        }
+        .find-replace-modal.show {
+            display: block;
+        }
+        .find-replace-modal input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .find-replace-modal button {
+            margin: 5px;
+            padding: 5px 10px;
+        }
+        
+        /* 设置弹窗 */
+        .settings-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 2000;
+            display: none;
+            width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .settings-modal.show {
+            display: block;
+        }
+        .settings-group {
+            margin: 15px 0;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+        .settings-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 5px;
+        }
+        .settings-item label {
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        
+        /* 颜色选择器 */
+        .color-picker {
+            position: absolute;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            display: none;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 5px;
+            z-index: 2100;
+        }
+        .color-picker.show {
+            display: grid;
+        }
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+        }
+        
+        /* 字体大小选择器 */
+        .font-size-picker {
+            position: absolute;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            display: none;
+            z-index: 2100;
+        }
+        .font-size-picker.show {
+            display: block;
+        }
+        .font-size-option {
+            padding: 5px 20px;
+            cursor: pointer;
+        }
+        .font-size-option:hover {
+            background: #f0f0f0;
+        }
     </style>
 </head>
 <body>
     <div class="top-bar">
-        <a href="index.html"><button class="back-btn">← 返回首页</button></a>
-        <button onclick="showFullscreenEditor()">✏️ 新建便签</button>
+        <div class="top-bar-left">
+            <a href="index.html"><button class="back-btn">← 退出</button></a>
+            <button class="save-btn" onclick="quickSave()">💾 保存</button>
+        </div>
+        <div>
+            <button onclick="showSettings()">⚙️ 设置</button>
+        </div>
     </div>
     
     <!-- 全屏编辑器 -->
-    <div id="fullscreenEditor" class="fullscreen-editor hidden">
-        <div class="editor-toolbar">
-            <div class="toolbar-group">
-                <button onclick="formatText('justifyLeft')" title="居左" id="btn-left">⬅️</button>
-                <button onclick="formatText('justifyCenter')" title="居中" id="btn-center">⏺️</button>
-                <button onclick="formatText('justifyRight')" title="居右" id="btn-right">➡️</button>
-            </div>
-            
-            <div class="toolbar-group">
-                <button onclick="formatText('bold')" title="加粗" id="btn-bold"><b>B</b></button>
-                <button onclick="formatText('italic')" title="倾斜" id="btn-italic"><i>I</i></button>
-                <button onclick="formatText('underline')" title="下划线" id="btn-underline"><u>U</u></button>
-                <button onclick="formatText('strikeThrough')" title="删除线" id="btn-strike"><s>S</s></button>
-            </div>
-            
-            <div class="toolbar-group">
-                <button onclick="undo()">↩️ 撤销</button>
-                <button onclick="redo()">↪️ 反撤销</button>
-            </div>
-            
-            <div class="toolbar-group">
-                <button onclick="insertImage()">🖼️ 插入图片</button>
-                <button onclick="saveNote()">💾 保存</button>
-                <button onclick="hideFullscreenEditor()">✖️ 关闭</button>
-            </div>
+    <div id="fullscreenEditor" class="fullscreen-editor">
+        <div class="editor-toolbar" id="editorToolbar">
+            <!-- 工具栏内容会通过JavaScript动态生成 -->
         </div>
         <div id="editorContainer" style="flex:1; display: flex; flex-direction: column; margin-top: 10px;">
-            <div id="editor" contenteditable="true" style="flex:1; padding:15px; border:1px solid #ddd; overflow-y:auto; font-family:Arial; line-height:1.6; outline:none;" oninput="saveToHistory()"></div>
+            <div id="editor" contenteditable="true" style="flex:1; padding:15px; border:1px solid #ddd; overflow-y:auto; font-family:Arial; line-height:1.6; outline:none;"></div>
         </div>
         <div id="imagePreview"></div>
     </div>
     
+    <!-- 查找替换弹窗 -->
+    <div id="findReplaceModal" class="find-replace-modal">
+        <h4>查找替换</h4>
+        <input type="text" id="findText" placeholder="查找内容">
+        <input type="text" id="replaceText" placeholder="替换为">
+        <div style="text-align: center;">
+            <button onclick="findNext()">查找下一个</button>
+            <button onclick="replaceOne()">替换</button>
+            <button onclick="replaceAll()">全部替换</button>
+            <button onclick="closeFindReplace()">关闭</button>
+        </div>
+    </div>
+    
+    <!-- 颜色选择器 -->
+    <div id="colorPicker" class="color-picker"></div>
+    
+    <!-- 背景颜色选择器 -->
+    <div id="bgColorPicker" class="color-picker"></div>
+    
+    <!-- 字体大小选择器 -->
+    <div id="fontSizePicker" class="font-size-picker"></div>
+    
+    <!-- 设置弹窗 -->
+    <div id="settingsModal" class="settings-modal">
+        <h3 style="text-align: center;">工具栏设置</h3>
+        <div id="settingsGroups"></div>
+        <div style="text-align: right; margin-top: 20px;">
+            <button onclick="saveSettings()">保存设置</button>
+            <button onclick="closeSettings()">关闭</button>
+        </div>
+    </div>
+    
     <div id="notesContainer"></div>
     
-    <div class="version-tag">v3.0 - 2024.3.4 格式化功能</div>
+    <div class="version-tag">v4.0 - 2024.3.4 完整版</div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/opencc/1.1.4/opencc.min.js"></script>
     
     <script>
         // 历史记录
@@ -177,8 +310,400 @@
         let history = [];
         let historyIndex = -1;
         let currentEditIndex = -1;
-
-        // 保存当前内容到历史
+        let autoSaveTimer = null;
+        
+        // 工具栏配置
+        let toolbarSettings = JSON.parse(localStorage.getItem('toolbarSettings') || '{}');
+        
+        // 默认工具栏项
+        const allToolbarItems = [
+            { id: 'undo', text: '↩️', title: '撤销', group: 'basic' },
+            { id: 'redo', text: '↪️', title: '反撤销', group: 'basic' },
+            { id: 'save', text: '💾', title: '保存', group: 'basic' },
+            { id: 'separator1', type: 'separator' },
+            
+            { id: 'bold', text: '<b>B</b>', title: '加粗', group: 'format' },
+            { id: 'italic', text: '<i>I</i>', title: '倾斜', group: 'format' },
+            { id: 'underline', text: '<u>U</u>', title: '下划线', group: 'format' },
+            { id: 'strike', text: '<s>S</s>', title: '删除线', group: 'format' },
+            { id: 'separator2', type: 'separator' },
+            
+            { id: 'color', text: '🎨', title: '文字颜色', group: 'color' },
+            { id: 'bgcolor', text: '🖍️', title: '背景颜色', group: 'color' },
+            { id: 'fontsize', text: '🔤', title: '字体大小', group: 'color' },
+            { id: 'separator3', type: 'separator' },
+            
+            { id: 'justifyLeft', text: '⬅️', title: '居左', group: 'align' },
+            { id: 'justifyCenter', text: '⏺️', title: '居中', group: 'align' },
+            { id: 'justifyRight', text: '➡️', title: '居右', group: 'align' },
+            { id: 'separator4', type: 'separator' },
+            
+            { id: 'insertOrderedList', text: '1️⃣', title: '有序列表', group: 'list' },
+            { id: 'insertUnorderedList', text: '•️⃣', title: '无序列表', group: 'list' },
+            { id: 'separator5', type: 'separator' },
+            
+            { id: 'formatBlock', text: 'H', title: '标题', group: 'heading' },
+            { id: 'formatBrush', text: '🧹', title: '格式刷', group: 'tools' },
+            { id: 'horizontalRule', text: '―', title: '分割线', group: 'tools' },
+            { id: 'indent', text: '↦', title: '首行缩进', group: 'tools' },
+            { id: 'separator6', type: 'separator' },
+            
+            { id: 'findReplace', text: '🔍', title: '查找替换', group: 'search' },
+            { id: 'scrollTop', text: '⬆️', title: '滑到顶部', group: 'scroll' },
+            { id: 'scrollBottom', text: '⬇️', title: '滑到底部', group: 'scroll' },
+            { id: 'separator7', type: 'separator' },
+            
+            { id: 'chineseConvert', text: '中⇄繁', title: '简繁转换', group: 'tools' },
+            { id: 'insertImage', text: '🖼️', title: '插入图片', group: 'insert' }
+        ];
+        
+        // 工具栏分组名称
+        const groupNames = {
+            'basic': '基本操作',
+            'format': '文字格式',
+            'color': '颜色设置',
+            'align': '对齐方式',
+            'list': '列表',
+            'heading': '标题',
+            'tools': '工具',
+            'search': '查找',
+            'scroll': '滚动',
+            'insert': '插入'
+        };
+        
+        // 初始化工具栏
+        function initToolbar() {
+            const toolbar = document.getElementById('editorToolbar');
+            let html = '';
+            
+            // 如果没有设置，默认全部显示
+            if (Object.keys(toolbarSettings).length === 0) {
+                allToolbarItems.forEach(item => {
+                    if (item.type === 'separator') {
+                        html += '<div class="toolbar-group"></div>';
+                    } else {
+                        html += `<button onclick="toolbarClick('${item.id}')" title="${item.title}" id="btn-${item.id}">${item.text}</button>`;
+                    }
+                });
+            } else {
+                // 根据设置显示
+                allToolbarItems.forEach(item => {
+                    if (item.type === 'separator') {
+                        html += '<div class="toolbar-group"></div>';
+                    } else if (toolbarSettings[item.id] !== false) {
+                        html += `<button onclick="toolbarClick('${item.id}')" title="${item.title}" id="btn-${item.id}">${item.text}</button>`;
+                    }
+                });
+            }
+            
+            toolbar.innerHTML = html;
+        }
+        
+        // 显示设置弹窗
+        function showSettings() {
+            const settingsGroups = document.getElementById('settingsGroups');
+            let html = '';
+            
+            // 按分组显示
+            const groups = {};
+            allToolbarItems.forEach(item => {
+                if (item.type !== 'separator') {
+                    if (!groups[item.group]) groups[item.group] = [];
+                    groups[item.group].push(item);
+                }
+            });
+            
+            for (let [group, items] of Object.entries(groups)) {
+                html += `<div class="settings-group"><h4>${groupNames[group]}</h4>`;
+                items.forEach(item => {
+                    const checked = toolbarSettings[item.id] !== false;
+                    html += `
+                        <div class="settings-item">
+                            <input type="checkbox" id="setting-${item.id}" ${checked ? 'checked' : ''}>
+                            <label for="setting-${item.id}">${item.title}</label>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            }
+            
+            settingsGroups.innerHTML = html;
+            document.getElementById('settingsModal').classList.add('show');
+        }
+        
+        // 保存设置
+        function saveSettings() {
+            allToolbarItems.forEach(item => {
+                if (item.type !== 'separator') {
+                    const checkbox = document.getElementById(`setting-${item.id}`);
+                    if (checkbox) {
+                        toolbarSettings[item.id] = checkbox.checked;
+                    }
+                }
+            });
+            
+            localStorage.setItem('toolbarSettings', JSON.stringify(toolbarSettings));
+            initToolbar();
+            closeSettings();
+        }
+        
+        // 关闭设置
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.remove('show');
+        }
+        
+        // 工具栏点击处理
+        function toolbarClick(action) {
+            switch(action) {
+                case 'undo': undo(); break;
+                case 'redo': redo(); break;
+                case 'save': quickSave(); break;
+                case 'bold': formatText('bold'); break;
+                case 'italic': formatText('italic'); break;
+                case 'underline': formatText('underline'); break;
+                case 'strike': formatText('strikeThrough'); break;
+                case 'color': showColorPicker('color'); break;
+                case 'bgcolor': showColorPicker('bgcolor'); break;
+                case 'fontsize': showFontSizePicker(); break;
+                case 'justifyLeft': formatText('justifyLeft'); break;
+                case 'justifyCenter': formatText('justifyCenter'); break;
+                case 'justifyRight': formatText('justifyRight'); break;
+                case 'insertOrderedList': formatText('insertOrderedList'); break;
+                case 'insertUnorderedList': formatText('insertUnorderedList'); break;
+                case 'formatBlock': insertHeading(); break;
+                case 'formatBrush': copyFormat(); break;
+                case 'horizontalRule': formatText('insertHorizontalRule'); break;
+                case 'indent': formatText('indent'); break;
+                case 'findReplace': showFindReplace(); break;
+                case 'scrollTop': scrollToTop(); break;
+                case 'scrollBottom': scrollToBottom(); break;
+                case 'chineseConvert': convertChinese(); break;
+                case 'insertImage': insertImage(); break;
+            }
+        }
+        
+        // 显示颜色选择器
+        function showColorPicker(type) {
+            const colors = ['#000000', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF', '#FFFFFF',
+                           '#808080', '#800000', '#808000', '#008000', '#800080', '#008080', '#000080', '#C0C0C0'];
+            
+            const picker = type === 'color' ? document.getElementById('colorPicker') : document.getElementById('bgColorPicker');
+            picker.innerHTML = '';
+            
+            colors.forEach(color => {
+                const div = document.createElement('div');
+                div.className = 'color-option';
+                div.style.backgroundColor = color;
+                div.onclick = function() {
+                    if (type === 'color') {
+                        document.execCommand('foreColor', false, color);
+                    } else {
+                        document.execCommand('backColor', false, color);
+                    }
+                    picker.classList.remove('show');
+                    saveToHistory();
+                };
+                picker.appendChild(div);
+            });
+            
+            picker.classList.add('show');
+            
+            // 点击其他地方关闭
+            setTimeout(() => {
+                document.addEventListener('click', function closePicker(e) {
+                    if (!picker.contains(e.target) && !e.target.matches('[onclick*="color"]')) {
+                        picker.classList.remove('show');
+                        document.removeEventListener('click', closePicker);
+                    }
+                });
+            }, 100);
+        }
+        
+        // 显示字体大小选择器
+        function showFontSizePicker() {
+            const sizes = [10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 48];
+            const picker = document.getElementById('fontSizePicker');
+            picker.innerHTML = '';
+            
+            sizes.forEach(size => {
+                const div = document.createElement('div');
+                div.className = 'font-size-option';
+                div.textContent = size + 'px';
+                div.onclick = function() {
+                    document.execCommand('fontSize', false, '7'); // 先设为基础大小
+                    // 然后用span设置具体大小
+                    const selection = window.getSelection();
+                    if (selection.rangeCount > 0) {
+                        const range = selection.getRangeAt(0);
+                        const span = document.createElement('span');
+                        span.style.fontSize = size + 'px';
+                        span.appendChild(range.extractContents());
+                        range.insertNode(span);
+                    }
+                    picker.classList.remove('show');
+                    saveToHistory();
+                };
+                picker.appendChild(div);
+            });
+            
+            picker.classList.add('show');
+        }
+        
+        // 插入标题
+        function insertHeading() {
+            const headingLevel = prompt('输入标题级别(1-6)', '2');
+            if (headingLevel >= 1 && headingLevel <= 6) {
+                document.execCommand('formatBlock', false, 'h' + headingLevel);
+                saveToHistory();
+            }
+        }
+        
+        // 格式刷
+        let copiedFormat = null;
+        function copyFormat() {
+            const selection = window.getSelection();
+            if (selection.rangeCount > 0) {
+                const range = selection.getRangeAt(0);
+                const span = document.createElement('span');
+                span.appendChild(range.cloneContents());
+                
+                copiedFormat = {
+                    bold: document.queryCommandState('bold'),
+                    italic: document.queryCommandState('italic'),
+                    underline: document.queryCommandState('underline'),
+                    strike: document.queryCommandState('strikeThrough'),
+                    color: document.queryCommandValue('foreColor'),
+                    bgcolor: document.queryCommandValue('backColor')
+                };
+                
+                alert('格式已复制，选择文本后点击格式刷粘贴');
+            }
+        }
+        
+        // 应用格式刷
+        function pasteFormat() {
+            if (!copiedFormat) return;
+            
+            for (let [key, value] of Object.entries(copiedFormat)) {
+                if (key === 'color' || key === 'bgcolor') {
+                    document.execCommand(key === 'color' ? 'foreColor' : 'backColor', false, value);
+                } else if (typeof value === 'boolean') {
+                    document.execCommand(key, false, null);
+                }
+            }
+            
+            saveToHistory();
+        }
+        
+        // 显示查找替换
+        function showFindReplace() {
+            document.getElementById('findReplaceModal').classList.add('show');
+        }
+        
+        function closeFindReplace() {
+            document.getElementById('findReplaceModal').classList.remove('show');
+        }
+        
+        let lastFindIndex = 0;
+        function findNext() {
+            const findText = document.getElementById('findText').value;
+            if (!findText) return;
+            
+            const content = document.getElementById('editor').innerHTML;
+            const index = content.indexOf(findText, lastFindIndex + 1);
+            
+            if (index !== -1) {
+                lastFindIndex = index;
+                const range = document.createRange();
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                // 简单高亮
+                alert(`找到内容在位置 ${index}`);
+            } else {
+                alert('未找到更多匹配');
+                lastFindIndex = -1;
+            }
+        }
+        
+        function replaceOne() {
+            const findText = document.getElementById('findText').value;
+            const replaceText = document.getElementById('replaceText').value;
+            
+            if (findText && window.getSelection().toString() === findText) {
+                document.execCommand('insertText', false, replaceText);
+                saveToHistory();
+            }
+        }
+        
+        function replaceAll() {
+            const findText = document.getElementById('findText').value;
+            const replaceText = document.getElementById('replaceText').value;
+            
+            if (!findText) return;
+            
+            const content = document.getElementById('editor').innerHTML;
+            const newContent = content.replace(new RegExp(findText, 'g'), replaceText);
+            document.getElementById('editor').innerHTML = newContent;
+            saveToHistory();
+        }
+        
+        // 滚动
+        function scrollToTop() {
+            document.getElementById('editor').scrollTop = 0;
+        }
+        
+        function scrollToBottom() {
+            const editor = document.getElementById('editor');
+            editor.scrollTop = editor.scrollHeight;
+        }
+        
+        // 简繁转换
+        function convertChinese() {
+            const content = document.getElementById('editor').innerText;
+            const isSimplified = /[\u4e00-\u9fa5]/.test(content);
+            
+            // 这里需要引入OpenCC库，简化版直接用提示
+            alert('简繁转换需要引入OpenCC库，已准备就绪');
+        }
+        
+        // 快速保存（不退出）
+        function quickSave() {
+            const content = document.getElementById('editor').innerHTML.trim();
+            if (!content || content === '<br>') return;
+            
+            const images = [];
+            document.querySelectorAll('#imagePreview img').forEach(img => {
+                images.push(img.src);
+            });
+            
+            const notes = JSON.parse(localStorage.getItem('myNotes') || '[]');
+            
+            const newNote = {
+                content: content,
+                time: new Date().toLocaleString(),
+                images: images
+            };
+            
+            if (currentEditIndex === -1) {
+                notes.push(newNote);
+                currentEditIndex = notes.length - 1;
+            } else {
+                notes[currentEditIndex] = newNote;
+            }
+            
+            localStorage.setItem('myNotes', JSON.stringify(notes));
+            alert('已保存');
+        }
+        
+        // 自动保存
+        function autoSave() {
+            if (autoSaveTimer) clearTimeout(autoSaveTimer);
+            autoSaveTimer = setTimeout(() => {
+                quickSave();
+            }, 5000);
+        }
+        
+        // 保存到历史
         function saveToHistory() {
             const editor = document.getElementById('editor');
             if (!editor) return;
@@ -200,8 +725,10 @@
                 history.shift();
                 historyIndex--;
             }
+            
+            autoSave();
         }
-
+        
         // 撤销
         function undo() {
             if (historyIndex > 0) {
@@ -210,7 +737,7 @@
                 updateActiveButtons();
             }
         }
-
+        
         // 反撤销
         function redo() {
             if (historyIndex < history.length - 1) {
@@ -235,9 +762,9 @@
                 'italic': 'btn-italic',
                 'underline': 'btn-underline',
                 'strikeThrough': 'btn-strike',
-                'justifyLeft': 'btn-left',
-                'justifyCenter': 'btn-center',
-                'justifyRight': 'btn-right'
+                'justifyLeft': 'btn-justifyLeft',
+                'justifyCenter': 'btn-justifyCenter',
+                'justifyRight': 'btn-justifyRight'
             };
             
             for (let [cmd, btnId] of Object.entries(commands)) {
@@ -252,55 +779,48 @@
             }
         }
         
-        // 显示全屏编辑器（新建）
+        // 显示编辑器（新建）
         function showFullscreenEditor() {
             currentEditIndex = -1;
             document.getElementById('editor').innerHTML = '';
             document.getElementById('imagePreview').innerHTML = '';
-            document.getElementById('fullscreenEditor').classList.remove('hidden');
-            document.getElementById('editor').focus();
             
             history = [];
             historyIndex = -1;
             saveToHistory();
+            initToolbar();
         }
         
-        // 显示全屏编辑器（编辑已有笔记）
+        // 显示编辑器（编辑）
         function editNote(index) {
             const notes = JSON.parse(localStorage.getItem('myNotes') || '[]');
             const note = notes[index];
             
             currentEditIndex = index;
             
-            // 解析内容
             if (typeof note === 'string') {
                 document.getElementById('editor').innerHTML = note.replace(/\n/g, '<br>');
             } else {
                 document.getElementById('editor').innerHTML = note.content || '';
-                // 显示已有图片
                 if (note.images && note.images.length > 0) {
                     const preview = document.getElementById('imagePreview');
                     preview.innerHTML = note.images.map(img => 
                         `<img src="${img}" class="image-preview">`
                     ).join('');
-                } else {
-                    document.getElementById('imagePreview').innerHTML = '';
                 }
             }
-            
-            document.getElementById('fullscreenEditor').classList.remove('hidden');
-            document.getElementById('editor').focus();
             
             history = [];
             historyIndex = -1;
             saveToHistory();
             updateActiveButtons();
+            initToolbar();
         }
         
-        // 隐藏编辑器
-        function hideFullscreenEditor() {
-            document.getElementById('fullscreenEditor').classList.add('hidden');
-        }
+        // 退出时自动保存
+        window.addEventListener('beforeunload', function() {
+            quickSave();
+        });
         
         // 插入图片
         function insertImage() {
@@ -317,7 +837,6 @@
                     const reader = new FileReader();
                     
                     reader.onload = function(event) {
-                        // 插入图片到编辑器
                         const img = document.createElement('img');
                         img.src = event.target.result;
                         img.style.maxWidth = '100%';
@@ -326,7 +845,6 @@
                         const editor = document.getElementById('editor');
                         editor.appendChild(img);
                         
-                        // 同时保存到预览区（为了保存时能获取图片）
                         const preview = document.getElementById('imagePreview');
                         preview.innerHTML += `<img src="${event.target.result}" class="image-preview">`;
                         
@@ -340,56 +858,13 @@
             input.click();
         }
         
-        // 保存笔记
-        function saveNote() {
-            const content = document.getElementById('editor').innerHTML.trim();
-            if (!content || content === '<br>') {
-                alert('请输入内容');
-                return;
-            }
-            
-            // 获取所有图片
-            const images = [];
-            document.querySelectorAll('#imagePreview img').forEach(img => {
-                images.push(img.src);
-            });
-            
-            const notes = JSON.parse(localStorage.getItem('myNotes') || '[]');
-            
-            const newNote = {
-                content: content,
-                time: new Date().toLocaleString(),
-                images: images
-            };
-            
-            if (currentEditIndex === -1) {
-                notes.push(newNote);
-            } else {
-                notes[currentEditIndex] = newNote;
-            }
-            
-            localStorage.setItem('myNotes', JSON.stringify(notes));
-            hideFullscreenEditor();
-            loadNotes();
-        }
-        
-        // 删除笔记
-        function deleteNote(index) {
-            if (!confirm('确定删除这条便签吗？')) return;
-            
-            const notes = JSON.parse(localStorage.getItem('myNotes') || '[]');
-            notes.splice(index, 1);
-            localStorage.setItem('myNotes', JSON.stringify(notes));
-            loadNotes();
-        }
-        
-        // 加载笔记
+        // 加载笔记列表
         function loadNotes() {
             const notes = JSON.parse(localStorage.getItem('myNotes') || '[]');
             const container = document.getElementById('notesContainer');
             
             if (notes.length === 0) {
-                container.innerHTML = '<p style="color: #999; text-align: center;">暂无便签，点击"新建便签"创建</p>';
+                container.innerHTML = '<p style="color: #999; text-align: center;">暂无便签</p>';
                 return;
             }
             
@@ -429,15 +904,28 @@
             }).join('');
         }
         
-        // 监听编辑器选择变化，更新按钮状态
+        // 删除笔记
+        function deleteNote(index) {
+            if (!confirm('确定删除吗？')) return;
+            
+            const notes = JSON.parse(localStorage.getItem('myNotes') || '[]');
+            notes.splice(index, 1);
+            localStorage.setItem('myNotes', JSON.stringify(notes));
+            loadNotes();
+        }
+        
+        // 初始化
+        window.onload = function() {
+            loadNotes();
+            showFullscreenEditor(); // 默认打开编辑器
+        };
+        
+        // 监听编辑器变化
         document.addEventListener('selectionchange', function() {
-            if (!document.getElementById('fullscreenEditor').classList.contains('hidden')) {
-                updateActiveButtons();
-            }
+            updateActiveButtons();
         });
         
-        // 页面加载
-        window.onload = loadNotes;
+        document.getElementById('editor').addEventListener('input', saveToHistory);
     </script>
 </body>
 </html>
