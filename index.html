@@ -53,6 +53,91 @@
             padding: 2px 5px;
             border-radius: 3px;
         }
+        
+        /* 弹窗样式 */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal.show {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            text-align: left;
+        }
+        .modal-content h3 {
+            margin-top: 0;
+            color: #333;
+            text-align: center;
+        }
+        .checkbox-item {
+            margin: 15px 0;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+        .checkbox-item label {
+            margin-left: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: flex-end;
+        }
+        .modal-buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .modal-buttons .confirm {
+            background: #4CAF50;
+            color: white;
+        }
+        .modal-buttons .cancel {
+            background: #f0f0f0;
+        }
+        
+        /* 导入导出按钮组 */
+        .backup-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .backup-btn {
+            background: #9C27B0;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        .export-btn {
+            background: #2196F3;
+        }
+        .import-btn {
+            background: #FF9800;
+        }
     </style>
 </head>
 <body>
@@ -64,36 +149,105 @@
     <!-- 备份恢复区域 -->
     <div style="margin-top: 40px; border-top: 1px solid #ddd; padding-top: 20px;">
         <h3 style="color: #666;">📦 数据管理</h3>
-        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-            <button onclick="exportAllData()" style="background: #9C27B0; padding:12px 24px; border:none; border-radius:8px; color:white; cursor:pointer; font-size:16px; margin:5px;">
-                💾 备份全部
-            </button>
-            <button onclick="showRestoreDialog()" style="background: #FF9800; padding:12px 24px; border:none; border-radius:8px; color:white; cursor:pointer; font-size:16px; margin:5px;">
-                📥 恢复数据
-            </button>
+        
+        <!-- 备份按钮（点击弹出选项） -->
+        <div class="backup-buttons">
+            <button onclick="showBackupOptions()" class="backup-btn">💾 备份</button>
+        </div>
+        
+        <!-- 导入导出按钮组 -->
+        <div class="backup-buttons">
+            <button onclick="exportAllData()" class="backup-btn export-btn">📤 导出</button>
+            <button onclick="showImportDialog()" class="backup-btn import-btn">📥 导入</button>
         </div>
     </div>
     
-    <div class="version-tag">v1.0 - 2024.3.4</div>
+    <!-- 备份选项弹窗 -->
+    <div id="backupModal" class="modal">
+        <div class="modal-content">
+            <h3>选择要备份的内容</h3>
+            
+            <div class="checkbox-item">
+                <input type="checkbox" id="backupNotes" checked>
+                <label for="backupNotes">📝 便签</label>
+            </div>
+            
+            <div class="checkbox-item">
+                <input type="checkbox" id="backupMoments" checked>
+                <label for="backupMoments">📱 动态</label>
+            </div>
+            
+            <div class="modal-buttons">
+                <button class="confirm" onclick="doBackup()">确认备份</button>
+                <button class="cancel" onclick="hideBackupModal()">取消</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="version-tag">v2.0 - 2024.3.4 备份增强版</div>
     
     <script>
-        // 获取所有数据
-        function getAllData() {
-            return {
+        // 显示备份选项弹窗
+        function showBackupOptions() {
+            document.getElementById('backupModal').classList.add('show');
+        }
+        
+        // 隐藏备份弹窗
+        function hideBackupModal() {
+            document.getElementById('backupModal').classList.remove('show');
+        }
+        
+        // 执行备份（按选择的内容）
+        function doBackup() {
+            const backupNotes = document.getElementById('backupNotes').checked;
+            const backupMoments = document.getElementById('backupMoments').checked;
+            
+            if (!backupNotes && !backupMoments) {
+                alert('请至少选择一项要备份的内容');
+                return;
+            }
+            
+            const data = {};
+            
+            if (backupNotes) {
+                data.notes = localStorage.getItem('myNotes');
+            }
+            
+            if (backupMoments) {
+                data.moments = localStorage.getItem('moments');
+            }
+            
+            data.exportTime = new Date().toLocaleString();
+            data.version = '2.0';
+            
+            // 生成文件名（包含选择的项目）
+            let fileName = 'backup';
+            if (backupNotes) fileName += '-笔记';
+            if (backupMoments) fileName += '-动态';
+            fileName += `-${new Date().toLocaleDateString().replace(/\//g, '-')}.json`;
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            a.click();
+            
+            URL.revokeObjectURL(url);
+            hideBackupModal();
+        }
+        
+        // 导出全部（原有的备份全部功能）
+        function exportAllData() {
+            const data = {
                 notes: localStorage.getItem('myNotes'),
                 moments: localStorage.getItem('moments'),
                 exportTime: new Date().toLocaleString(),
-                version: '1.0'
+                version: '2.0'
             };
-        }
-        
-        // 导出全部数据
-        function exportAllData() {
-            const data = getAllData();
             
-            // 检查是否有数据
             if (!data.notes && !data.moments) {
-                alert('没有数据可备份');
+                alert('没有数据可导出');
                 return;
             }
             
@@ -101,15 +255,13 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `backup-${new Date().toLocaleDateString().replace(/\//g, '-')}.json`;
+            a.download = `全部数据-${new Date().toLocaleDateString().replace(/\//g, '-')}.json`;
             a.click();
-            
-            // 释放内存
             URL.revokeObjectURL(url);
         }
         
-        // 显示恢复对话框
-        function showRestoreDialog() {
+        // 显示导入对话框
+        function showImportDialog() {
             const input = document.createElement('input');
             input.type = 'file';
             input.accept = 'application/json';
@@ -122,30 +274,32 @@
                     try {
                         const data = JSON.parse(event.target.result);
                         
-                        // 恢复各个模块
                         let restored = false;
+                        let restoreMessages = [];
                         
                         if (data.notes) {
                             localStorage.setItem('myNotes', data.notes);
                             restored = true;
+                            restoreMessages.push('📝 便签');
                         }
                         
                         if (data.moments) {
                             localStorage.setItem('moments', data.moments);
                             restored = true;
+                            restoreMessages.push('📱 动态');
                         }
                         
                         if (restored) {
-                            alert('✅ 恢复成功！刷新页面查看');
+                            alert(`✅ 成功导入：${restoreMessages.join('、')}\n刷新页面查看`);
                             if (confirm('现在刷新页面吗？')) {
                                 location.reload();
                             }
                         } else {
-                            alert('备份文件中没有可恢复的数据');
+                            alert('文件中没有可导入的数据');
                         }
                         
                     } catch (err) {
-                        alert('❌ 备份文件格式错误');
+                        alert('❌ 文件格式错误');
                         console.error(err);
                     }
                 };
@@ -156,17 +310,17 @@
             input.click();
         }
         
-        // 可选：显示当前数据状态
+        // 显示数据状态
         function showDataStatus() {
             const notes = localStorage.getItem('myNotes');
             const moments = localStorage.getItem('moments');
             
-            console.log('数据状态：');
+            console.log('📊 当前数据状态：');
             console.log('便签:', notes ? JSON.parse(notes).length + '条' : '无');
             console.log('动态:', moments ? JSON.parse(moments).length + '条' : '无');
         }
         
-        // 页面加载时显示数据状态（在控制台）
+        // 页面加载
         window.onload = function() {
             showDataStatus();
         };
