@@ -141,6 +141,22 @@
     </style>
 </head>
 <body>
+    <script>
+    // 密码验证 - 放在所有代码的最前面
+    (function() {
+        const PASSWORD = '597';
+        const isAuthed = sessionStorage.getItem('auth');
+        
+        if (!isAuthed) {
+            const input = prompt('请输入访问密码：');
+            if (input !== PASSWORD) {
+                document.body.innerHTML = '<div style="text-align:center; margin-top:50px; font-family:Arial;"><h1>🔒 密码错误</h1><p>无权访问此网站</p></div>';
+                throw new Error('密码错误');
+            }
+            sessionStorage.setItem('auth', 'true');
+        }
+    })();
+</script>
     <h1>📱 我的应用</h1>
     
     <a href="notes.html" class="menu-btn notes">📝 便签</a>
