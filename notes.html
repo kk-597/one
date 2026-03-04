@@ -88,6 +88,11 @@
         .editor-toolbar button {
             background: #f0f0f0;
             color: #333;
+            min-width: 40px;
+        }
+        .editor-toolbar button.active {
+            background: #4CAF50;
+            color: white;
         }
         .image-preview {
             max-width: 100%;
@@ -114,6 +119,13 @@
             padding: 2px 5px;
             border-radius: 3px;
         }
+        .toolbar-group {
+            display: flex;
+            gap: 5px;
+            border-right: 1px solid #ddd;
+            padding-right: 10px;
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
@@ -125,37 +137,58 @@
     <!-- 全屏编辑器 -->
     <div id="fullscreenEditor" class="fullscreen-editor hidden">
         <div class="editor-toolbar">
-            <button onclick="undo()">↩️ 撤销</button>
-            <button onclick="redo()">↪️ 反撤销</button>
-            <button onclick="insertImage()">🖼️ 插入图片</button>
-            <button onclick="saveNote()">💾 保存</button>
-            <button onclick="hideFullscreenEditor()">✖️ 关闭</button>
+            <div class="toolbar-group">
+                <button onclick="formatText('justifyLeft')" title="居左" id="btn-left">⬅️</button>
+                <button onclick="formatText('justifyCenter')" title="居中" id="btn-center">⏺️</button>
+                <button onclick="formatText('justifyRight')" title="居右" id="btn-right">➡️</button>
+            </div>
+            
+            <div class="toolbar-group">
+                <button onclick="formatText('bold')" title="加粗" id="btn-bold"><b>B</b></button>
+                <button onclick="formatText('italic')" title="倾斜" id="btn-italic"><i>I</i></button>
+                <button onclick="formatText('underline')" title="下划线" id="btn-underline"><u>U</u></button>
+                <button onclick="formatText('strikeThrough')" title="删除线" id="btn-strike"><s>S</s></button>
+            </div>
+            
+            <div class="toolbar-group">
+                <button onclick="undo()">↩️ 撤销</button>
+                <button onclick="redo()">↪️ 反撤销</button>
+            </div>
+            
+            <div class="toolbar-group">
+                <button onclick="insertImage()">🖼️ 插入图片</button>
+                <button onclick="saveNote()">💾 保存</button>
+                <button onclick="hideFullscreenEditor()">✖️ 关闭</button>
+            </div>
         </div>
-        <textarea id="editorContent" placeholder="写下你的想法..." oninput="saveToHistory()" autofocus></textarea>
+        <div id="editorContainer" style="flex:1; display: flex; flex-direction: column; margin-top: 10px;">
+            <div id="editor" contenteditable="true" style="flex:1; padding:15px; border:1px solid #ddd; overflow-y:auto; font-family:Arial; line-height:1.6; outline:none;" oninput="saveToHistory()"></div>
+        </div>
         <div id="imagePreview"></div>
     </div>
     
     <div id="notesContainer"></div>
     
-    <div class="version-tag">v2.0 - 2024.3.2 16:30 (历史记录50步，改这里)</div>
+    <div class="version-tag">v3.0 - 2024.3.4 格式化功能</div>
     
     <script>
-        // 历史记录 - 想改步数就改下面这个数字
-        const MAX_HISTORY = 50;  // ← 改成你想要的数字，比如 100、200
-        
+        // 历史记录
+        const MAX_HISTORY = 50;
         let history = [];
         let historyIndex = -1;
+        let currentEditIndex = -1;
 
         // 保存当前内容到历史
         function saveToHistory() {
-            const current = document.getElementById('editorContent').value;
+            const editor = document.getElementById('editor');
+            if (!editor) return;
             
-            // 如果当前内容和历史最后一条相同，不保存
+            const current = editor.innerHTML;
+            
             if (history.length > 0 && history[history.length - 1] === current) {
                 return;
             }
             
-            // 删除当前位置之后的历史
             if (historyIndex < history.length - 1) {
                 history = history.slice(0, historyIndex + 1);
             }
@@ -163,7 +196,6 @@
             history.push(current);
             historyIndex = history.length - 1;
             
-            // 限制历史记录数量（用 MAX_HISTORY 控制）
             if (history.length > MAX_HISTORY) {
                 history.shift();
                 historyIndex--;
@@ -174,7 +206,8 @@
         function undo() {
             if (historyIndex > 0) {
                 historyIndex--;
-                document.getElementById('editorContent').value = history[historyIndex];
+                document.getElementById('editor').innerHTML = history[historyIndex];
+                updateActiveButtons();
             }
         }
 
@@ -182,21 +215,51 @@
         function redo() {
             if (historyIndex < history.length - 1) {
                 historyIndex++;
-                document.getElementById('editorContent').value = history[historyIndex];
+                document.getElementById('editor').innerHTML = history[historyIndex];
+                updateActiveButtons();
             }
         }
         
-        let currentEditIndex = -1;  // -1 表示新建，其他数字表示编辑第几个
+        // 格式化文本
+        function formatText(command) {
+            document.execCommand(command, false, null);
+            document.getElementById('editor').focus();
+            updateActiveButtons();
+            saveToHistory();
+        }
+        
+        // 更新按钮状态
+        function updateActiveButtons() {
+            const commands = {
+                'bold': 'btn-bold',
+                'italic': 'btn-italic',
+                'underline': 'btn-underline',
+                'strikeThrough': 'btn-strike',
+                'justifyLeft': 'btn-left',
+                'justifyCenter': 'btn-center',
+                'justifyRight': 'btn-right'
+            };
+            
+            for (let [cmd, btnId] of Object.entries(commands)) {
+                const btn = document.getElementById(btnId);
+                if (btn) {
+                    if (document.queryCommandState(cmd)) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                }
+            }
+        }
         
         // 显示全屏编辑器（新建）
         function showFullscreenEditor() {
             currentEditIndex = -1;
-            document.getElementById('editorContent').value = '';
+            document.getElementById('editor').innerHTML = '';
             document.getElementById('imagePreview').innerHTML = '';
             document.getElementById('fullscreenEditor').classList.remove('hidden');
-            document.getElementById('editorContent').focus();
+            document.getElementById('editor').focus();
             
-            // 初始化历史记录
             history = [];
             historyIndex = -1;
             saveToHistory();
@@ -209,12 +272,11 @@
             
             currentEditIndex = index;
             
-            // 如果是旧格式（纯文本）
+            // 解析内容
             if (typeof note === 'string') {
-                document.getElementById('editorContent').value = note;
-                document.getElementById('imagePreview').innerHTML = '';
+                document.getElementById('editor').innerHTML = note.replace(/\n/g, '<br>');
             } else {
-                document.getElementById('editorContent').value = note.content || '';
+                document.getElementById('editor').innerHTML = note.content || '';
                 // 显示已有图片
                 if (note.images && note.images.length > 0) {
                     const preview = document.getElementById('imagePreview');
@@ -227,12 +289,12 @@
             }
             
             document.getElementById('fullscreenEditor').classList.remove('hidden');
-            document.getElementById('editorContent').focus();
+            document.getElementById('editor').focus();
             
-            // 初始化历史记录
             history = [];
             historyIndex = -1;
             saveToHistory();
+            updateActiveButtons();
         }
         
         // 隐藏编辑器
@@ -255,9 +317,20 @@
                     const reader = new FileReader();
                     
                     reader.onload = function(event) {
-                        // 显示预览
+                        // 插入图片到编辑器
+                        const img = document.createElement('img');
+                        img.src = event.target.result;
+                        img.style.maxWidth = '100%';
+                        img.style.margin = '10px 0';
+                        
+                        const editor = document.getElementById('editor');
+                        editor.appendChild(img);
+                        
+                        // 同时保存到预览区（为了保存时能获取图片）
                         const preview = document.getElementById('imagePreview');
                         preview.innerHTML += `<img src="${event.target.result}" class="image-preview">`;
+                        
+                        saveToHistory();
                     };
                     
                     reader.readAsDataURL(file);
@@ -269,8 +342,8 @@
         
         // 保存笔记
         function saveNote() {
-            const text = document.getElementById('editorContent').value.trim();
-            if (!text) {
+            const content = document.getElementById('editor').innerHTML.trim();
+            if (!content || content === '<br>') {
                 alert('请输入内容');
                 return;
             }
@@ -284,16 +357,14 @@
             const notes = JSON.parse(localStorage.getItem('myNotes') || '[]');
             
             const newNote = {
-                content: text,
+                content: content,
                 time: new Date().toLocaleString(),
                 images: images
             };
             
             if (currentEditIndex === -1) {
-                // 新建
                 notes.push(newNote);
             } else {
-                // 更新
                 notes[currentEditIndex] = newNote;
             }
             
@@ -322,20 +393,17 @@
                 return;
             }
             
-            // 倒序显示（最新的在前面）
             const sortedNotes = [...notes].reverse();
             
             container.innerHTML = sortedNotes.map((note, i) => {
-                // 获取原始索引（用于删除/编辑）
                 const originalIndex = notes.length - 1 - i;
                 
-                // 兼容旧格式
                 let content = '';
                 let time = '';
                 let images = [];
                 
                 if (typeof note === 'string') {
-                    content = note;
+                    content = note.replace(/\n/g, '<br>');
                     time = '未知时间';
                 } else {
                     content = note.content || '';
@@ -343,7 +411,6 @@
                     images = note.images || [];
                 }
                 
-                // 生成图片HTML
                 const imagesHtml = images.map(img => 
                     `<img src="${img}" style="max-width:100%; margin:10px 0; border-radius:4px; cursor:pointer;" onclick="window.open(this.src)">`
                 ).join('');
@@ -351,7 +418,7 @@
                 return `
                     <div class="note">
                         <small>${time}</small>
-                        <div class="note-content">${content.replace(/\n/g, '<br>')}</div>
+                        <div class="note-content">${content}</div>
                         ${imagesHtml}
                         <div style="margin-top: 10px;">
                             <button onclick="editNote(${originalIndex})">✏️ 编辑</button>
@@ -361,6 +428,13 @@
                 `;
             }).join('');
         }
+        
+        // 监听编辑器选择变化，更新按钮状态
+        document.addEventListener('selectionchange', function() {
+            if (!document.getElementById('fullscreenEditor').classList.contains('hidden')) {
+                updateActiveButtons();
+            }
+        });
         
         // 页面加载
         window.onload = loadNotes;
