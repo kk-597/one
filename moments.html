@@ -40,15 +40,53 @@
             border-radius: 4px;
             cursor: pointer;
         }
-        .favorite-btn {
-            background: #9C27B0;
-            padding: 8px 16px;
-            color: white;
-            border: none;
+        
+        /* 筛选栏 */
+        .filter-bar {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .filter-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .filter-row select, .filter-row input {
+            padding: 8px;
+            border: 1px solid #ddd;
             border-radius: 4px;
+            flex: 1;
+        }
+        .tag-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .tag-item {
+            background: #f0f0f0;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
             cursor: pointer;
-            text-decoration: none;
-            margin-left: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .tag-item.selected {
+            background: #FF9800;
+            color: white;
+        }
+        .tag-item .remove {
+            color: #999;
+            cursor: pointer;
+        }
+        .tag-item.selected .remove {
+            color: white;
         }
         
         /* 动态卡片 */
@@ -72,12 +110,11 @@
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            background: #FF9800;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 24px;
+            font-size: 20px;
             margin-right: 15px;
         }
         .moment-info {
@@ -86,36 +123,50 @@
         .moment-author {
             font-weight: bold;
             font-size: 16px;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
+        }
+        .moment-identity {
+            font-size: 12px;
+            color: #FF9800;
+            margin-bottom: 3px;
         }
         .moment-time {
             color: #999;
             font-size: 12px;
         }
         
-        /* 心情和天气标签 */
+        /* 动态分类标签 */
+        .moment-categories {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .category-tag {
+            background: #e0e0e0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .album-tag {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        /* 动态标签 */
         .moment-tags {
             display: flex;
-            gap: 10px;
+            gap: 8px;
+            flex-wrap: wrap;
             margin: 10px 0;
         }
-        .mood-tag {
+        .moment-tag {
             background: #f0f0f0;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 14px;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .weather-tag {
-            background: #e3f2fd;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 14px;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
         }
         
         /* 动态内容 */
@@ -166,6 +217,26 @@
             color: #9C27B0;
         }
         
+        /* 收藏夹选择器 */
+        .favorite-folders {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-top: 5px;
+        }
+        .folder-btn {
+            background: #f0f0f0;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .folder-btn.selected {
+            background: #9C27B0;
+            color: white;
+        }
+        
         /* 评论区域 */
         .comments-section {
             margin-top: 15px;
@@ -177,19 +248,35 @@
             gap: 10px;
             margin-bottom: 10px;
             font-size: 14px;
+            padding: 8px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+        .comment-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+        }
+        .comment-content {
+            flex: 1;
         }
         .comment-author {
             font-weight: bold;
             color: #FF9800;
-            min-width: 60px;
+            font-size: 13px;
         }
-        .comment-content {
-            flex: 1;
+        .comment-text {
             color: #333;
+            margin: 3px 0;
         }
         .comment-time {
             color: #999;
-            font-size: 12px;
+            font-size: 11px;
         }
         .add-comment {
             display: flex;
@@ -211,115 +298,172 @@
             cursor: pointer;
         }
         
-        /* 新建动态弹窗 */
-        .modal {
+        /* 全屏编辑器 */
+        .fullscreen-editor {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .modal.show {
-            display: flex;
-        }
-        .modal-content {
             background: white;
+            z-index: 2000;
             padding: 20px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 500px;
-            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
             overflow-y: auto;
         }
-        .modal h3 {
-            margin-top: 0;
-            margin-bottom: 20px;
-        }
-        .modal textarea {
-            width: 100%;
-            height: 100px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            margin-bottom: 15px;
-            font-family: Arial;
-        }
-        .modal select {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            margin-bottom: 15px;
-        }
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-        }
-        .modal-buttons button {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .modal-buttons .save {
-            background: #FF9800;
-            color: white;
-        }
-        .modal-buttons .cancel {
-            background: #f0f0f0;
-        }
-        
-        /* 收藏夹弹窗 */
-        .favorites-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .favorites-modal.show {
-            display: flex;
-        }
-        .favorites-content {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 600px;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-        .favorites-header {
+        .editor-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #FF9800;
         }
-        .favorites-header h3 {
+        .editor-header h2 {
             margin: 0;
+            color: #333;
         }
-        .close-btn {
+        .editor-close {
             background: none;
             border: none;
             font-size: 24px;
             cursor: pointer;
+            color: #666;
+        }
+        .editor-main {
+            display: flex;
+            gap: 20px;
+            flex: 1;
+        }
+        .editor-left {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+        }
+        .editor-right {
+            flex: 1;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .editor-right h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #666;
+            font-size: 16px;
+        }
+        .editor-content {
+            flex: 1;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            line-height: 1.6;
+            resize: none;
+            margin-bottom: 15px;
+        }
+        .identity-selector {
+            margin-bottom: 20px;
+        }
+        .identity-item {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        .identity-item.selected {
+            border-color: #FF9800;
+            background: #fff3e0;
+        }
+        .identity-name {
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+        .identity-desc {
+            font-size: 12px;
+            color: #666;
+        }
+        .add-identity-btn {
+            width: 100%;
+            padding: 10px;
+            background: #f0f0f0;
+            border: 2px dashed #ccc;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        /* 相册选择器 */
+        .album-selector {
+            margin-bottom: 20px;
+        }
+        .album-item {
+            background: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-bottom: 5px;
+            cursor: pointer;
+        }
+        .album-item.selected {
+            background: #FF9800;
+            color: white;
+        }
+        .add-album-input {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        .add-album-input input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        /* 标签输入 */
+        .tag-input-area {
+            margin-bottom: 20px;
+        }
+        .tag-input {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .tag {
+            background: #e0e0e0;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .tag .remove {
+            cursor: pointer;
             color: #999;
         }
-        .no-favorites {
-            text-align: center;
-            color: #999;
-            padding: 40px;
+        
+        /* 收藏夹管理 */
+        .folder-manager {
+            margin-top: 20px;
+        }
+        .folder-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+            margin-bottom: 5px;
         }
         
         .version-tag {
@@ -338,81 +482,229 @@
     <div class="top-bar">
         <div>
             <a href="index.html"><button class="back-btn">← 返回首页</button></a>
-            <button class="favorite-btn" onclick="showFavorites()">❤️ 收藏夹</button>
         </div>
-        <button class="new-moment-btn" onclick="showNewMomentModal()">➕ 发动态</button>
+        <button class="new-moment-btn" onclick="showFullscreenEditor()">➕ 发动态</button>
+    </div>
+    
+    <!-- 筛选栏 -->
+    <div class="filter-bar">
+        <div class="filter-row">
+            <select id="albumFilter" onchange="filterMoments()">
+                <option value="all">全部动态册</option>
+            </select>
+            
+            <select id="favoriteFilter" onchange="filterMoments()">
+                <option value="all">全部动态</option>
+                <option value="favorites">只看收藏</option>
+            </select>
+            
+            <input type="text" id="tagSearch" placeholder="搜索标签..." oninput="filterMoments()">
+        </div>
+        
+        <div class="tag-cloud" id="tagCloud"></div>
     </div>
     
     <!-- 动态列表 -->
     <div id="momentsContainer"></div>
     
-    <!-- 新建动态弹窗 -->
-    <div id="newMomentModal" class="modal">
-        <div class="modal-content">
-            <h3>发动态</h3>
-            <textarea id="momentContent" placeholder="说点什么..."></textarea>
-            
-            <select id="momentMood">
-                <option value="">选择心情</option>
-                <option value="开心">😊 开心</option>
-                <option value="烦躁">😫 烦躁</option>
-                <option value="困">😴 困</option>
-                <option value="累">😮‍💨 累</option>
-                <option value="难过">😢 难过</option>
-            </select>
-            
-            <select id="momentWeather">
-                <option value="">选择天气</option>
-                <option value="晴">☀️ 晴</option>
-                <option value="雨">🌧️ 雨</option>
-                <option value="阴">☁️ 阴</option>
-                <option value="多云">⛅ 多云</option>
-                <option value="台风">🌪️ 台风</option>
-            </select>
-            
-            <div style="margin-bottom: 15px;">
-                <button onclick="selectImages()">📷 选择图片</button>
-                <div id="imagePreview" style="display: grid; grid-template-columns: repeat(4,1fr); gap:5px; margin-top:10px;"></div>
+    <!-- 全屏编辑器 -->
+    <div id="fullscreenEditor" class="fullscreen-editor" style="display: none;">
+        <div class="editor-header">
+            <h2>📱 发动态</h2>
+            <button class="editor-close" onclick="hideFullscreenEditor()">×</button>
+        </div>
+        
+        <div class="editor-main">
+            <!-- 左侧编辑区 -->
+            <div class="editor-left">
+                <textarea id="momentContent" class="editor-content" placeholder="说点什么..."></textarea>
+                
+                <div style="margin-bottom: 15px;">
+                    <button onclick="selectImages()">📷 选择图片</button>
+                    <div id="imagePreview" style="display: grid; grid-template-columns: repeat(4,1fr); gap:5px; margin-top:10px;"></div>
+                </div>
             </div>
             
-            <div class="modal-buttons">
-                <button class="save" onclick="saveMoment()">发布</button>
-                <button class="cancel" onclick="hideNewMomentModal()">取消</button>
+            <!-- 右侧设置区 -->
+            <div class="editor-right">
+                <h3>选择身份</h3>
+                <div class="identity-selector" id="identitySelector"></div>
+                
+                <h3>选择动态册</h3>
+                <div class="album-selector" id="albumSelector"></div>
+                
+                <h3>添加标签</h3>
+                <div class="tag-input-area">
+                    <div class="tag-list" id="tagList"></div>
+                    <div class="tag-input">
+                        <input type="text" id="newTag" placeholder="新标签">
+                        <button onclick="addTag()">添加</button>
+                    </div>
+                </div>
+                
+                <button onclick="saveMoment()" style="width:100%; padding:12px; background:#FF9800; color:white; border:none; border-radius:4px; font-size:16px; margin-top:10px;">发布动态</button>
             </div>
         </div>
     </div>
     
-    <!-- 收藏夹弹窗 -->
-    <div id="favoritesModal" class="favorites-modal">
-        <div class="favorites-content">
-            <div class="favorites-header">
-                <h3>❤️ 我的收藏</h3>
-                <button class="close-btn" onclick="hideFavorites()">×</button>
-            </div>
-            <div id="favoritesList"></div>
-        </div>
-    </div>
-    
-    <div class="version-tag">v1.0 - 2024.3.4 动态功能</div>
+    <div class="version-tag">v2.0 - 2024.3.4 动态增强版</div>
     
     <script>
         // 数据存储
         let moments = JSON.parse(localStorage.getItem('moments') || '[]');
-        let selectedImages = [];
+        let identities = JSON.parse(localStorage.getItem('identities') || '[{"id":1,"name":"我","avatar":"📱","color":"#FF9800"}]');
+        let albums = JSON.parse(localStorage.getItem('albums') || '["日常","工作"]');
+        let favoriteFolders = JSON.parse(localStorage.getItem('favoriteFolders') || '["默认收藏"]');
         
-        // 显示新建动态弹窗
-        function showNewMomentModal() {
-            document.getElementById('newMomentModal').classList.add('show');
-            document.getElementById('momentContent').value = '';
-            document.getElementById('momentMood').value = '';
-            document.getElementById('momentWeather').value = '';
-            document.getElementById('imagePreview').innerHTML = '';
-            selectedImages = [];
+        let selectedImages = [];
+        let currentTags = [];
+        let currentIdentity = identities[0]?.id || 1;
+        let currentAlbum = albums[0] || '日常';
+        
+        // 初始化
+        function init() {
+            loadIdentities();
+            loadAlbums();
+            loadTagCloud();
+            filterMoments();
         }
         
-        // 隐藏新建动态弹窗
-        function hideNewMomentModal() {
-            document.getElementById('newMomentModal').classList.remove('show');
+        // 显示全屏编辑器
+        function showFullscreenEditor() {
+            document.getElementById('fullscreenEditor').style.display = 'flex';
+            document.getElementById('momentContent').value = '';
+            document.getElementById('imagePreview').innerHTML = '';
+            selectedImages = [];
+            currentTags = [];
+            currentIdentity = identities[0]?.id || 1;
+            currentAlbum = albums[0] || '日常';
+            updateTagList();
+        }
+        
+        function hideFullscreenEditor() {
+            document.getElementById('fullscreenEditor').style.display = 'none';
+        }
+        
+        // 身份管理
+        function loadIdentities() {
+            const container = document.getElementById('identitySelector');
+            container.innerHTML = identities.map(identity => `
+                <div class="identity-item ${currentIdentity === identity.id ? 'selected' : ''}" onclick="selectIdentity(${identity.id})">
+                    <div class="identity-name">${identity.avatar} ${identity.name}</div>
+                    <div class="identity-desc">${identity.desc || ''}</div>
+                </div>
+            `).join('');
+            
+            container.innerHTML += `
+                <div class="add-identity-btn" onclick="addIdentity()">
+                    + 添加新身份
+                </div>
+            `;
+        }
+        
+        function selectIdentity(id) {
+            currentIdentity = id;
+            loadIdentities();
+        }
+        
+        function addIdentity() {
+            const name = prompt('输入身份名称', '新身份');
+            if (!name) return;
+            
+            const newIdentity = {
+                id: Date.now(),
+                name: name,
+                avatar: '👤',
+                color: '#' + Math.floor(Math.random()*16777215).toString(16),
+                desc: prompt('输入身份描述', '')
+            };
+            
+            identities.push(newIdentity);
+            localStorage.setItem('identities', JSON.stringify(identities));
+            loadIdentities();
+        }
+        
+        // 相册管理
+        function loadAlbums() {
+            const container = document.getElementById('albumSelector');
+            container.innerHTML = albums.map(album => `
+                <div class="album-item ${currentAlbum === album ? 'selected' : ''}" onclick="selectAlbum('${album}')">
+                    ${album}
+                </div>
+            `).join('');
+            
+            container.innerHTML += `
+                <div class="add-album-input">
+                    <input type="text" id="newAlbum" placeholder="新动态册">
+                    <button onclick="addAlbum()">添加</button>
+                </div>
+            `;
+        }
+        
+        function selectAlbum(album) {
+            currentAlbum = album;
+            loadAlbums();
+        }
+        
+        function addAlbum() {
+            const album = document.getElementById('newAlbum').value.trim();
+            if (!album) return;
+            
+            albums.push(album);
+            localStorage.setItem('albums', JSON.stringify(albums));
+            
+            // 更新筛选下拉框
+            const select = document.getElementById('albumFilter');
+            select.innerHTML = '<option value="all">全部动态册</option>' + 
+                albums.map(a => `<option value="${a}">${a}</option>`).join('');
+            
+            loadAlbums();
+            document.getElementById('newAlbum').value = '';
+        }
+        
+        // 标签管理
+        function addTag() {
+            const tag = document.getElementById('newTag').value.trim();
+            if (!tag || currentTags.includes(tag)) return;
+            
+            currentTags.push(tag);
+            updateTagList();
+            document.getElementById('newTag').value = '';
+        }
+        
+        function removeTag(tag) {
+            currentTags = currentTags.filter(t => t !== tag);
+            updateTagList();
+        }
+        
+        function updateTagList() {
+            const container = document.getElementById('tagList');
+            container.innerHTML = currentTags.map(tag => `
+                <span class="tag">
+                    ${tag}
+                    <span class="remove" onclick="removeTag('${tag}')">×</span>
+                </span>
+            `).join('');
+        }
+        
+        // 标签云
+        function loadTagCloud() {
+            // 统计所有标签
+            const tagCount = {};
+            moments.forEach(m => {
+                (m.tags || []).forEach(t => {
+                    tagCount[t] = (tagCount[t] || 0) + 1;
+                });
+            });
+            
+            const container = document.getElementById('tagCloud');
+            container.innerHTML = Object.entries(tagCount)
+                .sort((a,b) => b[1] - a[1])
+                .map(([tag, count]) => `
+                    <span class="tag-item" onclick="toggleTagFilter('${tag}')">
+                        ${tag} (${count})
+                    </span>
+                `).join('');
         }
         
         // 选择图片
@@ -451,188 +743,224 @@
                 return;
             }
             
+            const identity = identities.find(i => i.id === currentIdentity) || identities[0];
+            
             const moment = {
                 id: Date.now(),
                 content: content,
-                mood: document.getElementById('momentMood').value,
-                weather: document.getElementById('momentWeather').value,
+                identity: identity,
+                album: currentAlbum,
+                tags: currentTags,
                 images: selectedImages,
                 time: new Date().toLocaleString(),
                 likes: 0,
                 liked: false,
                 favorited: false,
+                favoriteFolder: null,
                 comments: []
             };
             
             moments.unshift(moment);
             localStorage.setItem('moments', JSON.stringify(moments));
             
-            hideNewMomentModal();
-            loadMoments();
+            hideFullscreenEditor();
+            filterMoments();
+            loadTagCloud();
         }
         
-        // 点赞/取消点赞
-        function toggleLike(index) {
-            moments[index].liked = !moments[index].liked;
-            moments[index].likes += moments[index].liked ? 1 : -1;
-            localStorage.setItem('moments', JSON.stringify(moments));
-            loadMoments();
+        // 筛选动态
+        function filterMoments() {
+            const albumFilter = document.getElementById('albumFilter').value;
+            const favoriteFilter = document.getElementById('favoriteFilter').value;
+            const tagSearch = document.getElementById('tagSearch').value.toLowerCase();
+            
+            let filtered = [...moments];
+            
+            // 相册筛选
+            if (albumFilter !== 'all') {
+                filtered = filtered.filter(m => m.album === albumFilter);
+            }
+            
+            // 收藏筛选
+            if (favoriteFilter === 'favorites') {
+                filtered = filtered.filter(m => m.favorited);
+            }
+            
+            // 标签搜索
+            if (tagSearch) {
+                filtered = filtered.filter(m => 
+                    (m.tags || []).some(t => t.toLowerCase().includes(tagSearch))
+                );
+            }
+            
+            displayMoments(filtered);
         }
         
-        // 收藏/取消收藏
-        function toggleFavorite(index) {
-            moments[index].favorited = !moments[index].favorited;
-            localStorage.setItem('moments', JSON.stringify(moments));
-            loadMoments();
-        }
-        
-        // 添加评论
-        function addComment(index) {
-            const input = document.getElementById(`comment-${index}`);
-            const content = input.value.trim();
-            if (!content) return;
+        // 显示动态
+        function displayMoments(momentsToShow) {
+            const container = document.getElementById('momentsContainer');
             
-            const comment = {
-                author: '我',
-                content: content,
-                time: new Date().toLocaleString()
-            };
+            if (momentsToShow.length === 0) {
+                container.innerHTML = '<p style="color: #999; text-align: center; padding: 40px;">暂无动态</p>';
+                return;
+            }
             
-            moments[index].comments.push(comment);
-            localStorage.setItem('moments', JSON.stringify(moments));
-            
-            input.value = '';
-            loadMoments();
-        }
-        
-        // 显示收藏夹
-        function showFavorites() {
-            const favorites = moments.filter(m => m.favorited);
-            const list = document.getElementById('favoritesList');
-            
-            if (favorites.length === 0) {
-                list.innerHTML = '<div class="no-favorites">暂无收藏的动态</div>';
-            } else {
-                list.innerHTML = favorites.map((moment, i) => `
+            container.innerHTML = momentsToShow.map((moment, index) => {
+                const originalIndex = moments.findIndex(m => m.id === moment.id);
+                
+                return `
                     <div class="moment-card">
                         <div class="moment-header">
-                            <div class="avatar">📱</div>
+                            <div class="avatar" style="background: ${moment.identity?.color || '#FF9800'}">
+                                ${moment.identity?.avatar || '📱'}
+                            </div>
                             <div class="moment-info">
-                                <div class="moment-author">我</div>
+                                <div class="moment-author">${moment.identity?.name || '我'}</div>
+                                <div class="moment-identity">${moment.identity?.desc || ''}</div>
                                 <div class="moment-time">${moment.time}</div>
                             </div>
                         </div>
                         
+                        <div class="moment-categories">
+                            <span class="album-tag">📁 ${moment.album || '默认'}</span>
+                        </div>
+                        
                         <div class="moment-tags">
-                            ${moment.mood ? `<span class="mood-tag">${getMoodEmoji(moment.mood)} ${moment.mood}</span>` : ''}
-                            ${moment.weather ? `<span class="weather-tag">${getWeatherEmoji(moment.weather)} ${moment.weather}</span>` : ''}
+                            ${(moment.tags || []).map(tag => 
+                                `<span class="moment-tag" onclick="searchTag('${tag}')">#${tag}</span>`
+                            ).join('')}
                         </div>
                         
                         <div class="moment-content">${moment.content.replace(/\n/g, '<br>')}</div>
                         
-                        ${moment.images.length > 0 ? `
+                        ${moment.images?.length > 0 ? `
                             <div class="moment-images">
                                 ${moment.images.map(img => `<img src="${img}" onclick="window.open(this.src)">`).join('')}
                             </div>
                         ` : ''}
-                    </div>
-                `).join('');
-            }
-            
-            document.getElementById('favoritesModal').classList.add('show');
-        }
-        
-        // 隐藏收藏夹
-        function hideFavorites() {
-            document.getElementById('favoritesModal').classList.remove('show');
-        }
-        
-        // 获取表情
-        function getMoodEmoji(mood) {
-            const emojis = {
-                '开心': '😊',
-                '烦躁': '😫',
-                '困': '😴',
-                '累': '😮‍💨',
-                '难过': '😢'
-            };
-            return emojis[mood] || '';
-        }
-        
-        function getWeatherEmoji(weather) {
-            const emojis = {
-                '晴': '☀️',
-                '雨': '🌧️',
-                '阴': '☁️',
-                '多云': '⛅',
-                '台风': '🌪️'
-            };
-            return emojis[weather] || '';
-        }
-        
-        // 加载动态
-        function loadMoments() {
-            moments = JSON.parse(localStorage.getItem('moments') || '[]');
-            const container = document.getElementById('momentsContainer');
-            
-            if (moments.length === 0) {
-                container.innerHTML = '<p style="color: #999; text-align: center; padding: 40px;">暂无动态，点击"发动态"创建</p>';
-                return;
-            }
-            
-            container.innerHTML = moments.map((moment, index) => `
-                <div class="moment-card">
-                    <div class="moment-header">
-                        <div class="avatar">📱</div>
-                        <div class="moment-info">
-                            <div class="moment-author">我</div>
-                            <div class="moment-time">${moment.time}</div>
-                        </div>
-                    </div>
-                    
-                    <div class="moment-tags">
-                        ${moment.mood ? `<span class="mood-tag">${getMoodEmoji(moment.mood)} ${moment.mood}</span>` : ''}
-                        ${moment.weather ? `<span class="weather-tag">${getWeatherEmoji(moment.weather)} ${moment.weather}</span>` : ''}
-                    </div>
-                    
-                    <div class="moment-content">${moment.content.replace(/\n/g, '<br>')}</div>
-                    
-                    ${moment.images.length > 0 ? `
-                        <div class="moment-images">
-                            ${moment.images.map(img => `<img src="${img}" onclick="window.open(this.src)">`).join('')}
-                        </div>
-                    ` : ''}
-                    
-                    <div class="moment-actions">
-                        <button class="action-btn ${moment.liked ? 'liked' : ''}" onclick="toggleLike(${index})">
-                            ❤️ ${moment.likes}
-                        </button>
-                        <button class="action-btn ${moment.favorited ? 'favorited' : ''}" onclick="toggleFavorite(${index})">
-                            ⭐ 收藏
-                        </button>
-                        <span class="action-btn">💬 ${moment.comments.length}</span>
-                    </div>
-                    
-                    <div class="comments-section">
-                        ${moment.comments.map(comment => `
-                            <div class="comment">
-                                <span class="comment-author">${comment.author}:</span>
-                                <span class="comment-content">${comment.content}</span>
-                                <span class="comment-time">${comment.time}</span>
-                            </div>
-                        `).join('')}
                         
-                        <div class="add-comment">
-                            <input type="text" id="comment-${index}" placeholder="写评论...">
-                            <button onclick="addComment(${index})">发送</button>
+                        <div class="moment-actions">
+                            <button class="action-btn ${moment.liked ? 'liked' : ''}" onclick="toggleLike(${originalIndex})">
+                                ❤️ ${moment.likes}
+                            </button>
+                            
+                            <div style="position: relative;">
+                                <button class="action-btn ${moment.favorited ? 'favorited' : ''}" onclick="toggleFavorite(${originalIndex})">
+                                    ⭐ 收藏
+                                </button>
+                                ${moment.favorited ? `
+                                    <div class="favorite-folders">
+                                        ${favoriteFolders.map(folder => `
+                                            <button class="folder-btn ${moment.favoriteFolder === folder ? 'selected' : ''}" 
+                                                    onclick="moveToFolder(${originalIndex}, '${folder}')">
+                                                ${folder}
+                                            </button>
+                                        `).join('')}
+                                        <button class="folder-btn" onclick="addFavoriteFolder(${originalIndex})">+</button>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            
+                            <span class="action-btn">💬 ${moment.comments?.length || 0}</span>
+                        </div>
+                        
+                        <div class="comments-section">
+                            ${(moment.comments || []).map(comment => `
+                                <div class="comment">
+                                    <div class="comment-avatar" style="background: ${comment.identity?.color || '#FF9800'}">
+                                        ${comment.identity?.avatar || '👤'}
+                                    </div>
+                                    <div class="comment-content">
+                                        <div class="comment-author">${comment.identity?.name || '我'}</div>
+                                        <div class="comment-text">${comment.content}</div>
+                                        <div class="comment-time">${comment.time}</div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                            
+                            <div class="add-comment">
+                                <input type="text" id="comment-${moment.id}" placeholder="写评论...">
+                                <button onclick="addComment(${originalIndex}, '${moment.id}')">发送</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
+            
+            // 更新筛选下拉框
+            const select = document.getElementById('albumFilter');
+            select.innerHTML = '<option value="all">全部动态册</option>' + 
+                albums.map(a => `<option value="${a}">${a}</option>`).join('');
         }
         
-        // 页面加载
-        window.onload = loadMoments;
+        // 点赞
+        function toggleLike(index) {
+            moments[index].liked = !moments[index].liked;
+            moments[index].likes += moments[index].liked ? 1 : -1;
+            localStorage.setItem('moments', JSON.stringify(moments));
+            filterMoments();
+        }
+        
+        // 收藏
+        function toggleFavorite(index) {
+            moments[index].favorited = !moments[index].favorited;
+            if (!moments[index].favorited) {
+                moments[index].favoriteFolder = null;
+            }
+            localStorage.setItem('moments', JSON.stringify(moments));
+            filterMoments();
+        }
+        
+        // 移动到收藏夹
+        function moveToFolder(index, folder) {
+            moments[index].favoriteFolder = folder;
+            localStorage.setItem('moments', JSON.stringify(moments));
+            filterMoments();
+        }
+        
+        // 添加收藏夹
+        function addFavoriteFolder(index) {
+            const folder = prompt('输入新收藏夹名称');
+            if (!folder) return;
+            
+            favoriteFolders.push(folder);
+            localStorage.setItem('favoriteFolders', JSON.stringify(favoriteFolders));
+            
+            moments[index].favoriteFolder = folder;
+            localStorage.setItem('moments', JSON.stringify(moments));
+            filterMoments();
+        }
+        
+        // 添加评论
+        function addComment(index, momentId) {
+            const input = document.getElementById(`comment-${momentId}`);
+            const content = input.value.trim();
+            if (!content) return;
+            
+            const identity = identities.find(i => i.id === currentIdentity) || identities[0];
+            
+            const comment = {
+                identity: identity,
+                content: content,
+                time: new Date().toLocaleString()
+            };
+            
+            if (!moments[index].comments) moments[index].comments = [];
+            moments[index].comments.push(comment);
+            localStorage.setItem('moments', JSON.stringify(moments));
+            
+            input.value = '';
+            filterMoments();
+        }
+        
+        // 搜索标签
+        function searchTag(tag) {
+            document.getElementById('tagSearch').value = tag;
+            filterMoments();
+        }
+        
+        // 初始化
+        window.onload = init;
     </script>
 </body>
 </html>
