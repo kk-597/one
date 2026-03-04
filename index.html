@@ -60,20 +60,116 @@
     
     <a href="notes.html" class="menu-btn notes">📝 便签</a>
     <a href="moments.html" class="menu-btn moments">📱 动态</a>
-    <!-- 以后可以在这里加其他功能的链接 -->
-    <!-- 在现有按钮后面加上 -->
-<div style="margin-top: 40px; border-top: 1px solid #ddd; padding-top: 20px;">
-    <h3 style="color: #666;">📦 数据管理</h3>
-    <div style="display: flex; gap: 10px; justify-content: center;">
-        <button onclick="showBackupDialog()" style="background: #9C27B0; padding:12px 24px; border:none; border-radius:8px; color:white; cursor:pointer; font-size:16px;">
-            💾 备份数据
-        </button>
-        <button onclick="showRestoreDialog()" style="background: #FF9800; padding:12px 24px; border:none; border-radius:8px; color:white; cursor:pointer; font-size:16px;">
-            📥 恢复数据
-        </button>
+    
+    <!-- 备份恢复区域 -->
+    <div style="margin-top: 40px; border-top: 1px solid #ddd; padding-top: 20px;">
+        <h3 style="color: #666;">📦 数据管理</h3>
+        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+            <button onclick="exportAllData()" style="background: #9C27B0; padding:12px 24px; border:none; border-radius:8px; color:white; cursor:pointer; font-size:16px; margin:5px;">
+                💾 备份全部
+            </button>
+            <button onclick="showRestoreDialog()" style="background: #FF9800; padding:12px 24px; border:none; border-radius:8px; color:white; cursor:pointer; font-size:16px; margin:5px;">
+                📥 恢复数据
+            </button>
+        </div>
     </div>
-</div>
     
     <div class="version-tag">v1.0 - 2024.3.4</div>
+    
+    <script>
+        // 获取所有数据
+        function getAllData() {
+            return {
+                notes: localStorage.getItem('myNotes'),
+                moments: localStorage.getItem('moments'),
+                exportTime: new Date().toLocaleString(),
+                version: '1.0'
+            };
+        }
+        
+        // 导出全部数据
+        function exportAllData() {
+            const data = getAllData();
+            
+            // 检查是否有数据
+            if (!data.notes && !data.moments) {
+                alert('没有数据可备份');
+                return;
+            }
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `backup-${new Date().toLocaleDateString().replace(/\//g, '-')}.json`;
+            a.click();
+            
+            // 释放内存
+            URL.revokeObjectURL(url);
+        }
+        
+        // 显示恢复对话框
+        function showRestoreDialog() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'application/json';
+            
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(event) {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        
+                        // 恢复各个模块
+                        let restored = false;
+                        
+                        if (data.notes) {
+                            localStorage.setItem('myNotes', data.notes);
+                            restored = true;
+                        }
+                        
+                        if (data.moments) {
+                            localStorage.setItem('moments', data.moments);
+                            restored = true;
+                        }
+                        
+                        if (restored) {
+                            alert('✅ 恢复成功！刷新页面查看');
+                            if (confirm('现在刷新页面吗？')) {
+                                location.reload();
+                            }
+                        } else {
+                            alert('备份文件中没有可恢复的数据');
+                        }
+                        
+                    } catch (err) {
+                        alert('❌ 备份文件格式错误');
+                        console.error(err);
+                    }
+                };
+                
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+        
+        // 可选：显示当前数据状态
+        function showDataStatus() {
+            const notes = localStorage.getItem('myNotes');
+            const moments = localStorage.getItem('moments');
+            
+            console.log('数据状态：');
+            console.log('便签:', notes ? JSON.parse(notes).length + '条' : '无');
+            console.log('动态:', moments ? JSON.parse(moments).length + '条' : '无');
+        }
+        
+        // 页面加载时显示数据状态（在控制台）
+        window.onload = function() {
+            showDataStatus();
+        };
+    </script>
 </body>
 </html>
