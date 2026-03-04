@@ -16,6 +16,72 @@
             color: #333;
             margin-bottom: 40px;
         }
+        
+        /* 密码锁样式 */
+        .password-lock {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #f5f5f5;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .password-box {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.2);
+            width: 300px;
+            text-align: center;
+        }
+        .password-box h2 {
+            margin: 0 0 20px 0;
+            color: #333;
+        }
+        .password-box input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        .password-box button {
+            width: 100%;
+            padding: 10px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .password-box button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .error-message {
+            color: #f44336;
+            font-size: 14px;
+            margin: 10px 0;
+            min-height: 20px;
+        }
+        .timer-message {
+            color: #FF9800;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        
+        /* 主内容（初始隐藏） */
+        #mainContent {
+            display: none;
+        }
+        
         .menu-btn {
             display: block;
             width: 200px;
@@ -43,15 +109,37 @@
         .menu-btn.moments:hover {
             background: #F57C00;
         }
-        .version-tag {
-            position: fixed;
-            bottom: 5px;
-            right: 5px;
-            font-size: 10px;
-            color: #999;
-            background: rgba(255,255,255,0.8);
-            padding: 2px 5px;
-            border-radius: 3px;
+        .menu-btn.company {
+            background: #9C27B0;
+        }
+        .menu-btn.company:hover {
+            background: #7B1FA2;
+        }
+        
+        /* 陪伴子菜单 */
+        .company-submenu {
+            display: none;
+            margin-top: 10px;
+        }
+        .company-submenu.show {
+            display: block;
+        }
+        .submenu-btn {
+            display: block;
+            width: 180px;
+            margin: 10px auto;
+            padding: 12px;
+            background: #BA68C8;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .submenu-btn.animals {
+            background: #FF9800;
+        }
+        .submenu-btn.garden {
+            background: #4CAF50;
         }
         
         /* 弹窗样式 */
@@ -65,7 +153,7 @@
             display: none;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
+            z-index: 2000;
         }
         .modal.show {
             display: flex;
@@ -76,29 +164,29 @@
             border-radius: 12px;
             width: 90%;
             max-width: 400px;
-            text-align: left;
+            max-height: 80vh;
+            overflow-y: auto;
         }
         .modal-content h3 {
             margin-top: 0;
-            color: #333;
             text-align: center;
+            color: #333;
         }
-        .checkbox-item {
+        .backup-option {
             margin: 15px 0;
             padding: 10px;
             background: #f5f5f5;
             border-radius: 8px;
         }
-        .checkbox-item label {
+        .backup-option label {
             margin-left: 10px;
-            font-size: 16px;
             cursor: pointer;
         }
         .modal-buttons {
             display: flex;
             gap: 10px;
             margin-top: 20px;
-            justify-content: flex-end;
+            justify-content: center;
         }
         .modal-buttons button {
             padding: 10px 20px;
@@ -107,139 +195,303 @@
             cursor: pointer;
             font-size: 14px;
         }
-        .modal-buttons .confirm {
+        .confirm-btn {
             background: #4CAF50;
             color: white;
         }
-        .modal-buttons .cancel {
-            background: #f0f0f0;
+        .cancel-btn {
+            background: #999;
+            color: white;
+        }
+        .danger-btn {
+            background: #f44336;
+            color: white;
         }
         
-        /* 导入导出按钮组 */
-        .backup-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 20px;
-        }
-        .backup-btn {
-            background: #9C27B0;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            color: white;
-            cursor: pointer;
-            font-size: 16px;
-            margin: 5px;
-        }
-        .export-btn {
-            background: #2196F3;
-        }
-        .import-btn {
-            background: #FF9800;
+        .version-tag {
+            position: fixed;
+            bottom: 5px;
+            right: 5px;
+            font-size: 10px;
+            color: #999;
+            background: rgba(255,255,255,0.8);
+            padding: 2px 5px;
+            border-radius: 3px;
         }
     </style>
 </head>
 <body>
-    <script>
-    // 密码验证 - 放在所有代码的最前面
-    (function() {
-        const PASSWORD = '597';
-        const isAuthed = sessionStorage.getItem('auth');
-        
-        if (!isAuthed) {
-            const input = prompt('请输入访问密码：');
-            if (input !== PASSWORD) {
-                document.body.innerHTML = '<div style="text-align:center; margin-top:50px; font-family:Arial;"><h1>🔒 密码错误</h1><p>无权访问此网站</p></div>';
-                throw new Error('密码错误');
-            }
-            sessionStorage.setItem('auth', 'true');
-        }
-    })();
-</script>
-    <h1>📱 我的应用</h1>
+    <!-- 密码锁 -->
+    <div id="passwordLock" class="password-lock">
+        <div class="password-box">
+            <h2>🔒 请输入密码</h2>
+            <input type="password" id="passwordInput" placeholder="密码" autofocus>
+            <button id="unlockBtn" onclick="checkPassword()">进入</button>
+            <div id="errorMessage" class="error-message"></div>
+            <div id="timerMessage" class="timer-message"></div>
+        </div>
+    </div>
     
-    <a href="notes.html" class="menu-btn notes">📝 便签</a>
-    <a href="moments.html" class="menu-btn moments">📱 动态</a>
-    
-    <!-- 备份恢复区域 -->
-    <div style="margin-top: 40px; border-top: 1px solid #ddd; padding-top: 20px;">
-        <h3 style="color: #666;">📦 数据管理</h3>
+    <!-- 主内容 -->
+    <div id="mainContent">
+        <h1>📱 我的应用</h1>
         
-        <!-- 备份按钮（点击弹出选项） -->
-        <div class="backup-buttons">
-            <button onclick="showBackupOptions()" class="backup-btn">💾 备份</button>
+        <a href="notes.html" class="menu-btn notes">📝 便签</a>
+        <a href="moments.html" class="menu-btn moments">📱 动态</a>
+        
+        <!-- 陪伴菜单 -->
+        <div>
+            <button class="menu-btn company" onclick="toggleCompanyMenu()">🐾 陪伴</button>
+            <div id="companySubmenu" class="company-submenu">
+                <a href="animals.html" class="submenu-btn animals">🐶 动物</a>
+                <a href="garden.html" class="submenu-btn garden">🌱 花园</a>
+            </div>
         </div>
         
-        <!-- 导入导出按钮组 -->
-        <div class="backup-buttons">
-            <button onclick="exportAllData()" class="backup-btn export-btn">📤 导出</button>
-            <button onclick="showImportDialog()" class="backup-btn import-btn">📥 导入</button>
+        <!-- 备份区域 -->
+        <div style="margin-top: 40px; border-top: 1px solid #ddd; padding-top: 20px;">
+            <h3 style="color: #666;">📦 数据管理</h3>
+            <button onclick="showBackupOptions()" style="background:#9C27B0; padding:12px 24px; border:none; border-radius:8px; color:white; cursor:pointer; font-size:16px;">
+                💾 备份
+            </button>
         </div>
     </div>
     
     <!-- 备份选项弹窗 -->
     <div id="backupModal" class="modal">
         <div class="modal-content">
-            <h3>选择要备份的内容</h3>
-            
-            <div class="checkbox-item">
-                <input type="checkbox" id="backupNotes" checked>
-                <label for="backupNotes">📝 便签</label>
+            <h3>📦 备份选项</h3>
+            <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 20px;">
+                <button onclick="showExportOptions()" class="confirm-btn" style="flex:1;">📤 导出</button>
+                <button onclick="showImportConfirm()" class="confirm-btn" style="flex:1; background:#FF9800;">📥 导入</button>
             </div>
-            
-            <div class="checkbox-item">
-                <input type="checkbox" id="backupMoments" checked>
-                <label for="backupMoments">📱 动态</label>
-            </div>
-            
-            <div class="modal-buttons">
-                <button class="confirm" onclick="doBackup()">确认备份</button>
-                <button class="cancel" onclick="hideBackupModal()">取消</button>
+            <div style="text-align: center;">
+                <button onclick="closeBackupModal()" class="cancel-btn">取消</button>
             </div>
         </div>
     </div>
     
-    <div class="version-tag">v2.0 - 2024.3.4 备份增强版</div>
+    <!-- 导出选项弹窗 -->
+    <div id="exportModal" class="modal">
+        <div class="modal-content">
+            <h3>📤 选择要导出的内容</h3>
+            
+            <div class="backup-option">
+                <input type="checkbox" id="exportAll" checked onchange="toggleAllExport()">
+                <label for="exportAll"><strong>全选</strong></label>
+            </div>
+            
+            <div class="backup-option">
+                <input type="checkbox" id="exportNotes" checked>
+                <label for="exportNotes">📝 便签</label>
+            </div>
+            
+            <div class="backup-option">
+                <input type="checkbox" id="exportMoments" checked>
+                <label for="exportMoments">📱 动态</label>
+            </div>
+            
+            <div class="backup-option">
+                <input type="checkbox" id="exportCompany" checked>
+                <label for="exportCompany">🐾 陪伴</label>
+            </div>
+            
+            <div class="modal-buttons">
+                <button onclick="doExport()" class="confirm-btn">确认导出</button>
+                <button onclick="closeExportModal()" class="cancel-btn">取消</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 导入确认弹窗 -->
+    <div id="importConfirmModal" class="modal">
+        <div class="modal-content">
+            <h3>⚠️ 导入确认</h3>
+            <p style="color: #f44336; text-align: center;">导入将覆盖当前所有内容，确定继续吗？</p>
+            <div class="modal-buttons">
+                <button onclick="doImport()" class="danger-btn">确定导入</button>
+                <button onclick="closeImportConfirm()" class="cancel-btn">取消</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="version-tag">v2.0 - 2024.3.4 密码锁+备份增强版</div>
     
     <script>
-        // 显示备份选项弹窗
+        // ==================== 密码验证 ====================
+        const PASSWORD = '597';
+        const MAX_ATTEMPTS = 5;
+        const LOCK_TIME = 5 * 60 * 1000; // 5分钟
+        
+        // 检查是否有有效的登录记录
+        function checkAuth() {
+            const lastAuth = localStorage.getItem('lastAuth');
+            if (lastAuth) {
+                const authTime = parseInt(lastAuth);
+                const now = Date.now();
+                // 24小时内有效
+                if (now - authTime < 24 * 60 * 60 * 1000) {
+                    unlockSuccess();
+                    return true;
+                }
+            }
+            
+            // 检查是否被锁定
+            const lockUntil = localStorage.getItem('lockUntil');
+            if (lockUntil) {
+                const lockTime = parseInt(lockUntil);
+                if (Date.now() < lockTime) {
+                    showLockTimer(lockTime);
+                    return false;
+                } else {
+                    localStorage.removeItem('lockUntil');
+                    localStorage.removeItem('failedAttempts');
+                }
+            }
+            
+            return false;
+        }
+        
+        function checkPassword() {
+            const input = document.getElementById('passwordInput').value;
+            const errorMsg = document.getElementById('errorMessage');
+            const timerMsg = document.getElementById('timerMessage');
+            
+            // 检查是否被锁定
+            const lockUntil = localStorage.getItem('lockUntil');
+            if (lockUntil) {
+                const lockTime = parseInt(lockUntil);
+                if (Date.now() < lockTime) {
+                    showLockTimer(lockTime);
+                    return;
+                } else {
+                    localStorage.removeItem('lockUntil');
+                    localStorage.removeItem('failedAttempts');
+                }
+            }
+            
+            if (input === PASSWORD) {
+                // 密码正确
+                localStorage.setItem('lastAuth', Date.now().toString());
+                localStorage.removeItem('failedAttempts');
+                unlockSuccess();
+            } else {
+                // 密码错误
+                let attempts = parseInt(localStorage.getItem('failedAttempts') || '0');
+                attempts++;
+                localStorage.setItem('failedAttempts', attempts.toString());
+                
+                const remaining = MAX_ATTEMPTS - attempts;
+                
+                if (attempts >= MAX_ATTEMPTS) {
+                    // 锁定
+                    const lockTime = Date.now() + LOCK_TIME;
+                    localStorage.setItem('lockUntil', lockTime.toString());
+                    showLockTimer(lockTime);
+                    errorMsg.textContent = '';
+                } else {
+                    errorMsg.textContent = `密码错误，还剩 ${remaining} 次机会`;
+                    document.getElementById('passwordInput').value = '';
+                }
+            }
+        }
+        
+        function showLockTimer(lockTime) {
+            const timerMsg = document.getElementById('timerMessage');
+            const unlockBtn = document.getElementById('unlockBtn');
+            unlockBtn.disabled = true;
+            
+            const updateTimer = setInterval(() => {
+                const now = Date.now();
+                const remaining = Math.max(0, lockTime - now);
+                
+                if (remaining <= 0) {
+                    clearInterval(updateTimer);
+                    localStorage.removeItem('lockUntil');
+                    localStorage.removeItem('failedAttempts');
+                    timerMsg.textContent = '';
+                    unlockBtn.disabled = false;
+                    document.getElementById('passwordInput').disabled = false;
+                } else {
+                    const minutes = Math.floor(remaining / 60000);
+                    const seconds = Math.floor((remaining % 60000) / 1000);
+                    timerMsg.textContent = `尝试次数过多，请 ${minutes}:${seconds.toString().padStart(2, '0')} 后再试`;
+                    document.getElementById('passwordInput').disabled = true;
+                }
+            }, 1000);
+        }
+        
+        function unlockSuccess() {
+            document.getElementById('passwordLock').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+        }
+        
+        // ==================== 陪伴菜单 ====================
+        
+        function toggleCompanyMenu() {
+            document.getElementById('companySubmenu').classList.toggle('show');
+        }
+        
+        // ==================== 备份功能 ====================
+        
         function showBackupOptions() {
             document.getElementById('backupModal').classList.add('show');
         }
         
-        // 隐藏备份弹窗
-        function hideBackupModal() {
+        function closeBackupModal() {
             document.getElementById('backupModal').classList.remove('show');
         }
         
-        // 执行备份（按选择的内容）
-        function doBackup() {
-            const backupNotes = document.getElementById('backupNotes').checked;
-            const backupMoments = document.getElementById('backupMoments').checked;
+        function showExportOptions() {
+            closeBackupModal();
+            document.getElementById('exportModal').classList.add('show');
+        }
+        
+        function closeExportModal() {
+            document.getElementById('exportModal').classList.remove('show');
+        }
+        
+        function toggleAllExport() {
+            const allChecked = document.getElementById('exportAll').checked;
+            document.getElementById('exportNotes').checked = allChecked;
+            document.getElementById('exportMoments').checked = allChecked;
+            document.getElementById('exportCompany').checked = allChecked;
+        }
+        
+        function doExport() {
+            const exportNotes = document.getElementById('exportNotes').checked;
+            const exportMoments = document.getElementById('exportMoments').checked;
+            const exportCompany = document.getElementById('exportCompany').checked;
             
-            if (!backupNotes && !backupMoments) {
-                alert('请至少选择一项要备份的内容');
+            if (!exportNotes && !exportMoments && !exportCompany) {
+                alert('请至少选择一项要导出的内容');
                 return;
             }
             
-            const data = {};
+            const data = {
+                exportTime: new Date().toLocaleString(),
+                version: '2.0'
+            };
             
-            if (backupNotes) {
+            if (exportNotes) {
                 data.notes = localStorage.getItem('myNotes');
             }
             
-            if (backupMoments) {
+            if (exportMoments) {
                 data.moments = localStorage.getItem('moments');
             }
             
-            data.exportTime = new Date().toLocaleString();
-            data.version = '2.0';
+            if (exportCompany) {
+                // 陪伴数据预留
+                data.animals = localStorage.getItem('animals');
+                data.garden = localStorage.getItem('garden');
+            }
             
-            // 生成文件名（包含选择的项目）
+            // 生成文件名
             let fileName = 'backup';
-            if (backupNotes) fileName += '-笔记';
-            if (backupMoments) fileName += '-动态';
+            if (exportNotes) fileName += '-便签';
+            if (exportMoments) fileName += '-动态';
+            if (exportCompany) fileName += '-陪伴';
             fileName += `-${new Date().toLocaleDateString().replace(/\//g, '-')}.json`;
             
             const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
@@ -250,34 +502,19 @@
             a.click();
             
             URL.revokeObjectURL(url);
-            hideBackupModal();
+            closeExportModal();
         }
         
-        // 导出全部（原有的备份全部功能）
-        function exportAllData() {
-            const data = {
-                notes: localStorage.getItem('myNotes'),
-                moments: localStorage.getItem('moments'),
-                exportTime: new Date().toLocaleString(),
-                version: '2.0'
-            };
-            
-            if (!data.notes && !data.moments) {
-                alert('没有数据可导出');
-                return;
-            }
-            
-            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `全部数据-${new Date().toLocaleDateString().replace(/\//g, '-')}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
+        function showImportConfirm() {
+            closeBackupModal();
+            document.getElementById('importConfirmModal').classList.add('show');
         }
         
-        // 显示导入对话框
-        function showImportDialog() {
+        function closeImportConfirm() {
+            document.getElementById('importConfirmModal').classList.remove('show');
+        }
+        
+        function doImport() {
             const input = document.createElement('input');
             input.type = 'file';
             input.accept = 'application/json';
@@ -290,33 +527,39 @@
                     try {
                         const data = JSON.parse(event.target.result);
                         
-                        let restored = false;
-                        let restoreMessages = [];
+                        let imported = false;
                         
                         if (data.notes) {
                             localStorage.setItem('myNotes', data.notes);
-                            restored = true;
-                            restoreMessages.push('📝 便签');
+                            imported = true;
                         }
                         
                         if (data.moments) {
                             localStorage.setItem('moments', data.moments);
-                            restored = true;
-                            restoreMessages.push('📱 动态');
+                            imported = true;
                         }
                         
-                        if (restored) {
-                            alert(`✅ 成功导入：${restoreMessages.join('、')}\n刷新页面查看`);
-                            if (confirm('现在刷新页面吗？')) {
+                        if (data.animals) {
+                            localStorage.setItem('animals', data.animals);
+                            imported = true;
+                        }
+                        
+                        if (data.garden) {
+                            localStorage.setItem('garden', data.garden);
+                            imported = true;
+                        }
+                        
+                        if (imported) {
+                            alert('✅ 导入成功！页面即将刷新');
+                            setTimeout(() => {
                                 location.reload();
-                            }
+                            }, 1500);
                         } else {
                             alert('文件中没有可导入的数据');
                         }
                         
                     } catch (err) {
                         alert('❌ 文件格式错误');
-                        console.error(err);
                     }
                 };
                 
@@ -324,21 +567,17 @@
             };
             
             input.click();
+            closeImportConfirm();
         }
         
-        // 显示数据状态
-        function showDataStatus() {
-            const notes = localStorage.getItem('myNotes');
-            const moments = localStorage.getItem('moments');
-            
-            console.log('📊 当前数据状态：');
-            console.log('便签:', notes ? JSON.parse(notes).length + '条' : '无');
-            console.log('动态:', moments ? JSON.parse(moments).length + '条' : '无');
-        }
+        // ==================== 初始化 ====================
         
-        // 页面加载
         window.onload = function() {
-            showDataStatus();
+            if (!checkAuth()) {
+                // 未认证，显示密码锁
+                document.getElementById('passwordLock').style.display = 'flex';
+                document.getElementById('mainContent').style.display = 'none';
+            }
         };
     </script>
 </body>
