@@ -12,6 +12,10 @@
             background: #f5f5f5;
             text-align: center;
         }
+        h1 {
+            color: #333;
+            margin-bottom: 40px;
+        }
         .menu-btn {
             display: block;
             width: 200px;
@@ -22,14 +26,42 @@
             text-decoration: none;
             border-radius: 8px;
             font-size: 18px;
+            transition: background 0.3s;
+        }
+        .menu-btn:hover {
+            background: #45a049;
+        }
+        .menu-btn.notes {
+            background: #2196F3;
+        }
+        .menu-btn.notes:hover {
+            background: #1976D2;
+        }
+        .menu-btn.moments {
+            background: #FF9800;
+        }
+        .menu-btn.moments:hover {
+            background: #F57C00;
+        }
+        .version-tag {
+            position: fixed;
+            bottom: 5px;
+            right: 5px;
+            font-size: 10px;
+            color: #999;
+            background: rgba(255,255,255,0.8);
+            padding: 2px 5px;
+            border-radius: 3px;
         }
     </style>
 </head>
 <body>
     <h1>📱 我的应用</h1>
     
-    <a href="notes.html" class="menu-btn">📝 便签</a>
+    <a href="notes.html" class="menu-btn notes">📝 便签</a>
+    <a href="moments.html" class="menu-btn moments">📱 动态</a>
     <!-- 以后可以在这里加其他功能的链接 -->
     
+    <div class="version-tag">v1.0 - 2024.3.4</div>
 </body>
 </html>
