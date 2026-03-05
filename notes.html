@@ -21,6 +21,10 @@
             --hover-bg: rgba(255,255,255,0.2);
             --selected-bg: #FFD700;
             --selected-text: #333;
+            --editor-bg: white;
+            --editor-text: #333;
+            --editor-border: #ddd;
+            --editor-toolbar-bg: #f9f9f9;
         }
 
         /* 夜间模式 */
@@ -33,6 +37,10 @@
             --hover-bg: rgba(255,255,255,0.1);
             --selected-bg: #4a4a4a;
             --selected-text: white;
+            --editor-bg: #2d2d2d;
+            --editor-text: #e0e0e0;
+            --editor-border: #444;
+            --editor-toolbar-bg: #3d3d3d;
         }
 
         body {
@@ -238,11 +246,35 @@
             background: #f44336;
         }
 
-        /* 便签网格 - 文件和文件夹混合显示 */
+        /* 排序控制 */
+        .sort-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+        }
+        .sort-btn {
+            padding: 6px 12px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 8px;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .sort-btn.active {
+            background: #FFD700;
+            color: #333;
+        }
+
+        /* 便签网格 */
         .notes-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 15px;
+            min-height: 200px;
         }
         .grid-item {
             background: rgba(255,255,255,0.05);
@@ -327,11 +359,12 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: white;
+            background: var(--editor-bg);
             z-index: 2000;
             padding: 30px;
             display: none;
             flex-direction: column;
+            color: var(--editor-text);
         }
         .fullscreen-editor.show {
             display: flex;
@@ -358,6 +391,10 @@
             border-radius: 12px;
             cursor: pointer;
             font-weight: 500;
+            transition: all 0.2s;
+        }
+        .editor-btn:hover {
+            transform: translateY(-2px);
         }
         .editor-btn.back {
             background: #666;
@@ -376,25 +413,49 @@
             color: white;
         }
         .editor-toolbar {
-            padding: 15px 0;
-            border-bottom: 1px solid #eee;
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
-            background: #f9f9f9;
-            border-radius: 12px;
+            background: var(--editor-toolbar-bg);
+            border-radius: 16px;
             padding: 15px;
             margin-bottom: 20px;
+            border: 1px solid var(--editor-border);
+        }
+        .editor-toolbar button {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid var(--editor-border);
+            color: var(--editor-text);
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .editor-toolbar button:hover {
+            background: #FFD700;
+            color: #333;
+            transform: scale(1.05);
+        }
+        .editor-toolbar button.active {
+            background: #4CAF50;
+            color: white;
         }
         #editor {
             flex: 1;
             padding: 20px;
-            border: 1px solid #ddd;
+            border: 1px solid var(--editor-border);
             border-radius: 16px;
             overflow-y: auto;
             font-size: 16px;
             line-height: 1.6;
             outline: none;
+            background: var(--editor-bg);
+            color: var(--editor-text);
         }
 
         /* 弹窗样式 */
@@ -483,6 +544,17 @@
             cursor: pointer;
         }
 
+        /* 拖拽排序占位符 */
+        .sortable-ghost {
+            opacity: 0.5;
+            background: #FFD700;
+            border: 2px dashed #fff;
+        }
+        .sortable-drag {
+            opacity: 0.8;
+            transform: rotate(2deg);
+        }
+
         .version-tag {
             position: fixed;
             bottom: 5px;
@@ -537,6 +609,15 @@
                     <button class="action-btn" onclick="showNewNote()">➕ 新建</button>
                 </div>
             </div>
+            
+            <!-- 排序控制 -->
+            <div class="sort-controls">
+                <button class="sort-btn" onclick="setSortMode('default')" id="sortDefault">📌 自由拖拽</button>
+                <button class="sort-btn" onclick="setSortMode('edit')" id="sortEdit">✏️ 编辑时间</button>
+                <button class="sort-btn" onclick="setSortMode('createAsc')" id="sortCreateAsc">📅 创建最早</button>
+                <button class="sort-btn" onclick="setSortMode('createDesc')" id="sortCreateDesc">📅 创建最新</button>
+            </div>
+            
             <div class="notes-grid" id="notesGrid"></div>
         </div>
     </div>
@@ -654,7 +735,19 @@
         </div>
     </div>
 
-    <div class="version-tag">v10.0 - 完整版</div>
+    <!-- 设置弹窗 -->
+    <div id="settingsModal" class="modal" style="width: 500px;">
+        <h3>⚙️ 工具栏设置</h3>
+        <div style="max-height: 400px; overflow-y: auto; margin: 20px 0;">
+            <div id="settingsList"></div>
+        </div>
+        <div class="modal-buttons">
+            <button class="modal-btn confirm" onclick="saveSettings()">保存</button>
+            <button class="modal-btn cancel" onclick="closeSettings()">取消</button>
+        </div>
+    </div>
+
+    <div class="version-tag">v11.0 - 完整版</div>
 
     <script>
         // 数据存储
@@ -665,13 +758,14 @@
         let isBatchMode = false;
         let selectedNotes = new Set();
         let folderToDelete = null;
+        let sortMode = 'default'; // default, edit, createAsc, createDesc
         
         // 历史记录
         let history = [];
         let historyIndex = -1;
         const MAX_HISTORY = 50;
         
-        // 工具栏设置
+        // 工具栏设置和顺序
         let toolbarSettings = JSON.parse(localStorage.getItem('toolbarSettings') || '{}');
         let toolbarOrder = JSON.parse(localStorage.getItem('toolbarOrder') || '[]');
         
@@ -706,6 +800,7 @@
             renderFolderTree();
             renderNotes();
             initToolbar();
+            initSortable();
         }
 
         // ==================== 数据管理 ====================
@@ -713,7 +808,11 @@
             // 加载便签
             const savedNotes = localStorage.getItem('myNotes');
             if (savedNotes) {
-                notes = JSON.parse(savedNotes);
+                try {
+                    notes = JSON.parse(savedNotes);
+                } catch (e) {
+                    notes = [];
+                }
             } else {
                 notes = [];
             }
@@ -721,11 +820,13 @@
             // 加载文件夹
             const savedFolders = localStorage.getItem('noteFolders');
             if (savedFolders) {
-                folders = JSON.parse(savedFolders);
+                try {
+                    folders = JSON.parse(savedFolders);
+                } catch (e) {
+                    folders = [{ id: 'default', name: '默认便签', parent: null, path: '/默认便签' }];
+                }
             } else {
-                folders = [
-                    { id: 'default', name: '默认便签', parent: null, path: '/默认便签' }
-                ];
+                folders = [{ id: 'default', name: '默认便签', parent: null, path: '/默认便签' }];
             }
             
             // 确保每个便签都有必要字段
@@ -733,6 +834,8 @@
                 if (!note.id) note.id = Date.now() + index;
                 if (!note.folder) note.folder = 'default';
                 if (!note.path) note.path = '/默认便签/' + (note.title || '未命名');
+                if (!note.createTime) note.createTime = note.time || new Date().toLocaleString();
+                if (!note.editTime) note.editTime = note.time || new Date().toLocaleString();
                 return note;
             });
             
@@ -744,12 +847,62 @@
             localStorage.setItem('noteFolders', JSON.stringify(folders));
         }
 
+        // ==================== 主题管理 ====================
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('noteTheme');
+            if (savedTheme) {
+                const theme = JSON.parse(savedTheme);
+                document.documentElement.style.setProperty('--bg-gradient-start', theme.start);
+                document.documentElement.style.setProperty('--bg-gradient-end', theme.end);
+            }
+            
+            const nightMode = localStorage.getItem('nightMode') === 'true';
+            if (nightMode) {
+                document.body.classList.add('night-mode');
+            }
+        }
+
+        function showThemeModal() {
+            document.getElementById('themeModal').classList.add('show');
+        }
+
+        function closeThemeModal() {
+            document.getElementById('themeModal').classList.remove('show');
+        }
+
+        function setTheme(type, start, end) {
+            document.documentElement.style.setProperty('--bg-gradient-start', start);
+            document.documentElement.style.setProperty('--bg-gradient-end', end);
+            localStorage.setItem('noteTheme', JSON.stringify({ start, end }));
+        }
+
+        function updateCustomTheme() {
+            const start = document.getElementById('customColorStart').value;
+            const end = document.getElementById('customColorEnd').value;
+            document.documentElement.style.setProperty('--bg-gradient-start', start);
+            document.documentElement.style.setProperty('--bg-gradient-end', end);
+        }
+
+        function applyCustomTheme() {
+            const start = document.getElementById('customColorStart').value;
+            const end = document.getElementById('customColorEnd').value;
+            localStorage.setItem('noteTheme', JSON.stringify({ start, end }));
+            closeThemeModal();
+        }
+
+        function toggleNightMode() {
+            document.body.classList.toggle('night-mode');
+            localStorage.setItem('nightMode', document.body.classList.contains('night-mode'));
+            // 重新初始化编辑器工具栏（更新颜色）
+            initToolbar();
+        }
+
         // ==================== 文件夹树 ====================
         function renderFolderTree() {
             const container = document.querySelector('.folder-tree');
             
             // 构建树形结构
-            const rootFolders = folders.filter(f => !f.parent);
+            const rootFolders = folders.filter(f => !f.parent && f.id !== 'default');
             
             let html = `
                 <li class="folder-item">
@@ -769,9 +922,7 @@
             `;
             
             rootFolders.forEach(folder => {
-                if (folder.id !== 'default') {
-                    html += renderFolderItem(folder);
-                }
+                html += renderFolderItem(folder);
             });
             
             container.innerHTML = html;
@@ -810,7 +961,9 @@
             document.querySelectorAll('.folder-content').forEach(el => {
                 el.classList.remove('selected');
             });
-            event.currentTarget.classList.add('selected');
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('selected');
+            }
             
             // 更新标题
             let title = '全部便签';
@@ -909,8 +1062,14 @@
                 }
             });
             
-            // 删除文件夹
-            folders = folders.filter(f => f.id !== folderToDelete);
+            // 删除文件夹及其子文件夹
+            const deleteFolderAndChildren = (folderId) => {
+                const children = folders.filter(f => f.parent === folderId);
+                children.forEach(child => deleteFolderAndChildren(child.id));
+                folders = folders.filter(f => f.id !== folderId);
+            };
+            
+            deleteFolderAndChildren(folderToDelete);
             
             saveData();
             renderFolderTree();
@@ -925,16 +1084,13 @@
             let items = [];
             
             if (currentFolder === 'all') {
-                // 显示所有便签和文件夹
-                items = [
-                    ...folders.filter(f => f.id !== 'default' && !f.parent).map(f => ({ type: 'folder', data: f })),
-                    ...notes.map(n => ({ type: 'note', data: n }))
-                ];
+                // 全部便签 - 只显示便签，不显示文件夹
+                items = notes.map(n => ({ type: 'note', data: n }));
             } else if (currentFolder === 'default') {
-                // 只显示默认文件夹的便签
+                // 默认文件夹 - 只显示便签
                 items = notes.filter(n => n.folder === 'default').map(n => ({ type: 'note', data: n }));
             } else {
-                // 显示当前文件夹的便签和子文件夹
+                // 其他文件夹 - 显示便签和子文件夹
                 const currentFolderData = findFolder(currentFolder);
                 if (currentFolderData) {
                     items = [
@@ -942,6 +1098,30 @@
                         ...notes.filter(n => n.folder === currentFolder).map(n => ({ type: 'note', data: n }))
                     ];
                 }
+            }
+            
+            // 排序
+            if (sortMode !== 'default') {
+                items.sort((a, b) => {
+                    if (a.type !== b.type) {
+                        // 文件夹排在前面
+                        return a.type === 'folder' ? -1 : 1;
+                    }
+                    
+                    if (a.type === 'note') {
+                        const noteA = a.data;
+                        const noteB = b.data;
+                        
+                        if (sortMode === 'edit') {
+                            return (noteB.editTime || '').localeCompare(noteA.editTime || '');
+                        } else if (sortMode === 'createAsc') {
+                            return (noteA.createTime || '').localeCompare(noteB.createTime || '');
+                        } else if (sortMode === 'createDesc') {
+                            return (noteB.createTime || '').localeCompare(noteA.createTime || '');
+                        }
+                    }
+                    return 0;
+                });
             }
             
             if (items.length === 0) {
@@ -971,11 +1151,12 @@
                     
                     return `
                         <div class="grid-item ${isBatchMode ? 'batch-mode' : ''} ${isSelected ? 'selected' : ''}" 
+                             data-id="${note.id}"
                              onclick="${isBatchMode ? 'toggleNoteSelect(' + note.id + ')' : 'editNote(' + notes.indexOf(note) + ')'}">
                             ${isBatchMode ? `<input type="checkbox" class="item-checkbox" ${isSelected ? 'checked' : ''} onchange="toggleNoteSelect(${note.id})">` : ''}
                             <div class="item-icon">📝</div>
                             <div class="item-name">${note.title || '无标题'}</div>
-                            <div class="item-info">${note.time || '未知时间'}</div>
+                            <div class="item-info">${note.editTime || note.time || '未知时间'}</div>
                             ${isBatchMode ? '' : `
                                 <div class="item-actions">
                                     <button class="item-action-btn" onclick="event.stopPropagation(); copyNote(${notes.indexOf(note)})" title="复制">📋</button>
@@ -987,8 +1168,60 @@
                 }
             }).join('');
             
+            // 如果是自由拖拽模式，初始化拖拽排序
+            if (sortMode === 'default' && currentFolder !== 'all') {
+                initSortable();
+            }
+            
             // 更新批量操作按钮
             updateBatchActions();
+        }
+
+        // ==================== 排序功能 ====================
+        function setSortMode(mode) {
+            sortMode = mode;
+            
+            // 更新按钮样式
+            document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`sort${mode.charAt(0).toUpperCase() + mode.slice(1)}`).classList.add('active');
+            
+            renderNotes();
+        }
+
+        function initSortable() {
+            const grid = document.getElementById('notesGrid');
+            if (!grid) return;
+            
+            // 只有在自由拖拽模式且不是全部便签时才启用拖拽
+            if (sortMode === 'default' && currentFolder !== 'all' && !isBatchMode) {
+                new Sortable(grid, {
+                    animation: 150,
+                    ghostClass: 'sortable-ghost',
+                    dragClass: 'sortable-drag',
+                    onEnd: function(evt) {
+                        // 获取拖拽后的顺序
+                        const items = Array.from(grid.children);
+                        const itemIds = items.map(item => item.dataset.id).filter(id => id);
+                        
+                        if (itemIds.length > 0) {
+                            // 重新排序notes数组
+                            const folderNotes = notes.filter(n => n.folder === currentFolder);
+                            const newOrder = [];
+                            
+                            itemIds.forEach(id => {
+                                const note = notes.find(n => n.id == id);
+                                if (note) newOrder.push(note);
+                            });
+                            
+                            // 更新notes数组
+                            const otherNotes = notes.filter(n => n.folder !== currentFolder);
+                            notes = [...otherNotes, ...newOrder];
+                            
+                            saveData();
+                        }
+                    }
+                });
+            }
         }
 
         // ==================== 便签操作 ====================
@@ -1004,6 +1237,8 @@
         }
 
         function editNote(index) {
+            if (index < 0 || index >= notes.length) return;
+            
             const note = notes[index];
             currentEditIndex = index;
             
@@ -1058,31 +1293,46 @@
                 }
             }
             
-            const newNote = {
-                id: currentEditIndex === -1 ? Date.now() : notes[currentEditIndex].id,
-                title: title,
-                content: content,
-                time: new Date().toLocaleString(),
-                images: images,
-                folder: currentEditIndex === -1 ? (currentFolder === 'all' ? 'default' : currentFolder) : notes[currentEditIndex].folder,
-                path: path
-            };
+            const now = new Date().toLocaleString();
             
             if (currentEditIndex === -1) {
+                // 新建便签
+                const newNote = {
+                    id: Date.now(),
+                    title: title,
+                    content: content,
+                    time: now,
+                    createTime: now,
+                    editTime: now,
+                    images: images,
+                    folder: currentFolder === 'all' ? 'default' : currentFolder,
+                    path: path
+                };
                 notes.push(newNote);
-                currentEditIndex = notes.length - 1; // 设置当前编辑索引，防止重复保存
+                currentEditIndex = notes.length - 1;
             } else {
-                notes[currentEditIndex] = newNote;
+                // 更新便签
+                if (currentEditIndex >= 0 && currentEditIndex < notes.length) {
+                    notes[currentEditIndex].content = content;
+                    notes[currentEditIndex].title = title;
+                    notes[currentEditIndex].editTime = now;
+                    notes[currentEditIndex].images = images;
+                    notes[currentEditIndex].path = path;
+                }
             }
             
             saveData();
         }
 
         function copyNote(index) {
+            if (index < 0 || index >= notes.length) return;
+            
             const note = notes[index];
             const copy = JSON.parse(JSON.stringify(note));
             copy.id = Date.now();
             copy.time = new Date().toLocaleString();
+            copy.createTime = new Date().toLocaleString();
+            copy.editTime = new Date().toLocaleString();
             copy.title = copy.title + ' (副本)';
             copy.path = copy.path + ' (副本)';
             
@@ -1093,6 +1343,8 @@
         }
 
         function deleteNote(index) {
+            if (index < 0 || index >= notes.length) return;
+            
             if (!confirm('确定删除这条便签吗？')) return;
             notes.splice(index, 1);
             saveData();
@@ -1224,57 +1476,6 @@
             showToast('🗑️ 删除完成');
         }
 
-        // ==================== 主题管理 ====================
-        function loadTheme() {
-            const savedTheme = localStorage.getItem('noteTheme');
-            if (savedTheme) {
-                const theme = JSON.parse(savedTheme);
-                document.documentElement.style.setProperty('--bg-gradient-start', theme.start);
-                document.documentElement.style.setProperty('--bg-gradient-end', theme.end);
-            }
-            
-            const nightMode = localStorage.getItem('nightMode') === 'true';
-            if (nightMode) {
-                document.body.classList.add('night-mode');
-            }
-        }
-
-        function showThemeModal() {
-            document.getElementById('themeModal').classList.add('show');
-        }
-
-        function closeThemeModal() {
-            document.getElementById('themeModal').classList.remove('show');
-        }
-
-        function setTheme(type, start, end) {
-            document.documentElement.style.setProperty('--bg-gradient-start', start);
-            document.documentElement.style.setProperty('--bg-gradient-end', end);
-            
-            localStorage.setItem('noteTheme', JSON.stringify({ start, end }));
-        }
-
-        function updateCustomTheme() {
-            // 实时预览
-            const start = document.getElementById('customColorStart').value;
-            const end = document.getElementById('customColorEnd').value;
-            document.documentElement.style.setProperty('--bg-gradient-start', start);
-            document.documentElement.style.setProperty('--bg-gradient-end', end);
-        }
-
-        function applyCustomTheme() {
-            const start = document.getElementById('customColorStart').value;
-            const end = document.getElementById('customColorEnd').value;
-            
-            localStorage.setItem('noteTheme', JSON.stringify({ start, end }));
-            closeThemeModal();
-        }
-
-        function toggleNightMode() {
-            document.body.classList.toggle('night-mode');
-            localStorage.setItem('nightMode', document.body.classList.contains('night-mode'));
-        }
-
         // ==================== 导出功能 ====================
         function showExportModal() {
             document.getElementById('exportModal').classList.add('show');
@@ -1329,8 +1530,10 @@
             const toolbar = document.getElementById('editorToolbar');
             let html = '';
             
+            // 获取启用的项目
             let enabledItems = allToolbarItems.filter(item => toolbarSettings[item.id] !== false);
             
+            // 排序
             if (toolbarOrder.length > 0) {
                 enabledItems.sort((a, b) => {
                     const indexA = toolbarOrder.indexOf(a.id);
@@ -1348,6 +1551,28 @@
             });
             
             toolbar.innerHTML = html;
+            
+            // 初始化拖拽排序
+            new Sortable(toolbar, {
+                animation: 150,
+                handle: 'button',
+                onEnd: function() {
+                    updateToolbarOrder();
+                }
+            });
+        }
+
+        function updateToolbarOrder() {
+            const toolbar = document.getElementById('editorToolbar');
+            const buttons = toolbar.querySelectorAll('button');
+            const newOrder = [];
+            
+            buttons.forEach(btn => {
+                const id = btn.id.replace('btn-', '');
+                newOrder.push(id);
+            });
+            
+            toolbarOrder = newOrder;
         }
 
         function toolbarClick(action) {
@@ -1373,6 +1598,42 @@
                 case 'chineseConvert': convertChinese(); break;
                 case 'insertImage': insertImage(); break;
             }
+        }
+
+        function showSettings() {
+            const settingsList = document.getElementById('settingsList');
+            let html = '';
+            
+            allToolbarItems.forEach(item => {
+                const checked = toolbarSettings[item.id] !== false;
+                html += `
+                    <div style="display:flex; align-items:center; padding:8px; background:#f5f5f5; border-radius:8px; margin-bottom:5px;">
+                        <input type="checkbox" id="setting-${item.id}" ${checked ? 'checked' : ''} style="margin-right:10px;">
+                        <label for="setting-${item.id}">${item.title}</label>
+                    </div>
+                `;
+            });
+            
+            settingsList.innerHTML = html;
+            document.getElementById('settingsModal').classList.add('show');
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.remove('show');
+        }
+
+        function saveSettings() {
+            allToolbarItems.forEach(item => {
+                const checkbox = document.getElementById(`setting-${item.id}`);
+                if (checkbox) {
+                    toolbarSettings[item.id] = checkbox.checked;
+                }
+            });
+            
+            localStorage.setItem('toolbarSettings', JSON.stringify(toolbarSettings));
+            initToolbar();
+            closeSettings();
+            showToast('⚙️ 设置已保存');
         }
 
         function saveToHistory() {
@@ -1416,6 +1677,163 @@
             saveToHistory();
         }
 
+        function showColorPicker(type) {
+            // 简化版颜色选择器
+            const colors = ['#000000', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF', '#FFFFFF'];
+            const colorPicker = document.createElement('div');
+            colorPicker.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: white;
+                padding: 20px;
+                border-radius: 16px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                z-index: 2200;
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 10px;
+            `;
+            
+            colors.forEach(color => {
+                const btn = document.createElement('button');
+                btn.style.cssText = `
+                    width: 50px;
+                    height: 50px;
+                    background: ${color};
+                    border: 2px solid #ddd;
+                    border-radius: 12px;
+                    cursor: pointer;
+                `;
+                btn.onclick = function() {
+                    document.execCommand(type === 'color' ? 'foreColor' : 'backColor', false, color);
+                    document.body.removeChild(colorPicker);
+                    saveToHistory();
+                };
+                colorPicker.appendChild(btn);
+            });
+            
+            document.body.appendChild(colorPicker);
+            
+            // 点击其他地方关闭
+            setTimeout(() => {
+                document.addEventListener('click', function closePicker(e) {
+                    if (!colorPicker.contains(e.target)) {
+                        document.body.removeChild(colorPicker);
+                        document.removeEventListener('click', closePicker);
+                    }
+                });
+            }, 100);
+        }
+
+        function showFontSizePicker() {
+            const sizes = [12, 14, 16, 18, 20, 24, 28, 32, 36];
+            const picker = document.createElement('div');
+            picker.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: white;
+                padding: 20px;
+                border-radius: 16px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                z-index: 2200;
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+            `;
+            
+            sizes.forEach(size => {
+                const btn = document.createElement('button');
+                btn.style.cssText = `
+                    padding: 10px 15px;
+                    background: #f0f0f0;
+                    border: 1px solid #ddd;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-size: ${size}px;
+                `;
+                btn.textContent = size + 'px';
+                btn.onclick = function() {
+                    document.execCommand('fontSize', false, '7');
+                    const selection = window.getSelection();
+                    if (selection.rangeCount > 0) {
+                        const range = selection.getRangeAt(0);
+                        const span = document.createElement('span');
+                        span.style.fontSize = size + 'px';
+                        span.appendChild(range.extractContents());
+                        range.insertNode(span);
+                    }
+                    document.body.removeChild(picker);
+                    saveToHistory();
+                };
+                picker.appendChild(btn);
+            });
+            
+            document.body.appendChild(picker);
+        }
+
+        function insertHeading() {
+            const level = prompt('标题级别(1-6)', '2');
+            if (level >= 1 && level <= 6) {
+                document.execCommand('formatBlock', false, 'h' + level);
+                saveToHistory();
+            }
+        }
+
+        function showFindReplace() {
+            alert('查找替换功能开发中');
+        }
+
+        function convertChinese() {
+            const editor = document.getElementById('editor');
+            const text = editor.innerText;
+            
+            // 简单的繁体检测
+            const traditionalChars = ['說', '會', '來', '們', '個', '時', '樣', '國', '愛', '見', '關', '體', '點'];
+            const hasTraditional = traditionalChars.some(char => text.includes(char));
+            
+            if (hasTraditional) {
+                // 这里应该调用OpenCC，简化版直接提示
+                showToast('🔄 简繁转换需要引入OpenCC');
+            } else {
+                showToast('🔄 简繁转换需要引入OpenCC');
+            }
+        }
+
+        function insertImage() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.multiple = true;
+            
+            input.onchange = function(e) {
+                const files = e.target.files;
+                
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(event) {
+                        const img = document.createElement('img');
+                        img.src = event.target.result;
+                        img.style.maxWidth = '100%';
+                        img.style.margin = '10px 0';
+                        
+                        document.getElementById('editor').appendChild(img);
+                        saveToHistory();
+                    };
+                    
+                    reader.readAsDataURL(file);
+                }
+            };
+            
+            input.click();
+        }
+
+        // ==================== 提示消息 ====================
         function showToast(message) {
             const toast = document.createElement('div');
             toast.style.cssText = `
@@ -1437,6 +1855,9 @@
                 document.body.removeChild(toast);
             }, 2000);
         }
+
+        // 监听编辑器输入
+        document.getElementById('editor')?.addEventListener('input', saveToHistory);
 
         // 初始化
         window.onload = init;
