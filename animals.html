@@ -12,7 +12,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1a472a 0%, #2d6a4f 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -39,21 +39,27 @@
             cursor: pointer;
             text-decoration: none;
         }
-        .points-display-top {
+        .points-display {
             font-size: 18px;
             font-weight: bold;
         }
-        .points-display-top span {
+        .points-display span {
             color: #FFD700;
             font-size: 24px;
+            margin-left: 10px;
         }
-        .admin-btn {
-            background: rgba(255,215,0,0.3);
+        .shop-btn, .admin-btn {
+            background: rgba(255,255,255,0.2);
             padding: 10px 20px;
             color: white;
-            border: 2px solid #FFD700;
+            border: none;
             border-radius: 12px;
             cursor: pointer;
+            margin-left: 10px;
+        }
+        .shop-btn {
+            background: #FFD700;
+            color: #333;
         }
 
         /* 三栏布局 */
@@ -63,9 +69,9 @@
             margin-top: 20px;
         }
 
-        /* 左侧栏 */
+        /* 左侧栏 - 签到和动物列表 */
         .left-column {
-            flex: 1;
+            width: 250px;
             display: flex;
             flex-direction: column;
             gap: 20px;
@@ -75,13 +81,13 @@
         .sign-card {
             background: rgba(255,255,255,0.1);
             backdrop-filter: blur(10px);
-            border-radius: 24px;
+            border-radius: 20px;
             padding: 20px;
             border: 1px solid rgba(255,255,255,0.2);
             color: white;
         }
         .sign-title {
-            font-size: 16px;
+            font-size: 14px;
             color: #FFD700;
             margin-bottom: 10px;
         }
@@ -91,14 +97,14 @@
             justify-content: space-between;
         }
         .sign-points {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
         }
         .sign-btn {
-            padding: 10px 20px;
+            padding: 8px 16px;
             background: linear-gradient(135deg, #FFD700, #FFA500);
             border: none;
-            border-radius: 20px;
+            border-radius: 16px;
             color: #333;
             font-weight: bold;
             cursor: pointer;
@@ -108,17 +114,17 @@
             cursor: not-allowed;
         }
 
-        /* 抽奖卡片 */
+        /* 抽蛋卡片 */
         .gacha-card {
             background: rgba(255,255,255,0.1);
             backdrop-filter: blur(10px);
-            border-radius: 24px;
+            border-radius: 20px;
             padding: 20px;
             border: 1px solid rgba(255,255,255,0.2);
             color: white;
         }
         .gacha-title {
-            font-size: 16px;
+            font-size: 14px;
             color: #FFD700;
             margin-bottom: 15px;
         }
@@ -129,7 +135,7 @@
         }
         .gacha-btn {
             flex: 1;
-            padding: 15px;
+            padding: 12px;
             border: none;
             border-radius: 16px;
             font-weight: bold;
@@ -146,36 +152,78 @@
         .gacha-btn:hover {
             transform: translateY(-2px);
         }
-        .probability-list {
-            background: rgba(0,0,0,0.2);
-            border-radius: 16px;
-            padding: 12px;
-            font-size: 12px;
+
+        /* 动物列表 */
+        .animals-list-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            flex: 1;
         }
-        .prob-item {
+        .animals-list-title {
+            font-size: 14px;
+            color: #FFD700;
+            margin-bottom: 15px;
+        }
+        .animals-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .animal-item {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 10px;
             display: flex;
-            justify-content: space-between;
-            margin: 5px 0;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .animal-item:hover {
+            border-color: #FFD700;
+        }
+        .animal-item.selected {
+            border-color: #FFD700;
+            background: rgba(255,215,0,0.1);
+        }
+        .animal-avatar {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        .animal-name {
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .animal-level {
+            font-size: 10px;
+            color: #FFD700;
         }
 
-        /* 中间栏 */
+        /* 中间栏 - 动物抚养 */
         .middle-column {
             flex: 2;
             background: rgba(255,255,255,0.1);
             backdrop-filter: blur(10px);
             border-radius: 24px;
-            padding: 20px;
+            padding: 25px;
             border: 1px solid rgba(255,255,255,0.2);
             color: white;
         }
-        .middle-title {
-            font-size: 20px;
-            color: #FFD700;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        /* 动物抚养区 */
         .pet-area {
             display: flex;
             flex-direction: column;
@@ -210,8 +258,23 @@
             color: #FFD700;
         }
         .pet-level {
-            color: #aaa;
-            margin-bottom: 15px;
+            font-size: 16px;
+            color: #FFD700;
+            margin-bottom: 10px;
+        }
+        .exp-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .exp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FFD700, #FFA500);
+            width: 0%;
+            transition: width 0.3s;
         }
 
         /* 属性条 */
@@ -269,149 +332,180 @@
         .interact-btn:hover {
             background: #FFD700;
             color: #333;
-            transform: translateY(-2px);
         }
         .interact-btn span {
             font-size: 20px;
             margin-bottom: 5px;
         }
 
-        /* 孵化器扩展 */
-        .incubator-slots {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-top: 20px;
-        }
-        .incubator-slot {
-            background: rgba(0,0,0,0.3);
-            border-radius: 16px;
-            padding: 10px;
-            text-align: center;
-            border: 2px solid transparent;
-        }
-        .incubator-slot.active {
-            border-color: #FFD700;
-        }
-        .slot-egg {
-            font-size: 40px;
-            margin-bottom: 5px;
-        }
-        .slot-timer {
-            font-size: 14px;
-            color: #FFD700;
-        }
-        .slot-empty {
-            color: #aaa;
-            font-size: 14px;
-        }
-
-        /* 右侧栏 */
+        /* 右侧栏 - 背包 */
         .right-column {
-            flex: 1;
+            width: 280px;
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
 
-        /* 蛋的收藏 */
-        .eggs-collection {
+        /* 蛋的背包 */
+        .eggs-backpack {
             background: rgba(255,255,255,0.1);
             backdrop-filter: blur(10px);
-            border-radius: 24px;
+            border-radius: 20px;
             padding: 20px;
             border: 1px solid rgba(255,255,255,0.2);
             color: white;
         }
-        .eggs-title {
-            font-size: 16px;
+        .backpack-title {
+            font-size: 14px;
             color: #FFD700;
             margin-bottom: 15px;
         }
-        .egg-rarity-section {
+        .rarity-section {
             margin-bottom: 15px;
         }
         .rarity-header {
             display: flex;
             justify-content: space-between;
             margin-bottom: 5px;
-            padding: 5px;
-            border-radius: 8px;
+            font-size: 12px;
         }
-        .rarity-header.common { background: rgba(255,255,255,0.1); }
-        .rarity-header.uncommon { background: rgba(33,150,243,0.2); }
-        .rarity-header.rare { background: rgba(156,39,176,0.2); }
-        .rarity-header.epic { background: rgba(233,30,99,0.2); }
-        .rarity-header.legendary { background: rgba(255,215,0,0.2); }
-        
-        .egg-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            min-height: 40px;
+        .egg-count {
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            border-radius: 12px;
         }
-        .egg-item {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-        }
-        .egg-item:hover {
-            transform: scale(1.2);
-        }
-        .egg-item.common { background: #ffffff; color: #333; }
-        .egg-item.uncommon { background: #2196F3; color: white; }
-        .egg-item.rare { background: #9C27B0; color: white; }
-        .egg-item.epic { background: #E91E63; color: white; }
-        .egg-item.legendary { background: #FFD700; color: #333; animation: glow 2s infinite; }
-        
-        @keyframes glow {
-            0%, 100% { box-shadow: 0 0 5px #FFD700; }
-            50% { box-shadow: 0 0 20px #FFD700; }
-        }
+        .egg-color.common { color: #ffffff; }
+        .egg-color.uncommon { color: #2196F3; }
+        .egg-color.rare { color: #9C27B0; }
+        .egg-color.epic { color: #E91E63; }
+        .egg-color.legendary { color: #FFD700; }
 
-        /* 已孵化动物 */
-        .hatched-collection {
+        /* 孵化器 */
+        .incubator-card {
             background: rgba(255,255,255,0.1);
             backdrop-filter: blur(10px);
-            border-radius: 24px;
+            border-radius: 20px;
             padding: 20px;
             border: 1px solid rgba(255,255,255,0.2);
             color: white;
         }
-        .animals-grid {
+        .incubator-select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 16px;
+            border: 1px solid #FFD700;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            cursor: pointer;
+        }
+        .incubator-select option {
+            background: #1a472a;
+        }
+        .incubator-box {
+            background: rgba(0,0,0,0.3);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .incubator-box.hatching {
+            border-color: #FFD700;
+            animation: glow 2s infinite;
+        }
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px #FFD700; }
+            50% { box-shadow: 0 0 30px #FFD700; }
+        }
+        .incubator-egg {
+            font-size: 60px;
+            margin-bottom: 10px;
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .incubator-timer {
+            font-size: 24px;
+            font-weight: bold;
+            color: #FFD700;
+            margin: 10px 0;
+        }
+        .incubator-progress {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FFD700, #FFA500);
+            width: 0%;
+            transition: width 1s;
+        }
+        .incubator-btn {
+            padding: 10px 20px;
+            background: #FFD700;
+            border: none;
+            border-radius: 20px;
+            color: #333;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .incubator-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* 道具背包 */
+        .items-backpack {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+        }
+        .items-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 10px;
             margin-top: 10px;
         }
-        .animal-mini {
-            background: rgba(0,0,0,0.3);
+        .item-card {
+            background: rgba(255,255,255,0.05);
             border-radius: 16px;
             padding: 10px;
-            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             cursor: pointer;
-            border: 2px solid transparent;
         }
-        .animal-mini:hover {
-            border-color: #FFD700;
+        .item-card:hover {
+            background: rgba(255,255,255,0.1);
         }
-        .animal-mini.selected {
-            border-color: #FFD700;
-            background: rgba(255,215,0,0.1);
-        }
-        .animal-mini-emoji {
-            font-size: 30px;
+        .item-icon {
+            font-size: 24px;
             margin-bottom: 5px;
         }
-        .animal-mini-name {
+        .item-name {
+            font-size: 11px;
+            margin-bottom: 3px;
+        }
+        .item-count {
             font-size: 12px;
+            color: #FFD700;
+            font-weight: bold;
         }
 
         /* 商城弹窗 */
@@ -444,7 +538,7 @@
         .shop-item {
             display: flex;
             align-items: center;
-            padding: 15px;
+            padding: 12px;
             background: #f5f5f5;
             border-radius: 16px;
             margin-bottom: 10px;
@@ -477,9 +571,6 @@
             border: none;
             border-radius: 12px;
             cursor: pointer;
-        }
-        .shop-item-btn:hover {
-            background: #45a049;
         }
 
         /* 命名弹窗 */
@@ -528,6 +619,44 @@
             color: white;
         }
 
+        /* 管理员弹窗 */
+        .admin-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 24px;
+            z-index: 2100;
+            display: none;
+            width: 350px;
+        }
+        .admin-modal.show {
+            display: block;
+        }
+        .admin-modal input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #eee;
+            border-radius: 12px;
+        }
+        .admin-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        .admin-btn-small {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
         .version-tag {
             position: fixed;
             bottom: 5px;
@@ -545,18 +674,18 @@
         <div>
             <a href="index.html"><button class="back-btn">← 返回首页</button></a>
         </div>
-        <div class="points-display-top">
+        <div class="points-display">
             积分 <span id="totalPoints">1000</span>
         </div>
         <div>
-            <button class="admin-btn" onclick="showShop()">🛒 商城</button>
+            <button class="shop-btn" onclick="showShop()">🛒 商城</button>
             <button class="admin-btn" onclick="showAdminModal()">👑 管理</button>
         </div>
     </div>
 
     <!-- 三栏布局 -->
     <div class="main-layout">
-        <!-- 左侧栏 -->
+        <!-- 左侧栏 - 签到和动物列表 -->
         <div class="left-column">
             <!-- 签到卡片 -->
             <div class="sign-card">
@@ -567,53 +696,53 @@
                 </div>
             </div>
 
-            <!-- 抽奖卡片 -->
+            <!-- 抽蛋卡片 -->
             <div class="gacha-card">
                 <div class="gacha-title">🥚 抽取动物蛋</div>
                 <div class="gacha-buttons">
                     <button class="gacha-btn single" onclick="drawEgg(1)">单抽 100</button>
                     <button class="gacha-btn ten" onclick="drawEgg(10)">十连 900</button>
                 </div>
-                <div class="probability-list">
-                    <div class="prob-item"><span>⚪ 基础</span> <span>60%</span></div>
-                    <div class="prob-item"><span>🔵 普通</span> <span>25%</span></div>
-                    <div class="prob-item"><span>🟣 稀有</span> <span>10%</span></div>
-                    <div class="prob-item"><span>💗 史诗</span> <span>4%</span></div>
-                    <div class="prob-item"><span>🌟 传说</span> <span>1%</span></div>
-                </div>
+            </div>
+
+            <!-- 我的动物列表 -->
+            <div class="animals-list-card">
+                <div class="animals-list-title">🐾 我的动物 (LV.1-10)</div>
+                <div class="animals-grid" id="animalsGrid"></div>
             </div>
         </div>
 
         <!-- 中间栏 - 动物抚养 -->
         <div class="middle-column">
-            <div class="middle-title">🐾 我的伙伴</div>
-            
             <div class="pet-area" id="petArea">
                 <div class="pet-avatar" onclick="showNameModal()" id="petAvatar">🥚</div>
-                <div class="pet-name" onclick="showNameModal()" id="petName">点击起名</div>
+                <div class="pet-name" onclick="showNameModal()" id="petName">选择动物</div>
                 <div class="pet-level" id="petLevel">Lv.1</div>
+                <div class="exp-bar">
+                    <div class="exp-fill" id="expBar" style="width: 0%"></div>
+                </div>
             </div>
 
             <div class="stats-bars" id="statsBars">
                 <div class="stat-bar">
-                    <span class="stat-label">饱食度</span>
-                    <div class="bar-container"><div class="bar-fill" id="hungerBar" style="width: 80%"></div></div>
-                    <span class="stat-value" id="hungerValue">80/100</span>
+                    <span class="stat-label">饱食</span>
+                    <div class="bar-container"><div class="bar-fill" id="hungerBar" style="width: 0%"></div></div>
+                    <span class="stat-value" id="hungerValue">0/100</span>
                 </div>
                 <div class="stat-bar">
                     <span class="stat-label">水分</span>
-                    <div class="bar-container"><div class="bar-fill" id="waterBar" style="width: 70%"></div></div>
-                    <span class="stat-value" id="waterValue">70/100</span>
+                    <div class="bar-container"><div class="bar-fill" id="waterBar" style="width: 0%"></div></div>
+                    <span class="stat-value" id="waterValue">0/100</span>
                 </div>
                 <div class="stat-bar">
                     <span class="stat-label">心情</span>
-                    <div class="bar-container"><div class="bar-fill" id="moodBar" style="width: 90%"></div></div>
-                    <span class="stat-value" id="moodValue">90/100</span>
+                    <div class="bar-container"><div class="bar-fill" id="moodBar" style="width: 0%"></div></div>
+                    <span class="stat-value" id="moodValue">0/100</span>
                 </div>
                 <div class="stat-bar">
                     <span class="stat-label">精力</span>
-                    <div class="bar-container"><div class="bar-fill" id="energyBar" style="width: 60%"></div></div>
-                    <span class="stat-value" id="energyValue">60/100</span>
+                    <div class="bar-container"><div class="bar-fill" id="energyBar" style="width: 0%"></div></div>
+                    <span class="stat-value" id="energyValue">0/100</span>
                 </div>
             </div>
 
@@ -625,62 +754,58 @@
                 <button class="interact-btn" onclick="interact('sleep')"><span>😴</span>睡觉</button>
                 <button class="interact-btn" onclick="interact('medicine')"><span>💊</span>吃药</button>
             </div>
-
-            <!-- 孵化器槽位 -->
-            <div class="incubator-slots" id="incubatorSlots"></div>
         </div>
 
-        <!-- 右侧栏 -->
+        <!-- 右侧栏 - 背包 -->
         <div class="right-column">
-            <!-- 蛋的收藏 -->
-            <div class="eggs-collection">
-                <div class="eggs-title">🥚 我的蛋</div>
-                
-                <div class="egg-rarity-section">
-                    <div class="rarity-header common" onclick="filterEggs('common')">
-                        <span>⚪ 基础</span>
-                        <span id="commonCount">0</span>
+            <!-- 蛋的背包（只显示数量） -->
+            <div class="eggs-backpack">
+                <div class="backpack-title">🥚 我的蛋</div>
+                <div class="rarity-section">
+                    <div class="rarity-header">
+                        <span class="egg-color common">⚪ 基础</span>
+                        <span class="egg-count" id="commonCount">0</span>
                     </div>
-                    <div class="egg-list" id="commonEggs"></div>
-                </div>
-
-                <div class="egg-rarity-section">
-                    <div class="rarity-header uncommon" onclick="filterEggs('uncommon')">
-                        <span>🔵 普通</span>
-                        <span id="uncommonCount">0</span>
+                    <div class="rarity-header">
+                        <span class="egg-color uncommon">🔵 普通</span>
+                        <span class="egg-count" id="uncommonCount">0</span>
                     </div>
-                    <div class="egg-list" id="uncommonEggs"></div>
-                </div>
-
-                <div class="egg-rarity-section">
-                    <div class="rarity-header rare" onclick="filterEggs('rare')">
-                        <span>🟣 稀有</span>
-                        <span id="rareCount">0</span>
+                    <div class="rarity-header">
+                        <span class="egg-color rare">🟣 稀有</span>
+                        <span class="egg-count" id="rareCount">0</span>
                     </div>
-                    <div class="egg-list" id="rareEggs"></div>
-                </div>
-
-                <div class="egg-rarity-section">
-                    <div class="rarity-header epic" onclick="filterEggs('epic')">
-                        <span>💗 史诗</span>
-                        <span id="epicCount">0</span>
+                    <div class="rarity-header">
+                        <span class="egg-color epic">💗 史诗</span>
+                        <span class="egg-count" id="epicCount">0</span>
                     </div>
-                    <div class="egg-list" id="epicEggs"></div>
-                </div>
-
-                <div class="egg-rarity-section">
-                    <div class="rarity-header legendary" onclick="filterEggs('legendary')">
-                        <span>🌟 传说</span>
-                        <span id="legendaryCount">0</span>
+                    <div class="rarity-header">
+                        <span class="egg-color legendary">🌟 传说</span>
+                        <span class="egg-count" id="legendaryCount">0</span>
                     </div>
-                    <div class="egg-list" id="legendaryEggs"></div>
                 </div>
             </div>
 
-            <!-- 已孵化动物 -->
-            <div class="hatched-collection">
-                <div class="eggs-title">🐣 我的动物</div>
-                <div class="animals-grid" id="animalsGrid"></div>
+            <!-- 孵化器 -->
+            <div class="incubator-card">
+                <div class="backpack-title">⏳ 孵化器</div>
+                <select class="incubator-select" id="incubatorSelect" onchange="selectEggForIncubator()">
+                    <option value="">选择要孵化的蛋...</option>
+                </select>
+                
+                <div class="incubator-box" id="incubatorBox">
+                    <div class="incubator-egg" id="incubatorEgg">🥚</div>
+                    <div class="incubator-timer" id="incubatorTimer">--:--</div>
+                    <div class="incubator-progress">
+                        <div class="progress-fill" id="incubatorProgress" style="width: 0%"></div>
+                    </div>
+                    <button class="incubator-btn" id="incubatorAction" onclick="handleIncubatorAction()">开始孵化</button>
+                </div>
+            </div>
+
+            <!-- 道具背包 -->
+            <div class="items-backpack">
+                <div class="backpack-title">🎁 道具</div>
+                <div class="items-grid" id="itemsGrid"></div>
             </div>
         </div>
     </div>
@@ -704,7 +829,7 @@
                 <span class="shop-item-icon">🥩</span>
                 <div class="shop-item-info">
                     <div class="shop-item-name">高级饲料</div>
-                    <div class="shop-item-desc">增加饱食度50点</div>
+                    <div class="shop-item-desc">增加饱食度50点，经验+5</div>
                 </div>
                 <span class="shop-item-price">60</span>
                 <button class="shop-item-btn" onclick="buyItem('food_premium')">购买</button>
@@ -739,7 +864,7 @@
                 <span class="shop-item-icon">🎾</span>
                 <div class="shop-item-info">
                     <div class="shop-item-name">小球</div>
-                    <div class="shop-item-desc">增加心情15点</div>
+                    <div class="shop-item-desc">增加心情15点，经验+3</div>
                 </div>
                 <span class="shop-item-price">25</span>
                 <button class="shop-item-btn" onclick="buyItem('toy_ball')">购买</button>
@@ -748,7 +873,7 @@
                 <span class="shop-item-icon">🧸</span>
                 <div class="shop-item-info">
                     <div class="shop-item-name">毛绒玩具</div>
-                    <div class="shop-item-desc">增加心情30点</div>
+                    <div class="shop-item-desc">增加心情30点，经验+8</div>
                 </div>
                 <span class="shop-item-price">50</span>
                 <button class="shop-item-btn" onclick="buyItem('toy_plush')">购买</button>
@@ -775,15 +900,6 @@
                 <span class="shop-item-price">100</span>
                 <button class="shop-item-btn" onclick="buyItem('medicine')">购买</button>
             </div>
-            <div class="shop-item">
-                <span class="shop-item-icon">📦</span>
-                <div class="shop-item-info">
-                    <div class="shop-item-name">孵化器扩展</div>
-                    <div class="shop-item-desc">增加一个孵化槽</div>
-                </div>
-                <span class="shop-item-price">200</span>
-                <button class="shop-item-btn" onclick="buyItem('incubator_slot')">购买</button>
-            </div>
         </div>
 
         <div style="text-align: right; margin-top: 20px;">
@@ -802,73 +918,76 @@
     </div>
 
     <!-- 管理员弹窗 -->
-    <div id="adminModal" class="shop-modal" style="width:350px;">
+    <div id="adminModal" class="admin-modal">
         <h3 style="text-align:center;">👑 管理员模式</h3>
-        <input type="password" id="adminPassword" placeholder="输入密码" style="width:100%; padding:12px; margin:10px 0; border:1px solid #eee; border-radius:12px;">
-        <div style="display: flex; gap:10px; flex-wrap: wrap;">
-            <button onclick="adminAddPoints()" style="flex:1; padding:10px; background:#4CAF50; color:white; border:none; border-radius:12px;">+1000积分</button>
-            <button onclick="adminAddEgg('legendary')" style="flex:1; padding:10px; background:#FFD700; color:black; border:none; border-radius:12px;">传说蛋</button>
-            <button onclick="adminAddEgg('epic')" style="flex:1; padding:10px; background:#E91E63; color:white; border:none; border-radius:12px;">史诗蛋</button>
-            <button onclick="adminCompleteHatch()" style="flex:1; padding:10px; background:#FF9800; color:white; border:none; border-radius:12px;">立即孵化</button>
-            <button onclick="adminReset()" style="flex:1; padding:10px; background:#f44336; color:white; border:none; border-radius:12px;">重置</button>
+        <input type="password" id="adminPassword" placeholder="输入密码">
+        <div class="admin-buttons">
+            <button class="admin-btn-small" onclick="adminAddPoints()" style="background:#4CAF50; color:white;">+1000积分</button>
+            <button class="admin-btn-small" onclick="adminAddEgg('legendary')" style="background:#FFD700;">传说蛋</button>
+            <button class="admin-btn-small" onclick="adminAddEgg('epic')" style="background:#E91E63; color:white;">史诗蛋</button>
+            <button class="admin-btn-small" onclick="adminCompleteHatch()" style="background:#FF9800;">立即孵化</button>
+            <button class="admin-btn-small" onclick="adminLevelUp()" style="background:#9C27B0; color:white;">等级+1</button>
+            <button class="admin-btn-small" onclick="adminReset()" style="background:#f44336; color:white;">重置</button>
         </div>
         <div style="text-align: right; margin-top: 15px;">
             <button onclick="closeAdminModal()" style="padding:10px 20px; background:#999; color:white; border:none; border-radius:12px;">关闭</button>
         </div>
     </div>
 
-    <div class="version-tag">v3.0 - 动物抚养+商城</div>
+    <div class="version-tag">v4.0 - 背包优化+等级系统</div>
 
     <script>
         // 动物数据
         const ANIMALS = {
             common: [
-                { emoji: '🐣', name: '小鸡', rarity: 'common', hatchTime: 6, baseStats: { hunger: 80, water: 70, mood: 60, energy: 70 } },
-                { emoji: '🐥', name: '小鸭', rarity: 'common', hatchTime: 6, baseStats: { hunger: 70, water: 80, mood: 70, energy: 60 } },
-                { emoji: '🐰', name: '兔子', rarity: 'common', hatchTime: 6, baseStats: { hunger: 60, water: 60, mood: 80, energy: 80 } }
+                { emoji: '🐣', name: '小鸡', rarity: 'common', hatchTime: 1, baseStats: { hunger: 80, water: 70, mood: 60, energy: 70 } },
+                { emoji: '🐥', name: '小鸭', rarity: 'common', hatchTime: 1, baseStats: { hunger: 70, water: 80, mood: 70, energy: 60 } },
+                { emoji: '🐰', name: '兔子', rarity: 'common', hatchTime: 1, baseStats: { hunger: 60, water: 60, mood: 80, energy: 80 } }
             ],
             uncommon: [
-                { emoji: '🦊', name: '狐狸', rarity: 'uncommon', hatchTime: 8, baseStats: { hunger: 70, water: 60, mood: 80, energy: 70 } },
-                { emoji: '🐱', name: '小猫', rarity: 'uncommon', hatchTime: 8, baseStats: { hunger: 60, water: 70, mood: 90, energy: 60 } },
-                { emoji: '🐶', name: '小狗', rarity: 'uncommon', hatchTime: 8, baseStats: { hunger: 80, water: 70, mood: 80, energy: 80 } }
+                { emoji: '🦊', name: '狐狸', rarity: 'uncommon', hatchTime: 2, baseStats: { hunger: 70, water: 60, mood: 80, energy: 70 } },
+                { emoji: '🐱', name: '小猫', rarity: 'uncommon', hatchTime: 2, baseStats: { hunger: 60, water: 70, mood: 90, energy: 60 } },
+                { emoji: '🐶', name: '小狗', rarity: 'uncommon', hatchTime: 2, baseStats: { hunger: 80, water: 70, mood: 80, energy: 80 } }
             ],
             rare: [
-                { emoji: '🦌', name: '小鹿', rarity: 'rare', hatchTime: 12, baseStats: { hunger: 70, water: 70, mood: 70, energy: 70 } },
-                { emoji: '🐨', name: '考拉', rarity: 'rare', hatchTime: 12, baseStats: { hunger: 60, water: 50, mood: 80, energy: 50 } },
-                { emoji: '🦔', name: '刺猬', rarity: 'rare', hatchTime: 12, baseStats: { hunger: 70, water: 60, mood: 70, energy: 70 } }
+                { emoji: '🦌', name: '小鹿', rarity: 'rare', hatchTime: 3, baseStats: { hunger: 70, water: 70, mood: 70, energy: 70 } },
+                { emoji: '🐨', name: '考拉', rarity: 'rare', hatchTime: 3, baseStats: { hunger: 60, water: 50, mood: 80, energy: 50 } },
+                { emoji: '🦔', name: '刺猬', rarity: 'rare', hatchTime: 3, baseStats: { hunger: 70, water: 60, mood: 70, energy: 70 } }
             ],
             epic: [
-                { emoji: '🦅', name: '雄鹰', rarity: 'epic', hatchTime: 18, baseStats: { hunger: 80, water: 70, mood: 80, energy: 90 } },
-                { emoji: '🐺', name: '狼', rarity: 'epic', hatchTime: 18, baseStats: { hunger: 90, water: 70, mood: 70, energy: 80 } },
-                { emoji: '🐻', name: '熊', rarity: 'epic', hatchTime: 18, baseStats: { hunger: 90, water: 60, mood: 70, energy: 70 } }
+                { emoji: '🦅', name: '雄鹰', rarity: 'epic', hatchTime: 4, baseStats: { hunger: 80, water: 70, mood: 80, energy: 90 } },
+                { emoji: '🐺', name: '狼', rarity: 'epic', hatchTime: 4, baseStats: { hunger: 90, water: 70, mood: 70, energy: 80 } },
+                { emoji: '🐻', name: '熊', rarity: 'epic', hatchTime: 4, baseStats: { hunger: 90, water: 60, mood: 70, energy: 70 } }
             ],
             legendary: [
-                { emoji: '🐉', name: '小龙', rarity: 'legendary', hatchTime: 24, baseStats: { hunger: 100, water: 100, mood: 100, energy: 100 } },
-                { emoji: '🦄', name: '独角兽', rarity: 'legendary', hatchTime: 24, baseStats: { hunger: 90, water: 90, mood: 100, energy: 90 } },
-                { emoji: '🐲', name: '麒麟', rarity: 'legendary', hatchTime: 24, baseStats: { hunger: 100, water: 90, mood: 90, energy: 90 } }
+                { emoji: '🐉', name: '小龙', rarity: 'legendary', hatchTime: 6, baseStats: { hunger: 100, water: 100, mood: 100, energy: 100 } },
+                { emoji: '🦄', name: '独角兽', rarity: 'legendary', hatchTime: 6, baseStats: { hunger: 90, water: 90, mood: 100, energy: 90 } },
+                { emoji: '🐲', name: '麒麟', rarity: 'legendary', hatchTime: 6, baseStats: { hunger: 100, water: 90, mood: 90, energy: 90 } }
             ]
         };
 
         // 概率配置
         const PROBABILITIES = [
-            { rarity: 'common', rate: 0.6, animals: ANIMALS.common },
-            { rarity: 'uncommon', rate: 0.25, animals: ANIMALS.uncommon },
-            { rarity: 'rare', rate: 0.1, animals: ANIMALS.rare },
-            { rarity: 'epic', rate: 0.04, animals: ANIMALS.epic },
-            { rarity: 'legendary', rate: 0.01, animals: ANIMALS.legendary }
+            { rarity: 'common', rate: 0.6 },
+            { rarity: 'uncommon', rate: 0.25 },
+            { rarity: 'rare', rate: 0.1 },
+            { rarity: 'epic', rate: 0.04 },
+            { rarity: 'legendary', rate: 0.01 }
         ];
+
+        // 等级经验配置
+        const LEVEL_EXP = [0, 100, 250, 450, 700, 1000, 1350, 1750, 2200, 2700, 3250];
 
         // 游戏数据
         let gameData = JSON.parse(localStorage.getItem('animalGame') || JSON.stringify({
             totalPoints: 1000,
             lastSignDate: null,
             todayPoints: 0,
-            incubators: [], // 孵化器 [{ egg, startTime, endTime, slot }]
-            incubatorCount: 1, // 孵化器数量
-            eggs: [], // 所有蛋
-            animals: [], // 已孵化动物 [{ ...animal, name, level, stats, lastUpdate }]
-            currentPet: null, // 当前抚养的动物
-            items: { // 道具
+            eggs: [], // [{ id, rarity, hatchTime }]
+            incubating: null, // { egg, startTime, endTime }
+            animals: [], // [{ ...animal, id, name, level, exp, stats, lastUpdate }]
+            currentPet: null,
+            items: {
                 food_normal: 0,
                 food_premium: 0,
                 water_normal: 0,
@@ -882,15 +1001,17 @@
 
         let incubatorTimer = null;
         let statsTimer = null;
-        let adminAuthed = false;
+        let selectedEggId = null;
 
         // 初始化
         function init() {
             updatePointsDisplay();
             updateEggsDisplay();
+            updateIncubatorSelect();
+            updateIncubatorDisplay();
             updateAnimalsDisplay();
-            updateIncubators();
             updateCurrentPet();
+            updateItemsDisplay();
             checkSignStatus();
             startTimers();
         }
@@ -942,111 +1063,205 @@
                 for (const p of PROBABILITIES) {
                     cumulative += p.rate;
                     if (rand < cumulative) {
-                        selectedRarity = p;
+                        selectedRarity = p.rarity;
                         break;
                     }
                 }
                 
-                // 只保存蛋的稀有度，不保存具体动物
-                const egg = {
-                    id: Date.now() + i + Math.random(),
-                    rarity: selectedRarity.rarity,
-                    hatchTime: selectedRarity.animals[0].hatchTime,
-                    obtainedTime: Date.now()
-                };
+                const hatchTime = ANIMALS[selectedRarity][0].hatchTime;
                 
-                gameData.eggs.push(egg);
+                gameData.eggs.push({
+                    id: Date.now() + i + Math.random(),
+                    rarity: selectedRarity,
+                    hatchTime: hatchTime
+                });
             }
             
             saveGameData();
             updatePointsDisplay();
             updateEggsDisplay();
+            updateIncubatorSelect();
+        }
+
+        // ==================== 背包显示 ====================
+        function updateEggsDisplay() {
+            const counts = {
+                common: gameData.eggs.filter(e => e.rarity === 'common').length,
+                uncommon: gameData.eggs.filter(e => e.rarity === 'uncommon').length,
+                rare: gameData.eggs.filter(e => e.rarity === 'rare').length,
+                epic: gameData.eggs.filter(e => e.rarity === 'epic').length,
+                legendary: gameData.eggs.filter(e => e.rarity === 'legendary').length
+            };
+            
+            document.getElementById('commonCount').textContent = counts.common;
+            document.getElementById('uncommonCount').textContent = counts.uncommon;
+            document.getElementById('rareCount').textContent = counts.rare;
+            document.getElementById('epicCount').textContent = counts.epic;
+            document.getElementById('legendaryCount').textContent = counts.legendary;
+        }
+
+        function updateItemsDisplay() {
+            const items = gameData.items;
+            const grid = document.getElementById('itemsGrid');
+            
+            grid.innerHTML = '';
+            
+            if (items.food_normal > 0) {
+                grid.innerHTML += `<div class="item-card" onclick="useItem('food_normal')"><div class="item-icon">🍎</div><div class="item-name">普通饲料</div><div class="item-count">${items.food_normal}</div></div>`;
+            }
+            if (items.food_premium > 0) {
+                grid.innerHTML += `<div class="item-card" onclick="useItem('food_premium')"><div class="item-icon">🥩</div><div class="item-name">高级饲料</div><div class="item-count">${items.food_premium}</div></div>`;
+            }
+            if (items.water_normal > 0) {
+                grid.innerHTML += `<div class="item-card" onclick="useItem('water_normal')"><div class="item-icon">💧</div><div class="item-name">纯净水</div><div class="item-count">${items.water_normal}</div></div>`;
+            }
+            if (items.water_premium > 0) {
+                grid.innerHTML += `<div class="item-card" onclick="useItem('water_premium')"><div class="item-icon">🧃</div><div class="item-name">果汁</div><div class="item-count">${items.water_premium}</div></div>`;
+            }
+            if (items.toy_ball > 0) {
+                grid.innerHTML += `<div class="item-card" onclick="useItem('toy_ball')"><div class="item-icon">🎾</div><div class="item-name">小球</div><div class="item-count">${items.toy_ball}</div></div>`;
+            }
+            if (items.toy_plush > 0) {
+                grid.innerHTML += `<div class="item-card" onclick="useItem('toy_plush')"><div class="item-icon">🧸</div><div class="item-name">毛绒玩具</div><div class="item-count">${items.toy_plush}</div></div>`;
+            }
+            if (items.speed_potion > 0) {
+                grid.innerHTML += `<div class="item-card" onclick="useSpeedPotion()"><div class="item-icon">⏰</div><div class="item-name">加速药水</div><div class="item-count">${items.speed_potion}</div></div>`;
+            }
+            if (items.medicine > 0) {
+                grid.innerHTML += `<div class="item-card" onclick="useItem('medicine')"><div class="item-icon">🏥</div><div class="item-name">万能药</div><div class="item-count">${items.medicine}</div></div>`;
+            }
         }
 
         // ==================== 孵化系统 ====================
-        function startIncubation(eggId) {
-            if (!gameData.incubators.length) {
-                gameData.incubators = new Array(gameData.incubatorCount).fill(null);
-            }
+        function updateIncubatorSelect() {
+            const select = document.getElementById('incubatorSelect');
+            let options = '<option value="">选择要孵化的蛋...</option>';
             
-            // 找空闲孵化器
-            const emptySlot = gameData.incubators.findIndex(s => !s);
-            if (emptySlot === -1) {
-                alert('没有空闲的孵化器');
+            const eggsByRarity = {
+                common: gameData.eggs.filter(e => e.rarity === 'common'),
+                uncommon: gameData.eggs.filter(e => e.rarity === 'uncommon'),
+                rare: gameData.eggs.filter(e => e.rarity === 'rare'),
+                epic: gameData.eggs.filter(e => e.rarity === 'epic'),
+                legendary: gameData.eggs.filter(e => e.rarity === 'legendary')
+            };
+            
+            ['common', 'uncommon', 'rare', 'epic', 'legendary'].forEach(rarity => {
+                if (eggsByRarity[rarity].length > 0) {
+                    const rarityName = {
+                        common: '⚪ 基础',
+                        uncommon: '🔵 普通',
+                        rare: '🟣 稀有',
+                        epic: '💗 史诗',
+                        legendary: '🌟 传说'
+                    }[rarity];
+                    
+                    eggsByRarity[rarity].forEach(egg => {
+                        options += `<option value="${egg.id}">${rarityName} (${egg.hatchTime}h)</option>`;
+                    });
+                }
+            });
+            
+            select.innerHTML = options;
+        }
+
+        function selectEggForIncubator() {
+            const select = document.getElementById('incubatorSelect');
+            selectedEggId = select.value;
+            
+            if (selectedEggId && !gameData.incubating) {
+                document.getElementById('incubatorAction').disabled = false;
+            } else {
+                document.getElementById('incubatorAction').disabled = true;
+            }
+        }
+
+        function handleIncubatorAction() {
+            if (gameData.incubating) {
+                // 正在孵化中，点击加速
+                useSpeedPotion();
+            } else {
+                // 开始孵化
+                startIncubation();
+            }
+        }
+
+        function startIncubation() {
+            if (!selectedEggId) {
+                alert('请先选择要孵化的蛋');
                 return;
             }
             
-            const egg = gameData.eggs.find(e => e.id === eggId);
+            if (gameData.incubating) {
+                alert('已有正在孵化的蛋');
+                return;
+            }
+            
+            const egg = gameData.eggs.find(e => e.id == selectedEggId);
             if (!egg) return;
             
             const hatchTimeMs = egg.hatchTime * 60 * 60 * 1000;
             const now = Date.now();
             
-            gameData.incubators[emptySlot] = {
+            gameData.incubating = {
                 egg: egg,
                 startTime: now,
-                endTime: now + hatchTimeMs,
-                slot: emptySlot
+                endTime: now + hatchTimeMs
             };
             
-            // 从背包移除蛋
-            gameData.eggs = gameData.eggs.filter(e => e.id !== eggId);
+            gameData.eggs = gameData.eggs.filter(e => e.id != selectedEggId);
             
             saveGameData();
-            updateIncubators();
             updateEggsDisplay();
+            updateIncubatorSelect();
+            updateIncubatorDisplay();
         }
 
-        function updateIncubators() {
-            const container = document.getElementById('incubatorSlots');
-            if (!container) return;
+        function updateIncubatorDisplay() {
+            const box = document.getElementById('incubatorBox');
+            const eggEl = document.getElementById('incubatorEgg');
+            const timerEl = document.getElementById('incubatorTimer');
+            const progressEl = document.getElementById('incubatorProgress');
+            const actionBtn = document.getElementById('incubatorAction');
             
-            let html = '';
-            for (let i = 0; i < gameData.incubatorCount; i++) {
-                const incubator = gameData.incubators?.[i];
-                
-                if (incubator) {
-                    const now = Date.now();
-                    const remaining = Math.max(0, incubator.endTime - now);
-                    const total = incubator.endTime - incubator.startTime;
-                    const progress = ((total - remaining) / total) * 100;
-                    
-                    const hours = Math.floor(remaining / (60 * 60 * 1000));
-                    const minutes = Math.floor((remaining % (60 * 60 * 1000)) / (60 * 1000));
-                    
-                    const eggColor = getEggColor(incubator.egg.rarity);
-                    
-                    html += `
-                        <div class="incubator-slot active">
-                            <div class="slot-egg" style="color: ${eggColor}">🥚</div>
-                            <div class="slot-timer">${hours}:${minutes.toString().padStart(2, '0')}</div>
-                            ${remaining <= 0 ? 
-                                `<button onclick="hatchEgg(${i})" style="margin-top:5px; padding:5px; background:#FFD700; border:none; border-radius:8px;">孵化</button>` : 
-                                `<button onclick="useSpeedPotion(${i})" style="margin-top:5px; padding:5px; background:#4CAF50; border:none; border-radius:8px;">加速</button>`
-                            }
-                        </div>
-                    `;
-                } else {
-                    html += `
-                        <div class="incubator-slot">
-                            <div class="slot-empty">🈳</div>
-                            <div class="slot-empty">空闲</div>
-                        </div>
-                    `;
-                }
+            if (!gameData.incubating) {
+                box.classList.remove('hatching');
+                eggEl.textContent = '🥚';
+                timerEl.textContent = '--:--';
+                progressEl.style.width = '0%';
+                actionBtn.textContent = '开始孵化';
+                actionBtn.disabled = true;
+                return;
             }
             
-            container.innerHTML = html;
+            box.classList.add('hatching');
+            
+            const now = Date.now();
+            const remaining = Math.max(0, gameData.incubating.endTime - now);
+            const total = gameData.incubating.endTime - gameData.incubating.startTime;
+            const progress = ((total - remaining) / total) * 100;
+            
+            const hours = Math.floor(remaining / (60 * 60 * 1000));
+            const minutes = Math.floor((remaining % (60 * 60 * 1000)) / (60 * 1000));
+            
+            eggEl.textContent = '🥚';
+            timerEl.textContent = `${hours}:${minutes.toString().padStart(2, '0')}`;
+            progressEl.style.width = progress + '%';
+            
+            if (remaining <= 0) {
+                actionBtn.textContent = '🐣 孵化';
+                actionBtn.disabled = false;
+            } else {
+                actionBtn.textContent = '⚡ 加速';
+                actionBtn.disabled = false;
+            }
         }
 
-        function hatchEgg(slotIndex) {
-            const incubator = gameData.incubators[slotIndex];
-            if (!incubator || Date.now() < incubator.endTime) return;
+        function hatchEgg() {
+            if (!gameData.incubating) return;
             
-            // 根据稀有度随机选择动物
-            const rarity = incubator.egg.rarity;
-            const animals = PROBABILITIES.find(p => p.rarity === rarity).animals;
-            const animal = animals[Math.floor(Math.random() * animals.length)];
+            const egg = gameData.incubating.egg;
+            const rarityAnimals = ANIMALS[egg.rarity];
+            const animal = rarityAnimals[Math.floor(Math.random() * rarityAnimals.length)];
             
             const newAnimal = {
                 ...animal,
@@ -1055,40 +1270,71 @@
                 level: 1,
                 exp: 0,
                 stats: { ...animal.baseStats },
-                lastUpdate: Date.now(),
-                isCurrent: false
+                lastUpdate: Date.now()
             };
             
             gameData.animals.push(newAnimal);
-            gameData.incubators[slotIndex] = null;
+            gameData.incubating = null;
             
             saveGameData();
-            updateIncubators();
+            updateIncubatorDisplay();
             updateAnimalsDisplay();
             
-            // 如果没有当前宠物，自动设置为当前
             if (!gameData.currentPet) {
                 setCurrentPet(newAnimal.id);
             }
         }
 
-        function getEggColor(rarity) {
-            const colors = {
-                'common': '#ffffff',
-                'uncommon': '#2196F3',
-                'rare': '#9C27B0',
-                'epic': '#E91E63',
-                'legendary': '#FFD700'
-            };
-            return colors[rarity] || '#ffffff';
+        function useSpeedPotion() {
+            if (!gameData.incubating) {
+                alert('没有正在孵化的蛋');
+                return;
+            }
+            
+            if (gameData.items.speed_potion <= 0) {
+                alert('没有加速药水');
+                return;
+            }
+            
+            gameData.incubating.endTime -= 2 * 60 * 60 * 1000;
+            gameData.items.speed_potion--;
+            
+            saveGameData();
+            updateIncubatorDisplay();
+            updateItemsDisplay();
         }
 
-        // ==================== 动物抚养系统 ====================
+        // ==================== 动物系统 ====================
+        function updateAnimalsDisplay() {
+            const grid = document.getElementById('animalsGrid');
+            
+            if (gameData.animals.length === 0) {
+                grid.innerHTML = '<div style="text-align:center; grid-column:span 2; color:#aaa;">暂无动物</div>';
+                return;
+            }
+            
+            grid.innerHTML = gameData.animals.map(animal => `
+                <div class="animal-item ${animal.id === gameData.currentPet ? 'selected' : ''}" onclick="setCurrentPet(${animal.id})">
+                    <div class="animal-avatar">${animal.emoji}</div>
+                    <div class="animal-name">${animal.name}</div>
+                    <div class="animal-level">Lv.${animal.level}/10</div>
+                </div>
+            `).join('');
+        }
+
+        function setCurrentPet(id) {
+            gameData.currentPet = id;
+            saveGameData();
+            updateCurrentPet();
+            updateAnimalsDisplay();
+        }
+
         function updateCurrentPet() {
             if (!gameData.currentPet) {
                 document.getElementById('petAvatar').textContent = '🥚';
-                document.getElementById('petName').textContent = '点击起名';
+                document.getElementById('petName').textContent = '选择动物';
                 document.getElementById('petLevel').textContent = 'Lv.0';
+                document.getElementById('expBar').style.width = '0%';
                 return;
             }
             
@@ -1107,9 +1353,15 @@
                 pet.lastUpdate = now;
             }
             
+            // 计算当前等级经验进度
+            const currentLevelExp = LEVEL_EXP[pet.level];
+            const nextLevelExp = LEVEL_EXP[pet.level + 1] || currentLevelExp;
+            const expProgress = ((pet.exp - currentLevelExp) / (nextLevelExp - currentLevelExp)) * 100;
+            
             document.getElementById('petAvatar').textContent = pet.emoji;
             document.getElementById('petName').textContent = pet.name;
-            document.getElementById('petLevel').textContent = `Lv.${pet.level}`;
+            document.getElementById('petLevel').textContent = `Lv.${pet.level}/10`;
+            document.getElementById('expBar').style.width = expProgress + '%';
             
             document.getElementById('hungerBar').style.width = pet.stats.hunger + '%';
             document.getElementById('hungerValue').textContent = Math.floor(pet.stats.hunger) + '/100';
@@ -1121,6 +1373,26 @@
             document.getElementById('energyValue').textContent = Math.floor(pet.stats.energy) + '/100';
         }
 
+        function addExp(amount) {
+            const pet = gameData.animals.find(a => a.id === gameData.currentPet);
+            if (!pet || pet.level >= 10) return;
+            
+            pet.exp += amount;
+            
+            // 检查升级
+            while (pet.level < 10 && pet.exp >= LEVEL_EXP[pet.level + 1]) {
+                pet.level++;
+                // 升级奖励：属性上限增加
+                pet.stats.hunger = Math.min(100, pet.stats.hunger + 5);
+                pet.stats.water = Math.min(100, pet.stats.water + 5);
+                pet.stats.mood = Math.min(100, pet.stats.mood + 5);
+                pet.stats.energy = Math.min(100, pet.stats.energy + 5);
+            }
+            
+            saveGameData();
+            updateCurrentPet();
+        }
+
         function interact(action) {
             if (!gameData.currentPet) {
                 alert('请先选择一只动物');
@@ -1130,11 +1402,14 @@
             const pet = gameData.animals.find(a => a.id === gameData.currentPet);
             if (!pet) return;
             
+            let expGain = 0;
+            
             switch(action) {
                 case 'feed':
                     if (gameData.items.food_normal > 0) {
                         pet.stats.hunger = Math.min(100, pet.stats.hunger + 20);
                         gameData.items.food_normal--;
+                        expGain = 5;
                     } else {
                         alert('没有饲料，请先在商城购买');
                         return;
@@ -1144,6 +1419,7 @@
                     if (gameData.items.water_normal > 0) {
                         pet.stats.water = Math.min(100, pet.stats.water + 20);
                         gameData.items.water_normal--;
+                        expGain = 3;
                     } else {
                         alert('没有饮水，请先在商城购买');
                         return;
@@ -1154,6 +1430,7 @@
                         pet.stats.mood = Math.min(100, pet.stats.mood + 15);
                         pet.stats.energy = Math.max(0, pet.stats.energy - 10);
                         gameData.items.toy_ball--;
+                        expGain = 8;
                     } else {
                         alert('没有玩具，请先在商城购买');
                         return;
@@ -1162,11 +1439,13 @@
                 case 'clean':
                     pet.stats.mood += 10;
                     pet.stats.energy -= 5;
+                    expGain = 2;
                     break;
                 case 'sleep':
                     pet.stats.energy = Math.min(100, pet.stats.energy + 30);
                     pet.stats.hunger -= 5;
                     pet.stats.water -= 5;
+                    expGain = 1;
                     break;
                 case 'medicine':
                     if (gameData.items.medicine > 0) {
@@ -1174,6 +1453,7 @@
                         pet.stats.water = Math.min(100, pet.stats.water + 30);
                         pet.stats.mood = Math.min(100, pet.stats.mood + 30);
                         gameData.items.medicine--;
+                        expGain = 15;
                     } else {
                         alert('没有药品，请先在商城购买');
                         return;
@@ -1187,52 +1467,69 @@
             });
             
             pet.lastUpdate = Date.now();
-            saveGameData();
-            updateCurrentPet();
-        }
-
-        function setCurrentPet(id) {
-            gameData.currentPet = id;
-            gameData.animals.forEach(a => a.isCurrent = false);
-            const pet = gameData.animals.find(a => a.id === id);
-            if (pet) pet.isCurrent = true;
+            
+            if (expGain > 0) {
+                addExp(expGain);
+            }
             
             saveGameData();
             updateCurrentPet();
-            updateAnimalsDisplay();
+            updateItemsDisplay();
         }
 
-        // ==================== 蛋的显示 ====================
-        function updateEggsDisplay() {
-            const rarities = ['common', 'uncommon', 'rare', 'epic', 'legendary'];
+        // ==================== 道具使用 ====================
+        function useItem(item) {
+            if (!gameData.currentPet) {
+                alert('请先选择一只动物');
+                return;
+            }
             
-            rarities.forEach(rarity => {
-                const eggs = gameData.eggs.filter(e => e.rarity === rarity);
-                document.getElementById(`${rarity}Count`).textContent = eggs.length;
-                
-                const container = document.getElementById(`${rarity}Eggs`);
-                container.innerHTML = eggs.map(egg => `
-                    <div class="egg-item ${rarity}" onclick="startIncubation(${egg.id})" title="点击孵化">
-                        🥚
-                    </div>
-                `).join('');
-            });
-        }
-
-        function filterEggs(rarity) {
-            // 可以添加筛选逻辑
-        }
-
-        // ==================== 已孵化动物 ====================
-        function updateAnimalsDisplay() {
-            const container = document.getElementById('animalsGrid');
-            container.innerHTML = gameData.animals.map(animal => `
-                <div class="animal-mini ${animal.id === gameData.currentPet ? 'selected' : ''}" 
-                     onclick="setCurrentPet(${animal.id})">
-                    <div class="animal-mini-emoji">${animal.emoji}</div>
-                    <div class="animal-mini-name">${animal.name}</div>
-                </div>
-            `).join('');
+            if (gameData.items[item] <= 0) return;
+            
+            const pet = gameData.animals.find(a => a.id === gameData.currentPet);
+            
+            switch(item) {
+                case 'food_normal':
+                    pet.stats.hunger = Math.min(100, pet.stats.hunger + 20);
+                    addExp(5);
+                    break;
+                case 'food_premium':
+                    pet.stats.hunger = Math.min(100, pet.stats.hunger + 50);
+                    addExp(10);
+                    break;
+                case 'water_normal':
+                    pet.stats.water = Math.min(100, pet.stats.water + 20);
+                    addExp(3);
+                    break;
+                case 'water_premium':
+                    pet.stats.water = Math.min(100, pet.stats.water + 30);
+                    pet.stats.mood = Math.min(100, pet.stats.mood + 10);
+                    addExp(8);
+                    break;
+                case 'toy_ball':
+                    pet.stats.mood = Math.min(100, pet.stats.mood + 15);
+                    pet.stats.energy = Math.max(0, pet.stats.energy - 10);
+                    addExp(8);
+                    break;
+                case 'toy_plush':
+                    pet.stats.mood = Math.min(100, pet.stats.mood + 30);
+                    pet.stats.energy = Math.max(0, pet.stats.energy - 15);
+                    addExp(15);
+                    break;
+                case 'medicine':
+                    pet.stats.hunger = Math.min(100, pet.stats.hunger + 30);
+                    pet.stats.water = Math.min(100, pet.stats.water + 30);
+                    pet.stats.mood = Math.min(100, pet.stats.mood + 30);
+                    addExp(20);
+                    break;
+            }
+            
+            gameData.items[item]--;
+            pet.lastUpdate = Date.now();
+            
+            saveGameData();
+            updateCurrentPet();
+            updateItemsDisplay();
         }
 
         // ==================== 命名系统 ====================
@@ -1258,6 +1555,7 @@
                 pet.name = newName;
                 saveGameData();
                 updateCurrentPet();
+                updateAnimalsDisplay();
             }
             
             closeNameModal();
@@ -1281,8 +1579,7 @@
                 toy_ball: 25,
                 toy_plush: 50,
                 speed_potion: 80,
-                medicine: 100,
-                incubator_slot: 200
+                medicine: 100
             };
             
             const cost = prices[item];
@@ -1292,34 +1589,12 @@
             }
             
             gameData.totalPoints -= cost;
-            
-            if (item === 'incubator_slot') {
-                gameData.incubatorCount++;
-                gameData.incubators.push(null);
-            } else {
-                gameData.items[item] = (gameData.items[item] || 0) + 1;
-            }
+            gameData.items[item] = (gameData.items[item] || 0) + 1;
             
             saveGameData();
             updatePointsDisplay();
-            updateIncubators();
+            updateItemsDisplay();
             alert('购买成功！');
-        }
-
-        function useSpeedPotion(slotIndex) {
-            if (gameData.items.speed_potion <= 0) {
-                alert('没有加速药水');
-                return;
-            }
-            
-            const incubator = gameData.incubators[slotIndex];
-            if (!incubator) return;
-            
-            incubator.endTime -= 2 * 60 * 60 * 1000; // 减少2小时
-            gameData.items.speed_potion--;
-            
-            saveGameData();
-            updateIncubators();
         }
 
         // ==================== 积分系统 ====================
@@ -1331,7 +1606,15 @@
         function startTimers() {
             if (incubatorTimer) clearInterval(incubatorTimer);
             incubatorTimer = setInterval(() => {
-                updateIncubators();
+                if (gameData.incubating) {
+                    const now = Date.now();
+                    if (now >= gameData.incubating.endTime) {
+                        // 孵化完成，可以点击孵化按钮
+                        document.getElementById('incubatorAction').textContent = '🐣 孵化';
+                        document.getElementById('incubatorAction').disabled = false;
+                    }
+                    updateIncubatorDisplay();
+                }
             }, 1000);
             
             if (statsTimer) clearInterval(statsTimer);
@@ -1339,7 +1622,7 @@
                 if (gameData.currentPet) {
                     updateCurrentPet();
                 }
-            }, 60000); // 每分钟更新一次
+            }, 60000);
         }
 
         // ==================== 管理员模式 ====================
@@ -1369,28 +1652,41 @@
 
         function adminAddEgg(rarity) {
             if (!checkAdminAuth()) return;
-            const egg = {
+            const hatchTime = ANIMALS[rarity][0].hatchTime;
+            gameData.eggs.push({
                 id: Date.now(),
                 rarity: rarity,
-                hatchTime: ANIMALS[rarity][0].hatchTime,
-                obtainedTime: Date.now()
-            };
-            gameData.eggs.push(egg);
+                hatchTime: hatchTime
+            });
             saveGameData();
             updateEggsDisplay();
+            updateIncubatorSelect();
             alert(`✅ 已添加${rarity}蛋`);
         }
 
         function adminCompleteHatch() {
             if (!checkAdminAuth()) return;
-            gameData.incubators.forEach((inc, i) => {
-                if (inc) {
-                    inc.endTime = Date.now();
-                }
-            });
-            saveGameData();
-            updateIncubators();
-            alert('✅ 所有孵化已完成');
+            if (gameData.incubating) {
+                gameData.incubating.endTime = Date.now();
+                updateIncubatorDisplay();
+            }
+            alert('✅ 孵化已完成');
+        }
+
+        function adminLevelUp() {
+            if (!checkAdminAuth()) return;
+            if (!gameData.currentPet) {
+                alert('请先选择动物');
+                return;
+            }
+            const pet = gameData.animals.find(a => a.id === gameData.currentPet);
+            if (pet && pet.level < 10) {
+                pet.level++;
+                saveGameData();
+                updateCurrentPet();
+                updateAnimalsDisplay();
+                alert(`✅ 等级提升至 ${pet.level}`);
+            }
         }
 
         function adminReset() {
@@ -1400,9 +1696,8 @@
                 totalPoints: 1000,
                 lastSignDate: null,
                 todayPoints: 0,
-                incubators: [null],
-                incubatorCount: 1,
                 eggs: [],
+                incubating: null,
                 animals: [],
                 currentPet: null,
                 items: {
