@@ -32,11 +32,6 @@
             cursor: pointer;
             text-decoration: none;
             font-weight: 500;
-            transition: all 0.2s;
-        }
-        .back-btn:hover {
-            background: #555;
-            transform: translateY(-2px);
         }
         .new-moment-btn {
             background: #FF9800;
@@ -46,11 +41,16 @@
             border-radius: 12px;
             cursor: pointer;
             font-weight: 500;
-            transition: all 0.2s;
         }
-        .new-moment-btn:hover {
-            background: #F57C00;
-            transform: translateY(-2px);
+        .edit-identity-btn {
+            background: #9C27B0;
+            padding: 10px 20px;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-left: 10px;
         }
         
         /* 三栏布局 */
@@ -119,7 +119,7 @@
             color: #999;
         }
         
-        /* 日历 */
+        /* 日历卡片 */
         .calendar-card {
             background: white;
             border-radius: 20px;
@@ -205,12 +205,10 @@
             border: 1px solid #eee;
             border-radius: 12px;
             font-size: 14px;
-            transition: all 0.2s;
         }
         .search-input:focus {
             outline: none;
             border-color: #FF9800;
-            box-shadow: 0 0 0 3px rgba(255,152,0,0.1);
         }
         .search-type-select {
             padding: 12px;
@@ -298,7 +296,6 @@
             font-size: 24px;
             background-size: cover;
             background-position: center;
-            transition: all 0.2s;
         }
         .identity-name {
             font-weight: 500;
@@ -315,10 +312,6 @@
             color: #666;
             text-align: center;
             font-weight: 500;
-            transition: all 0.2s;
-        }
-        .add-identity-btn:hover {
-            background: #e0e0e0;
         }
         
         /* 动态卡片 */
@@ -328,11 +321,6 @@
             padding: 20px;
             margin-bottom: 20px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            transition: all 0.2s;
-        }
-        .moment-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
         }
         
         .moment-header {
@@ -529,98 +517,71 @@
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             z-index: 2100;
             display: none;
-            width: 350px;
+            width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
         }
         .identity-edit-modal.show {
             display: block;
         }
-        .identity-edit-modal input {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #eee;
-            border-radius: 12px;
-            box-sizing: border-box;
+        .identity-list-edit {
+            margin: 20px 0;
+            max-height: 400px;
+            overflow-y: auto;
         }
-        .avatar-type-selector {
+        .identity-edit-item {
             display: flex;
-            gap: 10px;
-            margin: 15px 0;
+            align-items: center;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 16px;
+            margin-bottom: 10px;
         }
-        .avatar-type-btn {
-            flex: 1;
-            padding: 10px;
-            background: #f5f5f5;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-        }
-        .avatar-type-btn.active {
-            background: #FF9800;
-            color: white;
-        }
-        .emoji-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 8px;
-            margin: 15px 0;
-        }
-        .emoji-option {
-            width: 45px;
-            height: 45px;
+        .identity-edit-avatar {
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            font-size: 22px;
-            background: #f5f5f5;
+            color: white;
+            font-size: 20px;
+            margin-right: 15px;
+            background-size: cover;
+            background-position: center;
         }
-        .emoji-option.selected {
-            background: #FF9800;
+        .identity-edit-info {
+            flex: 1;
+        }
+        .identity-edit-name {
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+        .identity-edit-desc {
+            font-size: 12px;
+            color: #999;
+        }
+        .identity-edit-actions {
+            display: flex;
+            gap: 5px;
+        }
+        .identity-edit-actions button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .identity-edit-actions .edit {
+            background: #4CAF50;
             color: white;
         }
-        .delete-identity-btn {
-            width: 100%;
-            padding: 12px;
+        .identity-edit-actions .delete {
             background: #f44336;
             color: white;
-            border: none;
-            border-radius: 12px;
-            margin-top: 15px;
-            cursor: pointer;
         }
-        
-        /* 全屏编辑器 */
-        .fullscreen-editor {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: white;
-            z-index: 2000;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-        }
-        .editor-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #FF9800;
-        }
-        .editor-content {
-            flex: 1;
-            padding: 15px;
-            border: 1px solid #eee;
-            border-radius: 16px;
-            font-size: 16px;
-            resize: none;
-            margin-bottom: 15px;
+        .identity-edit-actions .delete:disabled {
+            background: #ccc;
+            cursor: not-allowed;
         }
         
         .version-tag {
@@ -640,7 +601,10 @@
         <div>
             <a href="index.html"><button class="back-btn">← 返回首页</button></a>
         </div>
-        <button class="new-moment-btn" onclick="showFullscreenEditor()">➕ 发动态</button>
+        <div>
+            <button class="new-moment-btn" onclick="showFullscreenEditor()">➕ 发动态</button>
+            <button class="edit-identity-btn" onclick="showIdentityEditModal()">✏️ 编辑身份</button>
+        </div>
     </div>
     
     <!-- 三栏布局 -->
@@ -722,12 +686,12 @@
     </div>
     
     <!-- 全屏编辑器 -->
-    <div id="fullscreenEditor" class="fullscreen-editor" style="display: none;">
-        <div class="editor-header">
+    <div id="fullscreenEditor" class="fullscreen-editor" style="display: none; position: fixed; top:0; left:0; right:0; bottom:0; background:white; z-index:2000; padding:30px; overflow-y:auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom:20px;">
             <h2>📱 发动态</h2>
-            <button class="editor-close" onclick="hideFullscreenEditor()" style="background:none; border:none; font-size:24px; cursor:pointer;">×</button>
+            <button onclick="hideFullscreenEditor()" style="background:none; border:none; font-size:24px; cursor:pointer;">×</button>
         </div>
-        <textarea id="momentContent" class="editor-content" placeholder="说点什么..."></textarea>
+        <textarea id="momentContent" style="width:100%; height:200px; padding:15px; border:1px solid #eee; border-radius:16px; font-size:16px; margin-bottom:15px;"></textarea>
         
         <div style="margin-bottom: 15px;">
             <button onclick="selectImages()" style="padding:10px 20px; background:#f5f5f5; border:none; border-radius:12px; cursor:pointer;">📷 选择图片</button>
@@ -745,26 +709,30 @@
     
     <!-- 身份编辑弹窗 -->
     <div id="identityEditModal" class="identity-edit-modal">
+        <h3 style="margin-top:0; text-align:center;">✏️ 编辑身份</h3>
+        <div class="identity-list-edit" id="identityEditList"></div>
+        <div style="text-align: right;">
+            <button onclick="closeIdentityEditModal()" style="padding:10px 20px; background:#999; color:white; border:none; border-radius:12px;">关闭</button>
+        </div>
+    </div>
+    
+    <!-- 单个身份编辑弹窗 -->
+    <div id="singleIdentityEditModal" class="identity-edit-modal" style="width:350px;">
         <h3 style="margin-top:0;">编辑身份</h3>
-        <input type="text" id="editIdentityName" placeholder="昵称">
-        <input type="text" id="editIdentityDesc" placeholder="描述">
+        <input type="text" id="editIdentityName" placeholder="昵称" style="width:100%; padding:12px; margin:10px 0; border:1px solid #eee; border-radius:12px;">
+        <input type="text" id="editIdentityDesc" placeholder="描述" style="width:100%; padding:12px; margin:10px 0; border:1px solid #eee; border-radius:12px;">
         
-        <div class="avatar-type-selector">
-            <button class="avatar-type-btn active" onclick="showAvatarType('emoji')">表情</button>
-            <button class="avatar-type-btn" onclick="showAvatarType('image')">图片</button>
+        <div style="display: flex; gap:10px; margin:15px 0;">
+            <button class="avatar-type-btn active" onclick="showAvatarType('emoji')" style="flex:1; padding:10px; background:#f5f5f5; border:none; border-radius:12px;">表情</button>
+            <button class="avatar-type-btn" onclick="showAvatarType('image')" style="flex:1; padding:10px; background:#f5f5f5; border:none; border-radius:12px;">图片</button>
         </div>
         
-        <div id="emojiSelector" class="emoji-grid">
-            <div class="emoji-option" onclick="selectAvatar('😊')">😊</div>
-            <div class="emoji-option" onclick="selectAvatar('😎')">😎</div>
-            <div class="emoji-option" onclick="selectAvatar('🐶')">🐶</div>
-            <div class="emoji-option" onclick="selectAvatar('🐱')">🐱</div>
-            <div class="emoji-option" onclick="selectAvatar('🐼')">🐼</div>
-            <div class="emoji-option" onclick="selectAvatar('🦊')">🦊</div>
-            <div class="emoji-option" onclick="selectAvatar('🐨')">🐨</div>
-            <div class="emoji-option" onclick="selectAvatar('🐸')">🐸</div>
-            <div class="emoji-option" onclick="selectAvatar('👤')">👤</div>
-            <div class="emoji-option" onclick="selectAvatar('👑')">👑</div>
+        <div id="emojiSelector" class="emoji-grid" style="display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin:15px 0;">
+            <div class="emoji-option" onclick="selectAvatar('😊')" style="width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:22px; background:#f5f5f5;">😊</div>
+            <div class="emoji-option" onclick="selectAvatar('😎')" style="width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:22px; background:#f5f5f5;">😎</div>
+            <div class="emoji-option" onclick="selectAvatar('🐶')" style="width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:22px; background:#f5f5f5;">🐶</div>
+            <div class="emoji-option" onclick="selectAvatar('🐱')" style="width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:22px; background:#f5f5f5;">🐱</div>
+            <div class="emoji-option" onclick="selectAvatar('🐼')" style="width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:22px; background:#f5f5f5;">🐼</div>
         </div>
         
         <div id="imageUploader" style="display: none;">
@@ -772,15 +740,15 @@
             <div id="avatarPreview" style="width:60px; height:60px; border-radius:50%; margin:10px auto; background-size:cover; background-position:center;"></div>
         </div>
         
-        <button class="delete-identity-btn" onclick="deleteCurrentIdentity()">🗑️ 删除此身份</button>
+        <button class="delete-identity-btn" onclick="deleteCurrentIdentity()" style="width:100%; padding:12px; background:#f44336; color:white; border:none; border-radius:12px; margin-top:15px; cursor:pointer;">🗑️ 删除此身份</button>
         
-        <div style="text-align: right; margin-top: 15px;">
-            <button onclick="saveIdentityEdit()" style="background:#4CAF50; color:white; padding:10px 20px; border:none; border-radius:12px; margin-right:5px;">保存</button>
-            <button onclick="closeIdentityEdit()" style="background:#999; color:white; padding:10px 20px; border:none; border-radius:12px;">取消</button>
+        <div style="display: flex; gap:10px; margin-top: 15px;">
+            <button onclick="saveIdentityEdit()" style="flex:1; padding:12px; background:#4CAF50; color:white; border:none; border-radius:12px; cursor:pointer;">保存</button>
+            <button onclick="closeSingleIdentityEdit()" style="flex:1; padding:12px; background:#999; color:white; border:none; border-radius:12px; cursor:pointer;">取消</button>
         </div>
     </div>
     
-    <div class="version-tag">v6.0 - 2024.3.5 修复身份删除bug</div>
+    <div class="version-tag">v7.0 - 2024.3.5 修复身份删除bug</div>
     
     <script>
         // 数据存储
@@ -802,6 +770,9 @@
         
         // 初始化
         function init() {
+            console.log('初始化动态页面');
+            console.log('当前动态数量:', moments.length);
+            
             // 修复身份数据：确保所有身份都有正确的id和isDefault属性
             identities = identities.map((id, index) => {
                 if (typeof id === 'string' || !id.id) {
@@ -830,7 +801,7 @@
             loadCalendar();
             loadFilters();
             loadIdentities();
-            filterMoments();
+            filterMoments(); // 这会调用displayMoments显示动态
         }
         
         // ==================== 统计 ====================
@@ -861,10 +832,12 @@
             }).filter(d => d !== null);
             
             let html = '';
+            // 填充前面的空白
             for (let i = 1; i < startDay; i++) {
                 html += '<div></div>';
             }
             
+            // 填充日期
             for (let d = 1; d <= lastDay.getDate(); d++) {
                 const hasMoment = daysWithMoments.includes(d);
                 const isToday = d === new Date().getDate() && month === new Date().getMonth() && year === new Date().getFullYear();
@@ -887,28 +860,35 @@
         }
         
         function filterByDate(day) {
-            const date = new Date(currentYear, currentMonth, day);
             // 实现按日期筛选
+            const date = new Date(currentYear, currentMonth, day).toLocaleDateString();
+            // 这里可以添加日期筛选逻辑
         }
         
         // ==================== 筛选 ====================
         function loadFilters() {
             // 动态册筛选
             const albums = [...new Set(moments.map(m => m.album).filter(Boolean))];
-            document.getElementById('albumFilters').innerHTML = 
-                '<span class="filter-chip" onclick="selectAlbum(null)">全部</span>' +
-                albums.map(a => `<span class="filter-chip ${selectedAlbum === a ? 'selected' : ''}" onclick="selectAlbum('${a}')">${a}</span>`).join('');
+            let albumHtml = '<span class="filter-chip" onclick="selectAlbum(null)">全部</span>';
+            albums.forEach(a => {
+                albumHtml += `<span class="filter-chip ${selectedAlbum === a ? 'selected' : ''}" onclick="selectAlbum('${a}')">${a}</span>`;
+            });
+            document.getElementById('albumFilters').innerHTML = albumHtml;
             
             // 标签筛选
             const tags = [...new Set(moments.flatMap(m => m.tags || []))];
-            document.getElementById('tagFilters').innerHTML = 
-                '<span class="filter-chip" onclick="selectTag(null)">全部</span>' +
-                tags.map(t => `<span class="filter-chip ${selectedTag === t ? 'selected' : ''}" onclick="selectTag('${t}')">${t}</span>`).join('');
+            let tagHtml = '<span class="filter-chip" onclick="selectTag(null)">全部</span>';
+            tags.forEach(t => {
+                tagHtml += `<span class="filter-chip ${selectedTag === t ? 'selected' : ''}" onclick="selectTag('${t}')">${t}</span>`;
+            });
+            document.getElementById('tagFilters').innerHTML = tagHtml;
             
             // 身份筛选
-            document.getElementById('identityFilters').innerHTML = 
-                '<span class="filter-chip" onclick="selectIdentityFilter(null)">全部</span>' +
-                identities.map(i => `<span class="filter-chip ${selectedIdentityFilter === i.id ? 'selected' : ''}" onclick="selectIdentityFilter('${i.id}')">${i.name}</span>`).join('');
+            let identityHtml = '<span class="filter-chip" onclick="selectIdentityFilter(null)">全部</span>';
+            identities.forEach(i => {
+                identityHtml += `<span class="filter-chip ${selectedIdentityFilter === i.id ? 'selected' : ''}" onclick="selectIdentityFilter('${i.id}')">${i.name}</span>`;
+            });
+            document.getElementById('identityFilters').innerHTML = identityHtml;
         }
         
         function selectAlbum(album) {
@@ -932,16 +912,19 @@
         // ==================== 身份管理 ====================
         function loadIdentities() {
             const container = document.getElementById('identityGrid');
-            container.innerHTML = identities.map(identity => `
-                <div class="identity-item ${currentIdentity === identity.id ? 'selected' : ''}" 
-                     onclick="selectIdentity('${identity.id}')"
-                     ondblclick="editIdentity('${identity.id}')">
-                    <div class="identity-avatar" style="background: ${identity.color}; ${identity.avatarType === 'image' ? `background-image: url('${identity.avatar}'); background-size: cover;` : ''}">
-                        ${identity.avatarType !== 'image' ? identity.avatar : ''}
+            let html = '';
+            identities.forEach(identity => {
+                html += `
+                    <div class="identity-item ${currentIdentity === identity.id ? 'selected' : ''}" 
+                         onclick="selectIdentity('${identity.id}')">
+                        <div class="identity-avatar" style="background: ${identity.color}; ${identity.avatarType === 'image' ? `background-image: url('${identity.avatar}'); background-size: cover;` : ''}">
+                            ${identity.avatarType !== 'image' ? identity.avatar : ''}
+                        </div>
+                        <div class="identity-name">${identity.name}</div>
                     </div>
-                    <div class="identity-name">${identity.name}</div>
-                </div>
-            `).join('');
+                `;
+            });
+            container.innerHTML = html;
         }
         
         function selectIdentity(id) {
@@ -949,7 +932,38 @@
             loadIdentities();
         }
         
-        function editIdentity(id) {
+        // 显示身份编辑弹窗
+        function showIdentityEditModal() {
+            const list = document.getElementById('identityEditList');
+            let html = '';
+            identities.forEach(identity => {
+                html += `
+                    <div class="identity-edit-item">
+                        <div class="identity-edit-avatar" style="background: ${identity.color}; ${identity.avatarType === 'image' ? `background-image: url('${identity.avatar}'); background-size: cover;` : ''}">
+                            ${identity.avatarType !== 'image' ? identity.avatar : ''}
+                        </div>
+                        <div class="identity-edit-info">
+                            <div class="identity-edit-name">${identity.name} ${identity.isDefault ? '(默认)' : ''}</div>
+                            <div class="identity-edit-desc">${identity.desc || ''}</div>
+                        </div>
+                        <div class="identity-edit-actions">
+                            <button class="edit" onclick="editSingleIdentity('${identity.id}')">编辑</button>
+                            <button class="delete" onclick="deleteIdentityFromList('${identity.id}')" ${identity.isDefault ? 'disabled' : ''}>删除</button>
+                        </div>
+                    </div>
+                `;
+            });
+            list.innerHTML = html;
+            document.getElementById('identityEditModal').classList.add('show');
+        }
+        
+        function closeIdentityEditModal() {
+            document.getElementById('identityEditModal').classList.remove('show');
+        }
+        
+        // 编辑单个身份
+        function editSingleIdentity(id) {
+            closeIdentityEditModal();
             editingIdentityId = id;
             const identity = identities.find(i => i.id === id);
             
@@ -971,7 +985,56 @@
                 });
             }
             
-            document.getElementById('identityEditModal').classList.add('show');
+            document.getElementById('singleIdentityEditModal').classList.add('show');
+        }
+        
+        function closeSingleIdentityEdit() {
+            document.getElementById('singleIdentityEditModal').classList.remove('show');
+            editingIdentityId = null;
+        }
+        
+        // 从列表中删除身份
+        function deleteIdentityFromList(id) {
+            const identity = identities.find(i => i.id === id);
+            if (identity.isDefault) {
+                alert('默认身份不能删除');
+                return;
+            }
+            
+            if (!confirm(`确定删除身份"${identity.name}"吗？`)) return;
+            
+            // 删除身份
+            identities = identities.filter(i => i.id !== id);
+            
+            // 更新所有动态中的身份引用为默认身份
+            const defaultIdentity = identities.find(i => i.isDefault);
+            moments.forEach(m => {
+                if (m.identity && m.identity.id === id) {
+                    m.identity = defaultIdentity;
+                }
+                if (m.likes) {
+                    m.likes = m.likes.filter(like => like.id !== id);
+                }
+                if (m.comments) {
+                    m.comments.forEach(comment => {
+                        if (comment.identity && comment.identity.id === id) {
+                            comment.identity = defaultIdentity;
+                        }
+                    });
+                }
+            });
+            
+            localStorage.setItem('identities', JSON.stringify(identities));
+            localStorage.setItem('moments', JSON.stringify(moments));
+            
+            if (currentIdentity === id) {
+                currentIdentity = defaultIdentity.id;
+            }
+            
+            showIdentityEditModal(); // 刷新编辑列表
+            loadIdentities();
+            loadFilters();
+            filterMoments();
         }
         
         function addIdentity() {
@@ -990,48 +1053,6 @@
             localStorage.setItem('identities', JSON.stringify(identities));
             loadIdentities();
             loadFilters();
-        }
-        
-        function deleteCurrentIdentity() {
-            const identity = identities.find(i => i.id === editingIdentityId);
-            if (identity.isDefault) {
-                alert('默认身份不能删除');
-                return;
-            }
-            
-            if (!confirm(`确定删除身份"${identity.name}"吗？`)) return;
-            
-            // 删除身份
-            identities = identities.filter(i => i.id !== editingIdentityId);
-            
-            // 更新所有动态中的身份引用
-            moments.forEach(m => {
-                if (m.identity && m.identity.id === editingIdentityId) {
-                    m.identity = identities.find(i => i.isDefault);
-                }
-                if (m.likes) {
-                    m.likes = m.likes.filter(like => like.id !== editingIdentityId);
-                }
-                if (m.comments) {
-                    m.comments.forEach(comment => {
-                        if (comment.identity && comment.identity.id === editingIdentityId) {
-                            comment.identity = identities.find(i => i.isDefault);
-                        }
-                    });
-                }
-            });
-            
-            localStorage.setItem('identities', JSON.stringify(identities));
-            localStorage.setItem('moments', JSON.stringify(moments));
-            
-            if (currentIdentity === editingIdentityId) {
-                currentIdentity = identities.find(i => i.isDefault).id;
-            }
-            
-            closeIdentityEdit();
-            loadIdentities();
-            loadFilters();
-            filterMoments();
         }
         
         function showAvatarType(type) {
@@ -1098,14 +1119,51 @@
             });
             
             localStorage.setItem('moments', JSON.stringify(moments));
-            closeIdentityEdit();
+            closeSingleIdentityEdit();
             loadIdentities();
+            loadFilters();
             filterMoments();
         }
         
-        function closeIdentityEdit() {
-            document.getElementById('identityEditModal').classList.remove('show');
-            editingIdentityId = null;
+        function deleteCurrentIdentity() {
+            const identity = identities.find(i => i.id === editingIdentityId);
+            if (identity.isDefault) {
+                alert('默认身份不能删除');
+                return;
+            }
+            
+            if (!confirm(`确定删除身份"${identity.name}"吗？`)) return;
+            
+            identities = identities.filter(i => i.id !== editingIdentityId);
+            
+            const defaultIdentity = identities.find(i => i.isDefault);
+            moments.forEach(m => {
+                if (m.identity && m.identity.id === editingIdentityId) {
+                    m.identity = defaultIdentity;
+                }
+                if (m.likes) {
+                    m.likes = m.likes.filter(like => like.id !== editingIdentityId);
+                }
+                if (m.comments) {
+                    m.comments.forEach(comment => {
+                        if (comment.identity && comment.identity.id === editingIdentityId) {
+                            comment.identity = defaultIdentity;
+                        }
+                    });
+                }
+            });
+            
+            localStorage.setItem('identities', JSON.stringify(identities));
+            localStorage.setItem('moments', JSON.stringify(moments));
+            
+            if (currentIdentity === editingIdentityId) {
+                currentIdentity = defaultIdentity.id;
+            }
+            
+            closeSingleIdentityEdit();
+            loadIdentities();
+            loadFilters();
+            filterMoments();
         }
         
         // ==================== 搜索和筛选 ====================
@@ -1151,6 +1209,7 @@
                 }
             }
             
+            console.log('筛选后动态数量:', filtered.length);
             displayMoments(filtered);
         }
         
@@ -1163,27 +1222,31 @@
                 return;
             }
             
-            container.innerHTML = momentsToShow.map((moment, index) => {
+            let html = '';
+            momentsToShow.forEach((moment, index) => {
                 const originalIndex = moments.findIndex(m => m.id === moment.id);
                 
-                const likesHtml = (moment.likes || []).map(like => `
-                    <span class="like-item">
-                        <span class="like-avatar" style="background: ${like.color}; ${like.avatarType === 'image' ? `background-image: url('${like.avatar}'); background-size: cover;` : ''}">
-                            ${like.avatarType !== 'image' ? like.avatar : ''}
+                const likesHtml = (moment.likes || []).map(like => {
+                    if (!like) return '';
+                    return `
+                        <span class="like-item">
+                            <span class="like-avatar" style="background: ${like.color || '#FF9800'}; ${like.avatarType === 'image' ? `background-image: url('${like.avatar}'); background-size: cover;` : ''}">
+                                ${like.avatarType !== 'image' ? (like.avatar || '👤') : ''}
+                            </span>
+                            ${like.name || '我'}
                         </span>
-                        ${like.name}
-                    </span>
-                `).join('');
+                    `;
+                }).join('');
                 
-                return `
+                html += `
                     <div class="moment-card">
                         <div class="moment-header">
                             <div class="moment-avatar" style="background: ${moment.identity?.color || '#FF9800'}; ${moment.identity?.avatarType === 'image' ? `background-image: url('${moment.identity.avatar}'); background-size: cover;` : ''}">
-                                ${moment.identity?.avatarType !== 'image' ? moment.identity?.avatar || '📱' : ''}
+                                ${moment.identity?.avatarType !== 'image' ? (moment.identity?.avatar || '📱') : ''}
                             </div>
                             <div class="moment-info">
                                 <div class="moment-author">${moment.identity?.name || '我'}</div>
-                                <div class="moment-time">${moment.time}</div>
+                                <div class="moment-time">${moment.time || '未知时间'}</div>
                             </div>
                         </div>
                         
@@ -1193,9 +1256,9 @@
                             ).join('')}
                         </div>
                         
-                        <div class="moment-content">${moment.content.replace(/\n/g, '<br>')}</div>
+                        <div class="moment-content">${(moment.content || '').replace(/\n/g, '<br>')}</div>
                         
-                        ${moment.images?.length > 0 ? `
+                        ${moment.images && moment.images.length > 0 ? `
                             <div class="moment-images">
                                 ${moment.images.map(img => `<img src="${img}" onclick="window.open(this.src)">`).join('')}
                             </div>
@@ -1204,25 +1267,28 @@
                         ${likesHtml ? `<div class="likes-display">${likesHtml}</div>` : ''}
                         
                         <div class="moment-actions">
-                            <button class="action-btn ${(moment.likes || []).some(l => l.id === currentIdentity) ? 'liked' : ''}" onclick="toggleLike(${originalIndex})">
+                            <button class="action-btn ${(moment.likes || []).some(l => l && l.id === currentIdentity) ? 'liked' : ''}" onclick="toggleLike(${originalIndex})">
                                 ❤️ ${(moment.likes || []).length}
                             </button>
                             <span class="action-btn">💬 ${moment.comments?.length || 0}</span>
                         </div>
                         
                         <div class="comments-section">
-                            ${(moment.comments || []).map(comment => `
-                                <div class="comment">
-                                    <div class="comment-avatar" style="background: ${comment.identity?.color || '#FF9800'}; ${comment.identity?.avatarType === 'image' ? `background-image: url('${comment.identity.avatar}'); background-size: cover;` : ''}">
-                                        ${comment.identity?.avatarType !== 'image' ? comment.identity?.avatar || '👤' : ''}
+                            ${(moment.comments || []).map(comment => {
+                                if (!comment) return '';
+                                return `
+                                    <div class="comment">
+                                        <div class="comment-avatar" style="background: ${comment.identity?.color || '#FF9800'}; ${comment.identity?.avatarType === 'image' ? `background-image: url('${comment.identity.avatar}'); background-size: cover;` : ''}">
+                                            ${comment.identity?.avatarType !== 'image' ? (comment.identity?.avatar || '👤') : ''}
+                                        </div>
+                                        <div class="comment-content">
+                                            <div class="comment-author">${comment.identity?.name || '我'}</div>
+                                            <div class="comment-text">${comment.content || ''}</div>
+                                            <div class="comment-time">${comment.time || ''}</div>
+                                        </div>
                                     </div>
-                                    <div class="comment-content">
-                                        <div class="comment-author">${comment.identity?.name || '我'}</div>
-                                        <div class="comment-text">${comment.content}</div>
-                                        <div class="comment-time">${comment.time}</div>
-                                    </div>
-                                </div>
-                            `).join('')}
+                                `;
+                            }).join('')}
                             
                             <div class="add-comment">
                                 <input type="text" id="comment-${moment.id}" placeholder="写评论...">
@@ -1231,7 +1297,9 @@
                         </div>
                     </div>
                 `;
-            }).join('');
+            });
+            
+            container.innerHTML = html;
         }
         
         function toggleLike(index) {
@@ -1240,7 +1308,7 @@
             
             if (!moments[index].likes) moments[index].likes = [];
             
-            const likeIndex = moments[index].likes.findIndex(l => l.id === identity.id);
+            const likeIndex = moments[index].likes.findIndex(l => l && l.id === identity.id);
             
             if (likeIndex === -1) {
                 moments[index].likes.push(identity);
@@ -1276,7 +1344,7 @@
         
         // ==================== 编辑器功能 ====================
         function showFullscreenEditor() {
-            document.getElementById('fullscreenEditor').style.display = 'flex';
+            document.getElementById('fullscreenEditor').style.display = 'block';
             document.getElementById('momentContent').value = '';
             document.getElementById('imagePreview').innerHTML = '';
             selectedImages = [];
@@ -1331,11 +1399,13 @@
         
         function updateTagList() {
             const container = document.getElementById('tagList');
-            container.innerHTML = currentTags.map(tag => 
-                `<span style="display:inline-block; background:#f0f0f0; padding:5px 12px; border-radius:20px; margin:0 5px 5px 0;">
+            let html = '';
+            currentTags.forEach(tag => {
+                html += `<span style="display:inline-block; background:#f0f0f0; padding:5px 12px; border-radius:20px; margin:0 5px 5px 0;">
                     ${tag} <span style="cursor:pointer; margin-left:5px;" onclick="removeTag('${tag}')">×</span>
-                </span>`
-            ).join('');
+                </span>`;
+            });
+            container.innerHTML = html;
         }
         
         function saveMoment() {
