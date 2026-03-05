@@ -3,418 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的动态空间</title>
-    <!-- 引入优雅的圆体字库 -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+    <title>我的动态时空</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* 配色方案：柔和、现代、高级 */
-            --primary: #6C5CE7;       /* 主色调：普罗旺斯紫 */
-            --primary-light: #A29BFE; /* 辅色：淡紫 */
-            --accent: #FF7675;        /* 强调色：珊瑚红 */
-            --bg-color: #DFE6E9;      /* 背景：云雾灰 */
-            --card-bg: #FFFFFF;       /* 卡片白 */
-            --text-main: #2D3436;     /* 主文字 */
-            --text-sub: #636E72;      /* 副文字 */
-            --radius-lg: 24px;        /* 大圆角 */
-            --radius-md: 16px;        /* 中圆角 */
-            --radius-sm: 10px;        /* 小圆角 */
-            --shadow: 0 10px 30px rgba(0,0,0,0.05); /* 悬浮阴影 */
+            --primary: #6C5CE7;
+            --primary-light: #A29BFE;
+            --bg: #dfe6e9;
+            --card-bg: #ffffff;
+            --text-main: #2d3436;
+            --text-sub: #636e72;
+            --danger: #ff7675;
+            --radius: 20px;
+            --shadow: 0 8px 30px rgba(0,0,0,0.08);
         }
 
         * { box-sizing: border-box; outline: none; }
-
         body {
             font-family: 'Nunito', 'Noto Sans SC', sans-serif;
-            background: var(--bg-color);
+            background: var(--bg);
             margin: 0;
             padding: 20px;
             color: var(--text-main);
             min-height: 100vh;
         }
 
-        /* --- 顶部导航栏 --- */
+        /* --- 顶部导航 --- */
         .nav-bar {
             background: var(--card-bg);
             padding: 15px 30px;
-            border-radius: var(--radius-lg);
+            border-radius: var(--radius);
             box-shadow: var(--shadow);
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 25px;
             max-width: 1400px;
-            margin-left: auto;
-            margin-right: auto;
+            margin: 0 auto 25px auto;
         }
 
-        .brand {
-            font-size: 22px;
-            font-weight: 800;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .brand { font-size: 22px; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 10px; }
+        .nav-btn {
+            border: none; padding: 10px 20px; border-radius: 50px; font-weight: 600; cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; gap: 6px;
         }
-
-        .btn {
-            border: none;
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 14px;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
-        }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(108, 92, 231, 0.4); }
-
-        .btn-ghost {
-            background: #f1f2f6;
-            color: var(--text-sub);
-        }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3); }
+        .btn-ghost { background: #f1f2f6; color: var(--text-sub); }
         .btn-ghost:hover { background: #dfe4ea; }
 
-        /* --- 核心三栏布局 --- */
+        /* --- 布局 --- */
         .layout-grid {
             display: grid;
-            grid-template-columns: 280px 1fr 320px;
+            grid-template-columns: 300px 1fr 320px; /* 左中右 */
             gap: 25px;
             max-width: 1400px;
             margin: 0 auto;
             align-items: start;
         }
 
-        /* --- 通用卡片 --- */
         .card {
             background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            padding: 24px;
+            border-radius: var(--radius);
+            padding: 20px;
             box-shadow: var(--shadow);
             margin-bottom: 20px;
-            transition: transform 0.2s;
         }
+        .card-header { font-weight: 700; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #f5f6fa; display: flex; justify-content: space-between; align-items: center; }
 
-        .card-header {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 18px;
-            padding-bottom: 12px;
-            border-bottom: 2px solid #f5f6fa;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        /* --- 左侧：数据与日历 --- */
-        .stats-box {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            text-align: center;
-        }
+        /* --- 左侧：统计与筛选 --- */
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: center; }
         .stat-num { font-size: 20px; font-weight: 800; color: var(--primary); }
-        .stat-label { font-size: 12px; color: var(--text-sub); margin-top: 4px; }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 6px;
-            margin-top: 15px;
+        .stat-label { font-size: 12px; color: var(--text-sub); }
+        
+        .filter-group { margin-bottom: 15px; }
+        .filter-label { font-size: 12px; font-weight: bold; color: var(--text-sub); margin-bottom: 5px; display: block; }
+        .tag-cloud { display: flex; flex-wrap: wrap; gap: 5px; }
+        .filter-tag { padding: 4px 10px; background: #f1f2f6; border-radius: 12px; font-size: 12px; cursor: pointer; border: 1px solid transparent; }
+        .filter-tag.active { background: var(--primary-light); color: white; border-color: var(--primary); }
+        
+        select.filter-select {
+            width: 100%; padding: 8px; border-radius: 12px; border: 1px solid #dfe6e9; background: white;
         }
-        .cal-day {
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: 0.2s;
-            color: var(--text-sub);
-        }
-        .cal-day:hover { background: #eee; }
-        .cal-day.today { border: 2px solid var(--primary); font-weight: bold; color: var(--primary); }
-        .cal-day.has-data { background: var(--accent); color: white; }
-
-        .memory-card {
-            background: linear-gradient(135deg, #a8e063, #56ab2f);
-            color: white;
-        }
-        .memory-text { font-size: 14px; line-height: 1.5; opacity: 0.95; font-style: italic; }
 
         /* --- 中间：动态流 --- */
-        .feed-controls {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            align-items: center;
-        }
+        .moment-item { animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .moment-item {
-            position: relative;
-            animation: fadeIn 0.5s ease;
+        .m-header { display: flex; gap: 12px; margin-bottom: 12px; }
+        .m-avatar { 
+            width: 48px; height: 48px; border-radius: 50%; object-fit: cover; 
+            display: flex; align-items: center; justify-content: center; font-size: 24px; background: #f1f2f6;
         }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .m-info h4 { margin: 0; font-size: 15px; }
+        .m-info span { font-size: 12px; color: var(--text-sub); display: block; margin-top: 4px; }
+        .m-badges { display: flex; gap: 5px; margin-top: 5px; flex-wrap: wrap; }
+        .m-badge { font-size: 10px; padding: 2px 6px; background: #f1f2f6; border-radius: 4px; color: var(--text-sub); }
 
-        .moment-top {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 12px;
-        }
+        .m-content { font-size: 15px; line-height: 1.6; margin-bottom: 12px; white-space: pre-wrap; }
+        .m-imgs { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; margin-bottom: 12px; }
+        .m-imgs img { width: 100%; height: 100px; object-fit: cover; border-radius: 12px; cursor: zoom-in; }
 
-        .avatar-frame {
-            width: 54px;
-            height: 54px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 26px;
-            background: #f5f6fa;
-            border: 3px solid white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
+        .m-actions { border-top: 1px solid #f5f6fa; padding-top: 10px; display: flex; gap: 15px; }
+        .action-btn { background: none; border: none; cursor: pointer; color: var(--text-sub); display: flex; align-items: center; gap: 5px; font-size: 13px; transition: 0.2s; }
+        .action-btn:hover { color: var(--primary); }
+        .action-btn.active { color: var(--danger); }
+        .action-btn.fav-active { color: #f1c40f; }
 
-        .user-info h4 { margin: 0 0 4px 0; font-size: 16px; }
-        .user-info p { margin: 0; font-size: 12px; color: var(--text-sub); }
-
-        .info-badges {
-            display: flex;
-            gap: 6px;
-            margin-top: 6px;
-        }
-        .badge {
-            font-size: 10px;
-            padding: 3px 8px;
-            border-radius: 20px;
-            background: #f1f2f6;
-            color: var(--text-sub);
-        }
-
-        .moment-text {
-            font-size: 15px;
-            line-height: 1.6;
-            color: #2d3436;
-            margin-bottom: 12px;
-            white-space: pre-wrap;
-        }
-
-        .moment-imgs {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-        .moment-imgs img {
-            width: 100%;
-            height: 100px;
-            object-fit: cover;
-            border-radius: var(--radius-md);
-            cursor: zoom-in;
-        }
-
-        .moment-actions {
-            border-top: 1px solid #f1f2f6;
-            padding-top: 12px;
-            display: flex;
-            gap: 20px;
-        }
-        .action-icon {
-            cursor: pointer;
-            font-size: 14px;
-            color: var(--text-sub);
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            transition: 0.2s;
-        }
-        .action-icon:hover { color: var(--primary); }
-        .action-icon.active { color: var(--accent); font-weight: bold; }
+        /* 评论区 */
+        .comment-section { background: #f9f9f9; padding: 10px; border-radius: 12px; margin-top: 10px; display: none; }
+        .comment-section.show { display: block; }
+        .comment-item { display: flex; gap: 8px; margin-bottom: 8px; font-size: 13px; }
+        .c-avatar { width: 24px; height: 24px; border-radius: 50%; background: #ddd; display: flex; align-items: center; justify-content: center; font-size: 12px; object-fit: cover; flex-shrink: 0;}
+        .c-content { background: white; padding: 6px 10px; border-radius: 8px; flex: 1; }
+        .c-time { font-size: 10px; color: #aaa; margin-top: 2px; }
+        .comment-input-box { display: flex; gap: 5px; margin-top: 10px; }
+        .comment-input { flex: 1; border: 1px solid #eee; padding: 8px; border-radius: 20px; font-size: 12px; }
 
         /* --- 右侧：功能区 --- */
-        .collection-item {
-            display: flex;
-            align-items: center;
-            padding: 12px;
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            transition: 0.2s;
-            margin-bottom: 8px;
-        }
-        .collection-item:hover { background: #f5f6fa; }
-        .collection-item.active { background: #eef2ff; color: var(--primary); font-weight: 600; }
-        .folder-icon { margin-right: 12px; font-size: 18px; }
+        
+        /* 身份切换 */
+        .identity-card { cursor: pointer; transition: 0.2s; border: 2px solid transparent; padding: 10px; border-radius: 15px; display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+        .identity-card:hover { background: #f5f6fa; }
+        .identity-card.active { border-color: var(--primary); background: #f0edff; }
+        .id-avatar-sm { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; display: flex; align-items: center; justify-content: center; background: #eee; font-size: 20px; }
 
-        /* 右侧身份矩阵 - 圆框设计 */
-        .identity-matrix {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            padding: 5px;
+        /* 收藏夹入口 */
+        .fav-folder-entry { 
+            padding: 15px; background: linear-gradient(135deg, #ffeaa7, #fab1a0); 
+            border-radius: 16px; cursor: pointer; color: #634200; font-weight: bold;
+            display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 16px;
+            transition: transform 0.2s;
         }
-        .id-circle-wrap {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-        }
-        .id-avatar-circle {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            background: white;
-            border: 2px solid #eee;
-            transition: all 0.2s;
-            margin-bottom: 6px;
-        }
-        .id-circle-wrap:hover .id-avatar-circle { transform: scale(1.1); border-color: var(--primary); }
-        .id-name-limit {
-            font-size: 11px;
-            width: 100%;
-            text-align: center;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis; /* 文字出框修复：超出显示省略号 */
-            color: var(--text-sub);
-        }
+        .fav-folder-entry:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(253, 203, 110, 0.4); }
 
-        /* --- 搜索框 --- */
-        .search-bar {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #f1f2f6;
-            border-radius: var(--radius-md);
-            font-size: 14px;
-            transition: 0.3s;
-        }
-        .search-bar:focus { border-color: var(--primary); }
+        /* 动态册管理 */
+        .album-item { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee; font-size: 14px; }
+        .album-del { color: var(--danger); cursor: pointer; font-size: 12px; }
 
-        /* --- 全屏编辑器 (新版布局) --- */
-        .editor-modal {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 0.3s;
+        /* --- 全屏编辑器 --- */
+        .editor-fullscreen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; z-index: 2000; display: none; flex-direction: column;
         }
-        .editor-modal.show { opacity: 1; }
+        .editor-fullscreen.show { display: flex; }
+        
+        .editor-header { padding: 15px 30px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .editor-body { flex: 1; display: flex; padding: 30px; gap: 40px; max-width: 1200px; margin: 0 auto; width: 100%; }
+        .editor-main { flex: 2; display: flex; flex-direction: column; }
+        .editor-side { flex: 1; background: #f9f9f9; padding: 25px; border-radius: 20px; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; }
+        
+        .editor-text { flex: 1; border: none; font-size: 18px; resize: none; margin-bottom: 20px; font-family: inherit; }
+        .preview-area { display: flex; gap: 10px; height: 100px; overflow-x: auto; }
+        .preview-img { height: 90px; border-radius: 10px; }
 
-        .editor-container {
-            width: 900px;
-            height: 600px;
-            background: white;
-            border-radius: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-            display: flex;
-            overflow: hidden;
-            border: 1px solid #eee;
+        /* --- 弹窗通用 --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
+            z-index: 3000; display: none; justify-content: center; align-items: center;
         }
+        .modal-content { background: white; padding: 25px; border-radius: 20px; width: 90%; max-width: 450px; animation: popIn 0.3s; }
+        @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        /* 编辑器左侧 */
-        .editor-left {
-            flex: 1.8;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            border-right: 1px solid #f5f6fa;
-        }
-        .editor-textarea {
-            flex: 1;
-            border: none;
-            resize: none;
-            font-size: 18px;
-            line-height: 1.6;
-            color: var(--text-main);
-            margin-bottom: 20px;
-        }
-        .preview-zone { display: flex; gap: 10px; overflow-x: auto; height: 90px; padding: 5px; }
-        .preview-img { height: 80px; width: 80px; border-radius: 12px; object-fit: cover; }
+        .form-group { margin-bottom: 15px; }
+        .form-label { display: block; margin-bottom: 5px; font-size: 12px; font-weight: bold; color: #888; }
+        .form-input { width: 100%; padding: 10px; border: 1px solid #eee; border-radius: 10px; }
 
-        /* 编辑器右侧 */
-        .editor-right {
-            flex: 1.2;
-            padding: 30px;
-            background: #FAFBFC;
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-            overflow-y: auto;
-        }
+        /* 搜索框组 */
+        .search-group { display: flex; gap: 5px; margin-bottom: 10px; }
+        .search-input { flex: 1; padding: 8px; border-radius: 10px; border: 1px solid #ddd; }
+        .search-select { width: 80px; border-radius: 10px; border: 1px solid #ddd; }
 
-        .section-label { font-size: 12px; font-weight: 700; color: #b2bec3; margin-bottom: 10px; letter-spacing: 1px; }
-
-        /* 第一行：身份选择 (圆头像横向滚动) */
-        .avatar-scroll {
-            display: flex;
-            gap: 12px;
-            overflow-x: auto;
-            padding-bottom: 5px;
-        }
-        .avatar-option {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            cursor: pointer;
-            border: 2px solid transparent;
-            flex-shrink: 0;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        .avatar-option.selected { border-color: var(--primary); background: #eef2ff; transform: scale(1.1); }
-
-        /* 第二行：环境信息 */
-        .env-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-        .select-styled {
-            width: 100%;
-            padding: 10px;
-            border-radius: 12px;
-            border: 1px solid #dfe6e9;
-            background: white;
-            font-size: 13px;
-        }
-
-        /* 第三行：标签与收藏 */
-        .tag-input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #dfe6e9;
-            border-radius: 12px;
-            font-size: 13px;
-            margin-bottom: 10px;
-        }
-
-        /* 响应式适配 */
+        /* 响应式 */
         @media (max-width: 900px) {
             .layout-grid { grid-template-columns: 1fr; }
-            .editor-container { flex-direction: column; width: 100%; height: 100%; border-radius: 0; }
-            .editor-left { height: 50%; }
-            .editor-right { height: 50%; }
+            .editor-body { flex-direction: column; padding: 15px; }
+            .editor-side { width: 100%; }
         }
     </style>
 </head>
@@ -423,551 +187,790 @@
     <!-- 顶部导航 -->
     <nav class="nav-bar">
         <div class="brand">
-            <span style="font-size: 28px;">🦄</span> 我的动态空间
+            <span style="font-size: 24px;">🪐</span> 我的动态时空
         </div>
-        <div style="display: flex; gap: 12px;">
-            <button class="btn btn-ghost" onclick="resetAll()">🧹 清空重置</button>
-            <button class="btn btn-primary" onclick="showEditor()">✨ 写动态</button>
+        <div style="display: flex; gap: 10px;">
+            <a href="index.html" style="text-decoration:none;"><button class="nav-btn btn-ghost">🏠 返回首页</button></a>
+            <button class="nav-btn btn-ghost" onclick="resetData()">⚠️ 重置数据</button>
+            <button class="nav-btn btn-primary" onclick="openEditor()">✨ 发布动态</button>
         </div>
     </nav>
 
     <!-- 主布局 -->
     <div class="layout-grid">
         
-        <!-- 左侧：统计区 -->
+        <!-- 左侧：筛选与统计 -->
         <aside>
             <div class="card">
-                <div class="card-header">📊 记录统计</div>
-                <div class="stats-box">
+                <div class="card-header">📅 今日概览</div>
+                <div style="text-align: center; font-size: 24px; font-weight: bold; color: var(--text-main); margin-bottom: 15px;" id="date-display">
+                    --
+                </div>
+                <div class="stat-grid">
                     <div>
-                        <div class="stat-num" id="count-moments">0</div>
+                        <div class="stat-num" id="stat-total">0</div>
                         <div class="stat-label">总动态</div>
                     </div>
                     <div>
-                        <div class="stat-num" id="count-likes">0</div>
-                        <div class="stat-label">获赞数</div>
-                    </div>
-                    <div>
-                        <div class="stat-num" id="count-days">0</div>
-                        <div class="stat-label">记录天数</div>
-                    </div>
-                    <div>
-                        <div class="stat-num" id="current-year">2026</div>
-                        <div class="stat-label">年份</div>
+                        <div class="stat-num" id="stat-favs">0</div>
+                        <div class="stat-label">总收藏</div>
                     </div>
                 </div>
             </div>
 
-            <!-- 去年今天功能 -->
-            <div class="card memory-card">
-                <div class="card-header" style="border-color: rgba(255,255,255,0.2); color:white;">🕰️ 去年今天</div>
-                <div id="last-year-content" class="memory-text">
-                    正在检索时空碎片...
-                </div>
-            </div>
-
-            <!-- 日历 -->
             <div class="card">
-                <div class="card-header">
-                    <span id="cal-title">📅 日历</span>
-                    <div style="font-size: 14px;">
-                        <span onclick="switchMonth(-1)" style="cursor:pointer">◀</span>
-                        <span onclick="switchMonth(1)" style="cursor:pointer; margin-left:10px;">▶</span>
+                <div class="card-header">🔍 搜索</div>
+                <div class="search-group">
+                    <select id="search-type" class="search-select">
+                        <option value="all">全部</option>
+                        <option value="content">内容</option>
+                        <option value="comment">评论</option>
+                    </select>
+                    <input type="text" id="search-input" class="search-input" placeholder="输入关键词..." oninput="applyFilters()">
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">🌪️ 筛选器</div>
+                <div class="filter-group">
+                    <span class="filter-label">心情</span>
+                    <select id="filter-mood" class="filter-select" onchange="applyFilters()">
+                        <option value="">全部</option>
+                        <option value="😊">😊 开心</option>
+                        <option value="😐">😐 平淡</option>
+                        <option value="😔">😔 难过</option>
+                        <option value="😡">😡 生气</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <span class="filter-label">天气</span>
+                    <select id="filter-weather" class="filter-select" onchange="applyFilters()">
+                        <option value="">全部</option>
+                        <option value="☀️">☀️ 晴朗</option>
+                        <option value="☁️">☁️ 多云</option>
+                        <option value="🌧️">🌧️ 下雨</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <span class="filter-label">标签</span>
+                    <div class="tag-cloud" id="filter-tags">
+                        <!-- JS 生成 -->
                     </div>
                 </div>
-                <div class="calendar-grid" id="calendar-view"></div>
             </div>
         </aside>
 
-        <!-- 中间：内容流 -->
+        <!-- 中间：动态列表 -->
         <main>
-            <div class="feed-controls">
-                <h3 style="margin:0;">⏳ 时间轴</h3>
-                <button class="btn btn-ghost" onclick="toggleSort()" id="sort-btn">⬇️ 时间倒序</button>
+            <div id="moments-container">
+                <!-- 动态列表 JS 生成 -->
             </div>
-            <div id="feed-container"></div>
         </main>
 
         <!-- 右侧：功能区 -->
         <aside>
-            <!-- 收藏夹 -->
-            <div class="card">
-                <div class="card-header">📁 收藏夹</div>
-                <div id="collection-list">
-                    <div class="collection-item active" onclick="setFilter('all', this)">
-                        <span class="folder-icon">📑</span> 全部动态
-                    </div>
-                    <div class="collection-item" onclick="setFilter('favorites', this)">
-                        <span class="folder-icon">⭐</span> 默认收藏夹
-                    </div>
-                    <div id="custom-albums"></div>
-                </div>
-            </div>
-
-            <!-- 身份矩阵 (圆框修复版) -->
+            <!-- 身份管理 -->
             <div class="card">
                 <div class="card-header">
-                    <span>👥 身份管理</span>
-                    <span style="font-size:12px; color:var(--primary); cursor:pointer;" onclick="createNewIdentity()">+新增</span>
+                    <span>🎭 当前身份</span>
+                    <button class="nav-btn btn-ghost" style="padding: 4px 8px; font-size:12px;" onclick="openIdentityManager()">⚙️ 管理</button>
                 </div>
-                <div class="identity-matrix" id="sidebar-identities">
-                    <!-- JS 生成 -->
+                <div id="identity-list-container">
+                    <!-- 身份列表 -->
                 </div>
             </div>
 
-            <!-- 搜索 -->
+            <!-- 收藏夹入口 (单格子) -->
             <div class="card">
-                <div class="card-header">🔍 搜索</div>
-                <input type="text" class="search-bar" placeholder="搜索内容或标签..." oninput="handleSearch(this.value)">
+                <div class="card-header">⭐ 我的收藏</div>
+                <div class="fav-folder-entry" onclick="openFavModal()">
+                    📂 打开收藏夹列表
+                </div>
+            </div>
+
+            <!-- 动态册管理 -->
+            <div class="card">
+                <div class="card-header">
+                    <span>📚 动态册</span>
+                    <button class="nav-btn btn-ghost" style="padding: 4px 8px; font-size:12px;" onclick="addAlbum()">+ 新建</button>
+                </div>
+                <div id="album-list-container">
+                    <!-- 动态册列表 -->
+                </div>
             </div>
         </aside>
-
     </div>
 
-    <!-- 全屏编辑器 (完全修复版) -->
-    <div class="editor-modal" id="editor" style="display: none;">
-        <div class="editor-container">
-            <!-- 左侧：输入区 -->
-            <div class="editor-left">
-                <h2 style="margin-top:0; color:var(--primary);">📝 记录当下</h2>
-                <textarea id="post-content" class="editor-textarea" placeholder="此刻在想什么？..."></textarea>
-                
-                <div class="preview-zone" id="post-previews"></div>
-                
-                <div style="margin-top: auto; display: flex; gap: 15px; align-items: center;">
-                    <button class="btn btn-ghost" onclick="document.getElementById('file-input').click()">📷 添加图片</button>
-                    <input type="file" id="file-input" hidden multiple accept="image/*" onchange="processImages(this)">
-                    <div style="flex:1"></div>
-                    <button class="btn btn-ghost" onclick="hideEditor()">取消</button>
-                    <button class="btn btn-primary" onclick="submitPost()">🚀 发布</button>
+    <!-- 全屏编辑器 -->
+    <div id="editor-screen" class="editor-fullscreen">
+        <div class="editor-header">
+            <h2 style="margin:0;">📝 发布新动态</h2>
+            <div style="display:flex; gap:10px;">
+                <button class="nav-btn btn-ghost" onclick="closeEditor()">取消</button>
+                <button class="nav-btn btn-primary" onclick="publishMoment()">🚀 发布</button>
+            </div>
+        </div>
+        <div class="editor-body">
+            <div class="editor-main">
+                <textarea id="edit-content" class="editor-text" placeholder="记录此刻的想法..."></textarea>
+                <div class="preview-area" id="edit-previews"></div>
+                <div style="margin-top:auto; padding-top:20px;">
+                    <button class="nav-btn btn-ghost" onclick="document.getElementById('edit-file').click()">📷 添加图片</button>
+                    <input type="file" id="edit-file" hidden multiple accept="image/*" onchange="handleFiles(this)">
                 </div>
             </div>
-
-            <!-- 右侧：设置区 -->
-            <div class="editor-right">
-                <!-- 第一行：身份选择 -->
-                <div>
-                    <div class="section-label">选择身份</div>
-                    <div class="avatar-scroll" id="editor-identities">
-                        <!-- JS 填充 -->
-                    </div>
+            <div class="editor-side">
+                <div class="form-group">
+                    <label class="form-label">发布身份</label>
+                    <select id="edit-identity" class="form-input"></select>
                 </div>
-
-                <!-- 第二行：心情/天气/地点 -->
-                <div>
-                    <div class="section-label">状态 & 环境</div>
-                    <div class="env-grid">
-                        <select id="post-mood" class="select-styled">
+                <div class="form-group">
+                    <label class="form-label">状态</label>
+                    <div style="display:flex; gap:10px;">
+                        <select id="edit-mood" class="form-input">
                             <option value="😊">😊 开心</option>
                             <option value="😐">😐 平淡</option>
                             <option value="😔">😔 难过</option>
                             <option value="😡">😡 生气</option>
-                            <option value="😴">😴 疲惫</option>
-                            <option value="🥳">🥳 狂欢</option>
                         </select>
-                        <select id="post-weather" class="select-styled">
+                        <select id="edit-weather" class="form-input">
                             <option value="☀️">☀️ 晴朗</option>
                             <option value="☁️">☁️ 多云</option>
                             <option value="🌧️">🌧️ 下雨</option>
-                            <option value="❄️">❄️ 下雪</option>
-                            <option value="⛈️">⛈️ 雷阵雨</option>
                         </select>
                     </div>
-                    <input type="text" id="post-location" class="select-styled" placeholder="📍 地点 (可选)" style="margin-top:10px;">
                 </div>
-
-                <!-- 第三行：归档 -->
-                <div>
-                    <div class="section-label">归档分类</div>
-                    <input type="text" id="post-tags" class="tag-input" placeholder="#标签 (空格分隔)">
-                    <select id="post-album" class="select-styled">
-                        <option value="">📂 选择动态册 (默认)</option>
-                        <option value="日常琐事">🥗 日常琐事</option>
-                        <option value="特别纪念">🎁 特别纪念</option>
-                        <option value="灵感笔记">💡 灵感笔记</option>
-                        <option value="旅行日记">✈️ 旅行日记</option>
-                    </select>
+                <div class="form-group">
+                    <label class="form-label">归档到动态册</label>
+                    <select id="edit-album" class="form-input"></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">标签 (空格分隔)</label>
+                    <input type="text" id="edit-tags" class="form-input" placeholder="#生活 #记录">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">地点</label>
+                    <input type="text" id="edit-location" class="form-input" placeholder="📍 在哪里？">
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- 收藏夹管理弹窗 -->
+    <div id="fav-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="card-header">
+                📂 收藏夹管理
+                <span onclick="document.getElementById('fav-modal').style.display='none'" style="cursor:pointer">✕</span>
+            </div>
+            <div id="fav-folder-list" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px;"></div>
+            <button class="nav-btn btn-ghost" style="width:100%" onclick="createNewFavFolder()">+ 新建收藏夹</button>
+        </div>
+    </div>
+
+    <!-- 收藏选择弹窗 -->
+    <div id="save-to-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 style="margin-top:0">⭐ 收藏到...</h3>
+            <div id="save-to-list" style="display:flex; flex-direction:column; gap:8px; margin-bottom:15px;"></div>
+            <button class="nav-btn btn-ghost" onclick="document.getElementById('save-to-modal').style.display='none'">取消</button>
+        </div>
+    </div>
+
+    <!-- 身份管理弹窗 -->
+    <div id="identity-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 style="margin-top:0">⚙️ 管理身份</h3>
+            <div id="manage-id-list" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px;"></div>
+            <div style="border-top: 1px solid #eee; padding-top: 15px;">
+                <h4 style="margin:0 0 10px 0">新建身份</h4>
+                <input type="text" id="new-id-name" class="form-input" placeholder="昵称" style="margin-bottom:5px;">
+                <input type="text" id="new-id-bio" class="form-input" placeholder="一句话简介" style="margin-bottom:5px;">
+                <div style="display:flex; gap:10px; margin-bottom:10px;">
+                    <select id="new-id-type" class="form-input" onchange="toggleAvatarInput()">
+                        <option value="emoji">Emoji头像</option>
+                        <option value="img">图片头像</option>
+                    </select>
+                    <input type="text" id="new-id-emoji" class="form-input" placeholder="输入Emoji (如 🦁)" value="👤">
+                    <input type="file" id="new-id-file" class="form-input" style="display:none;" accept="image/*">
+                </div>
+                <button class="nav-btn btn-primary" style="width:100%" onclick="createNewIdentity()">创建</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // === 数据核心 ===
-        const STORAGE_KEY = 'my_space_data_v3'; // 独立存储键
+        // === 数据结构定义 ===
+        const DB_KEY = 'moments_db_v4';
+        
         let db = {
-            moments: [],
+            currentIdentityId: 'default',
             identities: [
-                { id: 1, name: '我', avatar: '🐱', color: '#6C5CE7' },
-                { id: 2, name: '工作状态', avatar: '💼', color: '#0984e3' }
+                { id: 'default', name: '我 (默认)', avatar: '👤', type: 'emoji', bio: '原本的我', isDefault: true }
             ],
-            albums: ['日常琐事', '特别纪念', '灵感笔记', '旅行日记']
+            // 收藏夹 (全局，不分身份)
+            favoriteFolders: [
+                { id: 'fav_default', name: '默认收藏夹', isDefault: true, locked: true },
+                { id: 'fav_all', name: '全部收藏', isDefault: true, locked: true } // 这是一个虚拟文件夹逻辑，实际存储时不单独存
+            ],
+            albums: ['默认动态册'],
+            moments: [] 
+            /* Moment结构: 
+               { 
+                 id, content, images[], time, identityId, 
+                 mood, weather, location, tags[], album,
+                 likes: ['id1', 'id2'], // 存点赞的身份ID
+                 comments: [{ identityId, content, time }],
+                 savedTo: ['fav_default'] // 存所在的收藏夹ID
+               }
+            */
         };
 
         let tempImages = [];
         let viewState = {
-            sortDesc: true,
-            filterType: 'all', // 'all', 'favorites', or albumName
-            searchQuery: '',
-            calDate: new Date()
+            search: '',
+            searchType: 'all',
+            mood: '',
+            weather: '',
+            tag: '',
+            currentFolderId: null // 当前查看的收藏夹ID，null代表看全部动态
         };
 
         // === 初始化 ===
-        window.onload = function() {
+        window.onload = () => {
             loadData();
-            refreshUI();
-            
-            // 修复年份显示
-            document.getElementById('current-year').textContent = new Date().getFullYear();
+            document.getElementById('date-display').innerText = new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+            renderAll();
         };
 
         function loadData() {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved) {
-                db = JSON.parse(saved);
-            }
-            // 确保每个动态都有收藏字段
-            db.moments.forEach(m => {
-                if (m.isFavorite === undefined) m.isFavorite = false;
-            });
+            const saved = localStorage.getItem(DB_KEY);
+            if(saved) db = JSON.parse(saved);
         }
 
         function saveData() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
-            refreshUI();
+            localStorage.setItem(DB_KEY, JSON.stringify(db));
+            renderStats();
         }
 
-        function resetAll() {
-            if (confirm('确定要清空所有数据吗？此操作不可撤销！')) {
-                localStorage.removeItem(STORAGE_KEY);
+        function resetData() {
+            if(confirm('确定重置所有数据吗？')) {
+                localStorage.removeItem(DB_KEY);
                 location.reload();
             }
         }
 
-        function refreshUI() {
+        function renderAll() {
+            renderIdentitySwitcher();
+            renderAlbumsSidebar();
             renderFeed();
             renderStats();
-            renderCalendar();
-            renderLastYear();
-            renderSidebarIdentities();
-            renderAlbums();
+            renderTagsCloud();
         }
 
-        // === 渲染逻辑 ===
-        function renderFeed() {
-            const container = document.getElementById('feed-container');
-            container.innerHTML = '';
-
-            let list = db.moments.filter(m => {
-                // 搜索过滤
-                const matchSearch = m.content.toLowerCase().includes(viewState.searchQuery.toLowerCase()) || 
-                                    (m.tags && m.tags.some(t => t.includes(viewState.searchQuery)));
-                if (!matchSearch) return false;
-
-                // 分类过滤
-                if (viewState.filterType === 'all') return true;
-                if (viewState.filterType === 'favorites') return m.isFavorite;
-                return m.album === viewState.filterType;
-            });
-
-            // 排序
-            list.sort((a, b) => viewState.sortDesc ? b.time - a.time : a.time - b.time);
-
-            if (list.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding:50px; color:#b2bec3;">
-                    📭 暂无内容，去写一条吧~
-                </div>`;
-                return;
-            }
-
-            list.forEach(m => {
-                const identity = db.identities.find(i => i.id === m.identityId) || db.identities[0];
-                const date = new Date(m.time);
-                const timeStr = `${date.getMonth()+1}月${date.getDate()}日 ${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}`;
-                
-                const el = document.createElement('div');
-                el.className = 'card moment-item';
-                el.innerHTML = `
-                    <div class="moment-top">
-                        <div class="avatar-frame" style="color:${identity.color}">
-                            ${identity.avatar}
-                        </div>
-                        <div class="user-info">
-                            <h4 style="color:${identity.color}">${identity.name}</h4>
-                            <p>${timeStr} ${m.location ? '· ' + m.location : ''}</p>
-                            <div class="info-badges">
-                                <span class="badge">${m.mood}</span>
-                                <span class="badge">${m.weather}</span>
-                                ${m.album ? `<span class="badge" style="background:#e3f2fd; color:#0984e3">${m.album}</span>` : ''}
-                            </div>
-                        </div>
+        // === 身份管理 ===
+        function renderIdentitySwitcher() {
+            const container = document.getElementById('identity-list-container');
+            container.innerHTML = db.identities.map(id => `
+                <div class="identity-card ${db.currentIdentityId === id.id ? 'active' : ''}" onclick="switchIdentity('${id.id}')">
+                    ${renderAvatar(id, 'id-avatar-sm')}
+                    <div>
+                        <div style="font-weight:bold; font-size:14px;">${id.name}</div>
+                        <div style="font-size:11px; color:#888;">${id.bio}</div>
                     </div>
-                    <div class="moment-text">${m.content}</div>
-                    ${m.images && m.images.length ? `
-                        <div class="moment-imgs">
-                            ${m.images.map(src => `<img src="${src}">`).join('')}
-                        </div>
-                    ` : ''}
-                    <div style="display:flex; gap:8px; margin-bottom:10px;">
-                        ${(m.tags||[]).map(t => `<span style="font-size:12px; color:var(--primary)">#${t}</span>`).join('')}
-                    </div>
-                    <div class="moment-actions">
-                        <div class="action-icon ${m.isLiked ? 'active' : ''}" onclick="toggleLike(${m.id})">
-                            ${m.isLiked ? '❤️' : '🤍'} ${m.likes || 0}
-                        </div>
-                        <div class="action-icon ${m.isFavorite ? 'active' : ''}" onclick="toggleFavorite(${m.id})">
-                            ${m.isFavorite ? '⭐ 已收藏' : '☆ 收藏'}
-                        </div>
-                        <div class="action-icon" style="margin-left:auto; color:#fab1a0;" onclick="deleteMoment(${m.id})">
-                            🗑️ 删除
-                        </div>
-                    </div>
-                `;
-                container.appendChild(el);
-            });
-        }
-
-        // === 编辑器逻辑 (核心修复) ===
-        let selectedIdentityId = null;
-
-        function showEditor() {
-            const modal = document.getElementById('editor');
-            modal.style.display = 'flex';
-            setTimeout(() => modal.classList.add('show'), 10);
-            
-            // 重置表单
-            document.getElementById('post-content').value = '';
-            document.getElementById('post-previews').innerHTML = '';
-            document.getElementById('post-location').value = '';
-            document.getElementById('post-tags').value = '';
-            tempImages = [];
-            
-            // 渲染编辑器内的身份列表
-            renderEditorIdentities();
-        }
-
-        function hideEditor() {
-            const modal = document.getElementById('editor');
-            modal.classList.remove('show');
-            setTimeout(() => modal.style.display = 'none', 300);
-        }
-
-        function renderEditorIdentities() {
-            const container = document.getElementById('editor-identities');
-            container.innerHTML = db.identities.map((i, idx) => `
-                <div class="avatar-option ${idx === 0 ? 'selected' : ''}" 
-                     onclick="selectEditorIdentity(this, ${i.id})"
-                     style="color:${i.color}">
-                    ${i.avatar}
                 </div>
             `).join('');
-            selectedIdentityId = db.identities[0].id; // 默认选中第一个
         }
 
-        function selectEditorIdentity(el, id) {
-            document.querySelectorAll('.avatar-option').forEach(e => e.classList.remove('selected'));
-            el.classList.add('selected');
-            selectedIdentityId = id;
+        function renderAvatar(identity, className) {
+            if (identity.type === 'img') {
+                return `<img src="${identity.avatar}" class="${className}">`;
+            }
+            return `<div class="${className}">${identity.avatar}</div>`;
         }
 
-        function processImages(input) {
-            const files = Array.from(input.files);
-            files.forEach(file => {
+        function switchIdentity(id) {
+            db.currentIdentityId = id;
+            renderIdentitySwitcher();
+            // 切换身份后，点赞状态可能会变，所以重绘Feed
+            renderFeed(); 
+        }
+
+        function openIdentityManager() {
+            document.getElementById('identity-modal').style.display = 'flex';
+            renderManageIdList();
+        }
+
+        function renderManageIdList() {
+            const list = document.getElementById('manage-id-list');
+            list.innerHTML = db.identities.map(id => `
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid #eee;">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        ${renderAvatar(id, 'id-avatar-sm')}
+                        <span>${id.name}</span>
+                    </div>
+                    ${!id.isDefault ? `<button style="color:red; background:none; border:none; cursor:pointer;" onclick="deleteIdentity('${id.id}')">删除</button>` : '<span style="font-size:12px; color:#aaa;">默认</span>'}
+                </div>
+            `).join('');
+        }
+
+        function toggleAvatarInput() {
+            const type = document.getElementById('new-id-type').value;
+            if(type === 'emoji') {
+                document.getElementById('new-id-emoji').style.display = 'block';
+                document.getElementById('new-id-file').style.display = 'none';
+            } else {
+                document.getElementById('new-id-emoji').style.display = 'none';
+                document.getElementById('new-id-file').style.display = 'block';
+            }
+        }
+
+        function createNewIdentity() {
+            const name = document.getElementById('new-id-name').value;
+            const bio = document.getElementById('new-id-bio').value;
+            const type = document.getElementById('new-id-type').value;
+            
+            if(!name) return alert('请输入昵称');
+
+            const newId = {
+                id: 'id_' + Date.now(),
+                name, bio, type, isDefault: false
+            };
+
+            if(type === 'emoji') {
+                newId.avatar = document.getElementById('new-id-emoji').value || '🙂';
+                finishCreateId(newId);
+            } else {
+                const file = document.getElementById('new-id-file').files[0];
+                if(file) {
+                    const reader = new FileReader();
+                    reader.onload = e => {
+                        newId.avatar = e.target.result;
+                        finishCreateId(newId);
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    newId.type = 'emoji'; // fallback
+                    newId.avatar = '👤';
+                    finishCreateId(newId);
+                }
+            }
+        }
+
+        function finishCreateId(newId) {
+            db.identities.push(newId);
+            saveData();
+            renderIdentitySwitcher();
+            renderManageIdList();
+            // 清空表单
+            document.getElementById('new-id-name').value = '';
+            document.getElementById('new-id-bio').value = '';
+        }
+
+        function deleteIdentity(id) {
+            if(confirm('确定删除该身份吗？该身份产生的点赞和评论将保留，但不再关联用户。')) {
+                db.identities = db.identities.filter(i => i.id !== id);
+                if(db.currentIdentityId === id) db.currentIdentityId = 'default';
+                saveData();
+                renderIdentitySwitcher();
+                renderManageIdList();
+            }
+        }
+
+        // === 动态册管理 ===
+        function renderAlbumsSidebar() {
+            const container = document.getElementById('album-list-container');
+            container.innerHTML = db.albums.map(a => `
+                <div class="album-item">
+                    <span>${a}</span>
+                    ${a !== '默认动态册' ? `<span class="album-del" onclick="deleteAlbum('${a}')">删除</span>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function addAlbum() {
+            const name = prompt('请输入新动态册名称:');
+            if(name && !db.albums.includes(name)) {
+                db.albums.push(name);
+                saveData();
+                renderAlbumsSidebar();
+            }
+        }
+
+        function deleteAlbum(name) {
+            if(confirm(`删除"${name}"？其中的动态将变为"默认动态册"`)) {
+                db.albums = db.albums.filter(a => a !== name);
+                db.moments.forEach(m => {
+                    if(m.album === name) m.album = '默认动态册';
+                });
+                saveData();
+                renderAlbumsSidebar();
+                renderFeed();
+            }
+        }
+
+        // === 收藏夹系统 ===
+        function openFavModal() {
+            document.getElementById('fav-modal').style.display = 'flex';
+            renderFavFolderList();
+        }
+
+        function renderFavFolderList() {
+            const list = document.getElementById('fav-folder-list');
+            
+            // 渲染固定项
+            let html = `
+                <div class="identity-card" onclick="viewFavFolder(null)">
+                    <div class="id-avatar-sm">📑</div>
+                    <div>查看全部收藏内容</div>
+                </div>
+            `;
+
+            db.favoriteFolders.forEach(f => {
+                if(f.id === 'fav_all') return; // 跳过虚拟文件夹
+                html += `
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:5px;">
+                        <div class="identity-card" style="flex:1; margin-bottom:0;" onclick="viewFavFolder('${f.id}')">
+                            <div class="id-avatar-sm">⭐</div>
+                            <div>${f.name}</div>
+                        </div>
+                        ${!f.locked ? `<button style="margin-left:5px; color:red; border:none; background:none; cursor:pointer;" onclick="deleteFavFolder('${f.id}')">✕</button>` : ''}
+                    </div>
+                `;
+            });
+            list.innerHTML = html;
+        }
+
+        function createNewFavFolder() {
+            const name = prompt('收藏夹名称:');
+            if(name) {
+                db.favoriteFolders.push({
+                    id: 'fav_' + Date.now(),
+                    name: name,
+                    isDefault: false,
+                    locked: false
+                });
+                saveData();
+                renderFavFolderList();
+            }
+        }
+
+        function deleteFavFolder(id) {
+            if(confirm('删除收藏夹？其中的动态不会被删除，只是移出该收藏夹。')) {
+                db.favoriteFolders = db.favoriteFolders.filter(f => f.id !== id);
+                // 移除引用
+                db.moments.forEach(m => {
+                    if(m.savedTo) {
+                        m.savedTo = m.savedTo.filter(fid => fid !== id);
+                    }
+                });
+                saveData();
+                renderFavFolderList();
+            }
+        }
+
+        function viewFavFolder(folderId) {
+            viewState.currentFolderId = folderId;
+            viewState.search = ''; // 清空搜索以免混淆
+            document.getElementById('fav-modal').style.display = 'none';
+            renderFeed();
+        }
+
+        // === 动态发布 (全屏编辑器) ===
+        function openEditor() {
+            document.getElementById('editor-screen').classList.add('show');
+            tempImages = [];
+            document.getElementById('edit-content').value = '';
+            document.getElementById('edit-previews').innerHTML = '';
+            document.getElementById('edit-tags').value = '';
+            document.getElementById('edit-location').value = '';
+            
+            // 填充下拉
+            const idSelect = document.getElementById('edit-identity');
+            idSelect.innerHTML = db.identities.map(i => `<option value="${i.id}">${i.name}</option>`).join('');
+            idSelect.value = db.currentIdentityId;
+
+            const albumSelect = document.getElementById('edit-album');
+            albumSelect.innerHTML = db.albums.map(a => `<option value="${a}">${a}</option>`).join('');
+        }
+
+        function closeEditor() {
+            document.getElementById('editor-screen').classList.remove('show');
+        }
+
+        function handleFiles(input) {
+            Array.from(input.files).forEach(file => {
                 const reader = new FileReader();
                 reader.onload = e => {
                     tempImages.push(e.target.result);
                     const img = document.createElement('img');
                     img.src = e.target.result;
                     img.className = 'preview-img';
-                    document.getElementById('post-previews').appendChild(img);
+                    document.getElementById('edit-previews').appendChild(img);
                 };
                 reader.readAsDataURL(file);
             });
         }
 
-        function submitPost() {
-            const content = document.getElementById('post-content').value;
-            if (!content && tempImages.length === 0) {
-                alert("写点什么再发布吧~");
+        function publishMoment() {
+            const content = document.getElementById('edit-content').value;
+            if(!content && tempImages.length === 0) return alert('写点什么吧！');
+
+            const tags = document.getElementById('edit-tags').value.split(' ').filter(t=>t);
+            
+            const moment = {
+                id: Date.now(),
+                content,
+                images: [...tempImages],
+                time: Date.now(),
+                identityId: document.getElementById('edit-identity').value,
+                mood: document.getElementById('edit-mood').value,
+                weather: document.getElementById('edit-weather').value,
+                location: document.getElementById('edit-location').value,
+                album: document.getElementById('edit-album').value,
+                tags: tags,
+                likes: [],
+                comments: [],
+                savedTo: []
+            };
+
+            db.moments.unshift(moment);
+            saveData();
+            closeEditor();
+            viewState.currentFolderId = null; // 重置视图看最新
+            renderFeed();
+        }
+
+        // === 筛选与搜索 ===
+        function applyFilters() {
+            viewState.search = document.getElementById('search-input').value.toLowerCase();
+            viewState.searchType = document.getElementById('search-type').value;
+            viewState.mood = document.getElementById('filter-mood').value;
+            viewState.weather = document.getElementById('filter-weather').value;
+            viewState.currentFolderId = null; // 搜索时退出收藏夹视图
+            renderFeed();
+        }
+
+        function toggleTagFilter(tag) {
+            viewState.tag = viewState.tag === tag ? '' : tag;
+            viewState.currentFolderId = null;
+            renderTagsCloud();
+            renderFeed();
+        }
+
+        function renderTagsCloud() {
+            const allTags = new Set();
+            db.moments.forEach(m => m.tags.forEach(t => allTags.add(t)));
+            const container = document.getElementById('filter-tags');
+            container.innerHTML = Array.from(allTags).map(t => 
+                `<span class="filter-tag ${viewState.tag === t ? 'active' : ''}" onclick="toggleTagFilter('${t}')">#${t}</span>`
+            ).join('');
+        }
+
+        // === 渲染动态流 (核心) ===
+        function renderFeed() {
+            const container = document.getElementById('moments-container');
+            
+            // 1. 基础筛选
+            let list = db.moments.filter(m => {
+                // 收藏夹筛选
+                if (viewState.currentFolderId) {
+                    if (!m.savedTo || !m.savedTo.includes(viewState.currentFolderId)) return false;
+                }
+                
+                // 属性筛选
+                if (viewState.mood && m.mood !== viewState.mood) return false;
+                if (viewState.weather && m.weather !== viewState.weather) return false;
+                if (viewState.tag && (!m.tags || !m.tags.includes(viewState.tag))) return false;
+
+                // 搜索
+                if (viewState.search) {
+                    const contentMatch = m.content.toLowerCase().includes(viewState.search);
+                    const commentMatch = m.comments.some(c => c.content.toLowerCase().includes(viewState.search));
+                    
+                    if (viewState.searchType === 'content' && !contentMatch) return false;
+                    if (viewState.searchType === 'comment' && !commentMatch) return false;
+                    if (viewState.searchType === 'all' && !contentMatch && !commentMatch) return false;
+                }
+                
+                return true;
+            });
+
+            if(viewState.currentFolderId) {
+                const folderName = db.favoriteFolders.find(f=>f.id===viewState.currentFolderId)?.name || '收藏夹';
+                container.innerHTML = `<h3 style="margin-top:0; color:var(--primary);">📂 正在查看: ${folderName}</h3>`;
+            } else {
+                container.innerHTML = '';
+            }
+
+            if(list.length === 0) {
+                container.innerHTML += `<div style="text-align:center; padding:40px; color:#aaa;">暂无相关动态</div>`;
                 return;
             }
 
-            const rawTags = document.getElementById('post-tags').value;
-            const tags = rawTags.split(' ').filter(t => t.trim() !== '');
-            const album = document.getElementById('post-album').value;
+            list.forEach(m => {
+                const author = db.identities.find(i => i.id === m.identityId) || db.identities[0];
+                const dateStr = new Date(m.time).toLocaleString();
+                const isLiked = m.likes.includes(db.currentIdentityId);
+                const isSaved = m.savedTo && m.savedTo.length > 0;
 
-            // 如果选择了新动态册，保存它
-            if (album && !db.albums.includes(album)) {
-                db.albums.push(album);
-            }
-
-            const newMoment = {
-                id: Date.now(),
-                time: Date.now(),
-                identityId: selectedIdentityId,
-                content: content,
-                images: [...tempImages],
-                mood: document.getElementById('post-mood').value,
-                weather: document.getElementById('post-weather').value,
-                location: document.getElementById('post-location').value,
-                tags: tags,
-                album: album,
-                likes: 0,
-                isLiked: false,
-                isFavorite: false
-            };
-
-            db.moments.unshift(newMoment);
-            saveData();
-            hideEditor();
-        }
-
-        // === 交互功能 ===
-        function toggleLike(id) {
-            const m = db.moments.find(x => x.id === id);
-            if (m) {
-                m.isLiked = !m.isLiked;
-                m.likes = m.isLiked ? (m.likes || 0) + 1 : (m.likes || 0) - 1;
-                saveData();
-            }
-        }
-
-        function toggleFavorite(id) {
-            const m = db.moments.find(x => x.id === id);
-            if (m) {
-                m.isFavorite = !m.isFavorite;
-                saveData();
-            }
-        }
-
-        function deleteMoment(id) {
-            if (confirm('确定删除这条动态吗？')) {
-                db.moments = db.moments.filter(x => x.id !== id);
-                saveData();
-            }
-        }
-
-        function handleSearch(val) {
-            viewState.searchQuery = val;
-            renderFeed();
-        }
-
-        function toggleSort() {
-            viewState.sortDesc = !viewState.sortDesc;
-            document.getElementById('sort-btn').innerText = viewState.sortDesc ? "⬇️ 时间倒序" : "⬆️ 时间正序";
-            renderFeed();
-        }
-
-        function setFilter(type, el) {
-            viewState.filterType = type;
-            // 更新选中样式
-            document.querySelectorAll('.collection-item').forEach(e => e.classList.remove('active'));
-            if(el) el.classList.add('active');
-            renderFeed();
-        }
-
-        // === 侧边栏功能 ===
-        function renderSidebarIdentities() {
-            const box = document.getElementById('sidebar-identities');
-            box.innerHTML = db.identities.map(i => `
-                <div class="id-circle-wrap">
-                    <div class="id-avatar-circle" style="color:${i.color}">
-                        ${i.avatar}
+                const card = document.createElement('div');
+                card.className = 'card moment-item';
+                card.innerHTML = `
+                    <div class="m-header">
+                        ${renderAvatar(author, 'm-avatar')}
+                        <div class="m-info">
+                            <h4>${author.name}</h4>
+                            <span>${dateStr} ${m.location ? '· '+m.location : ''}</span>
+                            <div class="m-badges">
+                                <span class="m-badge">${m.mood}</span>
+                                <span class="m-badge">${m.weather}</span>
+                                <span class="m-badge" style="background:#e3f2fd; color:#2196f3">${m.album}</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="id-name-limit">${i.name}</div>
-                </div>
-            `).join('');
+                    <div class="m-content">${m.content}</div>
+                    ${m.images.length ? `<div class="m-imgs">${m.images.map(src=>`<img src="${src}">`).join('')}</div>` : ''}
+                    <div style="display:flex; gap:10px; margin-bottom:10px;">
+                        ${m.tags.map(t=>`<span style="font-size:12px; color:var(--primary)">#${t}</span>`).join('')}
+                    </div>
+                    <div class="m-actions">
+                        <button class="action-btn ${isLiked ? 'active' : ''}" onclick="toggleLike(${m.id})">
+                            ${isLiked ? '❤️' : '🤍'} ${m.likes.length}
+                        </button>
+                        <button class="action-btn" onclick="toggleCommentSection(${m.id})">
+                            💬 ${m.comments.length}
+                        </button>
+                        <button class="action-btn ${isSaved ? 'fav-active' : ''}" onclick="openSaveModal(${m.id})">
+                            ${isSaved ? '⭐ 已藏' : '☆ 收藏'}
+                        </button>
+                        <button class="action-btn" onclick="deleteMoment(${m.id})" style="margin-left:auto;">🗑️</button>
+                    </div>
+                    
+                    <!-- 评论区 -->
+                    <div id="comment-box-${m.id}" class="comment-section">
+                        <div id="comment-list-${m.id}">
+                            ${renderComments(m.comments)}
+                        </div>
+                        <div class="comment-input-box">
+                            <input type="text" id="input-${m.id}" class="comment-input" placeholder="使用当前身份评论...">
+                            <button class="nav-btn btn-primary" style="padding:5px 12px; font-size:12px;" onclick="postComment(${m.id})">发送</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
         }
 
-        function createNewIdentity() {
-            const name = prompt("输入新身份名字:");
-            if (name) {
-                const avatar = prompt("输入一个Emoji作为头像:", "🐯");
-                db.identities.push({
-                    id: Date.now(),
-                    name: name,
-                    avatar: avatar || "👤",
-                    color: '#' + Math.floor(Math.random()*16777215).toString(16)
-                });
-                saveData();
+        // === 互动逻辑 ===
+        function toggleLike(mid) {
+            const m = db.moments.find(x => x.id === mid);
+            if(!m) return;
+            
+            const uid = db.currentIdentityId;
+            if(m.likes.includes(uid)) {
+                m.likes = m.likes.filter(id => id !== uid);
+            } else {
+                m.likes.push(uid);
             }
+            saveData();
+            renderFeed(); // 刷新显示红心
         }
 
-        function renderAlbums() {
-            const box = document.getElementById('custom-albums');
-            box.innerHTML = db.albums.map(a => `
-                <div class="collection-item ${viewState.filterType === a ? 'active' : ''}" 
-                     onclick="setFilter('${a}', this)">
-                    <span class="folder-icon">📂</span> ${a}
-                </div>
-            `).join('');
+        function toggleCommentSection(mid) {
+            const box = document.getElementById(`comment-box-${mid}`);
+            box.classList.toggle('show');
+        }
+
+        function renderComments(comments) {
+            if(!comments || !comments.length) return '<div style="font-size:12px; color:#aaa; text-align:center; padding:5px;">暂无评论</div>';
+            return comments.map(c => {
+                const cUser = db.identities.find(i => i.id === c.identityId) || db.identities[0];
+                return `
+                    <div class="comment-item">
+                        ${renderAvatar(cUser, 'c-avatar')}
+                        <div style="flex:1">
+                            <div class="c-content">
+                                <span style="font-weight:bold; margin-right:5px;">${cUser.name}</span>
+                                ${c.content}
+                            </div>
+                            <div class="c-time">${new Date(c.time).toLocaleString()}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function postComment(mid) {
+            const input = document.getElementById(`input-${mid}`);
+            const text = input.value.trim();
+            if(!text) return;
+
+            const m = db.moments.find(x => x.id === mid);
+            m.comments.push({
+                identityId: db.currentIdentityId,
+                content: text,
+                time: Date.now()
+            });
+            
+            input.value = '';
+            saveData();
+            // 只局部刷新评论区
+            document.getElementById(`comment-list-${mid}`).innerHTML = renderComments(m.comments);
+        }
+
+        // === 收藏互动 ===
+        let tempSaveMomentId = null;
+        function openSaveModal(mid) {
+            tempSaveMomentId = mid;
+            const m = db.moments.find(x => x.id === mid);
+            const list = document.getElementById('save-to-list');
+            
+            let html = '';
+            db.favoriteFolders.forEach(f => {
+                if(f.id === 'fav_all') return;
+                const isSavedInThis = m.savedTo && m.savedTo.includes(f.id);
+                html += `
+                    <div style="padding:10px; background:#f9f9f9; border-radius:10px; cursor:pointer; display:flex; justify-content:space-between;" onclick="toggleSaveToFolder('${f.id}')">
+                        <span>${f.name}</span>
+                        <span>${isSavedInThis ? '✅' : '⬜'}</span>
+                    </div>
+                `;
+            });
+            list.innerHTML = html;
+            document.getElementById('save-to-modal').style.display = 'flex';
+        }
+
+        function toggleSaveToFolder(fid) {
+            const m = db.moments.find(x => x.id === tempSaveMomentId);
+            if(!m.savedTo) m.savedTo = [];
+            
+            if(m.savedTo.includes(fid)) {
+                m.savedTo = m.savedTo.filter(id => id !== fid);
+            } else {
+                m.savedTo.push(fid);
+            }
+            saveData();
+            openSaveModal(tempSaveMomentId); // 刷新弹窗状态
+            renderStats();
+            renderFeed(); // 刷新列表星星状态
+        }
+
+        function deleteMoment(mid) {
+            if(confirm('确定删除这条动态？')) {
+                db.moments = db.moments.filter(m => m.id !== mid);
+                saveData();
+                renderFeed();
+                renderStats();
+            }
         }
 
         function renderStats() {
-            document.getElementById('count-moments').innerText = db.moments.length;
-            const likes = db.moments.reduce((acc, cur) => acc + (cur.likes || 0), 0);
-            document.getElementById('count-likes').innerText = likes;
-            
-            // 计算记录天数
-            const dates = new Set(db.moments.map(m => new Date(m.time).toDateString()));
-            document.getElementById('count-days').innerText = dates.size;
+            document.getElementById('stat-total').innerText = db.moments.length;
+            const totalFavs = db.moments.reduce((acc, m) => acc + (m.savedTo ? m.savedTo.length : 0), 0);
+            document.getElementById('stat-favs').innerText = totalFavs;
         }
 
-        function renderCalendar() {
-            const grid = document.getElementById('calendar-view');
-            grid.innerHTML = '';
-            
-            const year = viewState.calDate.getFullYear();
-            const month = viewState.calDate.getMonth();
-            
-            document.getElementById('cal-title').innerText = `📅 ${year}年${month+1}月`;
-            
-            const firstDay = new Date(year, month, 1).getDay(); // 0 is Sun
-            const daysInMonth = new Date(year, month+1, 0).getDate();
-            const offset = firstDay === 0 ? 6 : firstDay - 1; // Start Mon
-            
-            for(let i=0; i<offset; i++) grid.innerHTML += '<div></div>';
-            
-            const activeDays = new Set(db.moments.map(m => {
-                const d = new Date(m.time);
-                if (d.getFullYear() === year && d.getMonth() === month) return d.getDate();
-            }));
-
-            const today = new Date();
-
-            for(let i=1; i<=daysInMonth; i++) {
-                let cls = 'cal-day';
-                if (activeDays.has(i)) cls += ' has-data';
-                if (i === today.getDate() && month === today.getMonth() && year === today.getFullYear()) cls += ' today';
-                grid.innerHTML += `<div class="${cls}">${i}</div>`;
-            }
-        }
-
-        function switchMonth(delta) {
-            viewState.calDate.setMonth(viewState.calDate.getMonth() + delta);
-            renderCalendar();
-        }
-
-        function renderLastYear() {
-            const today = new Date();
-            const lastYearMoment = db.moments.find(m => {
-                const d = new Date(m.time);
-                return d.getDate() === today.getDate() && 
-                       d.getMonth() === today.getMonth() && 
-                       d.getFullYear() !== today.getFullYear();
-            });
-
-            const box = document.getElementById('last-year-content');
-            if (lastYearMoment) {
-                const d = new Date(lastYearMoment.time);
-                box.innerHTML = `
-                    <div style="font-weight:bold; margin-bottom:5px;">${d.getFullYear()}年的今天：</div>
-                    "${lastYearMoment.content.substring(0, 40)}..."
-                `;
-            } else {
-                box.innerHTML = "历史上的今天暂无记录，创造一些新回忆吧！";
-            }
-        }
     </script>
 </body>
 </html>
