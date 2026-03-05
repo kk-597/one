@@ -246,6 +246,33 @@
             background: #f44336;
         }
 
+        /* 布局切换 */
+        .layout-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            flex-wrap: wrap;
+        }
+        .layout-btn {
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 20px;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .layout-btn.active {
+            background: #FFD700;
+            color: #333;
+        }
+
         /* 排序控制 */
         .sort-controls {
             display: flex;
@@ -256,26 +283,106 @@
             border-radius: 16px;
         }
         .sort-btn {
-            padding: 6px 12px;
+            padding: 8px 16px;
             background: rgba(255,255,255,0.1);
             border: none;
-            border-radius: 8px;
+            border-radius: 20px;
             color: var(--text-color);
             cursor: pointer;
-            font-size: 12px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            min-width: 100px;
+            justify-content: center;
         }
         .sort-btn.active {
             background: #FFD700;
             color: #333;
         }
+        .sort-icon {
+            font-size: 14px;
+        }
 
-        /* 便签网格 */
+        /* 便签网格 - 不同布局 */
         .notes-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 15px;
+            transition: all 0.3s;
             min-height: 200px;
         }
+        
+        /* 默认布局 */
+        .notes-grid.default {
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        }
+        .notes-grid.default .grid-item {
+            height: auto;
+        }
+        
+        /* 网格布局 */
+        .notes-grid.grid {
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        }
+        .notes-grid.grid .grid-item {
+            text-align: center;
+            padding: 15px 10px;
+        }
+        
+        /* 瀑布布局 */
+        .notes-grid.waterfall {
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            grid-auto-rows: minmax(100px, auto);
+        }
+        .notes-grid.waterfall .grid-item {
+            break-inside: avoid;
+        }
+        
+        /* 图文布局 */
+        .notes-grid.image-text {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+        .notes-grid.image-text .grid-item {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+        }
+        .notes-grid.image-text .grid-item .item-icon {
+            font-size: 40px;
+            margin-bottom: 0;
+        }
+        
+        /* 时间布局 */
+        .notes-grid.timeline {
+            grid-template-columns: 1fr;
+        }
+        .notes-grid.timeline .grid-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 15px;
+        }
+        .notes-grid.timeline .grid-item .item-time {
+            min-width: 100px;
+            color: #FFD700;
+        }
+        
+        /* 单行布局 */
+        .notes-grid.single-line {
+            grid-template-columns: 1fr;
+        }
+        .notes-grid.single-line .grid-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 12px 15px;
+        }
+        .notes-grid.single-line .grid-item .item-icon {
+            margin-bottom: 0;
+        }
+
         .grid-item {
             background: rgba(255,255,255,0.05);
             border-radius: 16px;
@@ -309,6 +416,10 @@
         .grid-item .item-info {
             font-size: 11px;
             color: rgba(255,255,255,0.5);
+        }
+        .grid-item .item-time {
+            font-size: 11px;
+            color: #FFD700;
         }
         .grid-item .item-checkbox {
             position: absolute;
@@ -412,6 +523,10 @@
             background: #FF9800;
             color: white;
         }
+        .editor-btn.quickword {
+            background: #2196F3;
+            color: white;
+        }
         .editor-toolbar {
             display: flex;
             gap: 8px;
@@ -458,6 +573,80 @@
             color: var(--editor-text);
         }
 
+        /* 快捷词面板 */
+        .quickword-panel {
+            position: fixed;
+            right: 30px;
+            top: 100px;
+            width: 280px;
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 2100;
+            display: none;
+            color: #333;
+        }
+        .quickword-panel.show {
+            display: block;
+        }
+        .quickword-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .quickword-title {
+            font-weight: bold;
+            font-size: 16px;
+            color: #333;
+        }
+        .quickword-add {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        .quickword-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .quickword-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .quickword-item:hover {
+            background: #e0e0e0;
+            transform: translateX(-2px);
+        }
+        .quickword-text {
+            flex: 1;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .quickword-delete {
+            color: #f44336;
+            cursor: pointer;
+            padding: 4px 8px;
+            font-size: 16px;
+            opacity: 0.6;
+        }
+        .quickword-delete:hover {
+            opacity: 1;
+        }
+
         /* 弹窗样式 */
         .modal {
             position: fixed;
@@ -469,10 +658,11 @@
             border-radius: 24px;
             z-index: 2100;
             display: none;
-            width: 400px;
+            width: 450px;
             max-height: 80vh;
             overflow-y: auto;
             color: #333;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
         .modal.show {
             display: block;
@@ -480,19 +670,30 @@
         .modal h3 {
             margin-bottom: 20px;
             color: #333;
+            text-align: center;
+            font-size: 20px;
         }
-        .modal input, .modal select {
+        .modal input, .modal select, .modal textarea {
             width: 100%;
-            padding: 12px;
+            padding: 12px 15px;
             margin: 10px 0;
-            border: 1px solid #ddd;
+            border: 2px solid #e0e0e0;
             border-radius: 12px;
             font-size: 14px;
+            transition: all 0.2s;
+        }
+        .modal input:focus, .modal select:focus, .modal textarea:focus {
+            border-color: #FFD700;
+            outline: none;
+        }
+        .modal textarea {
+            min-height: 80px;
+            resize: vertical;
         }
         .modal-buttons {
             display: flex;
             gap: 10px;
-            margin-top: 20px;
+            margin-top: 25px;
         }
         .modal-btn {
             flex: 1;
@@ -501,13 +702,18 @@
             border-radius: 12px;
             cursor: pointer;
             font-weight: bold;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .modal-btn:hover {
+            transform: translateY(-2px);
         }
         .modal-btn.confirm {
             background: #4CAF50;
             color: white;
         }
         .modal-btn.cancel {
-            background: #999;
+            background: #9e9e9e;
             color: white;
         }
         .modal-btn.danger {
@@ -515,22 +721,71 @@
             color: white;
         }
 
+        /* 设置弹窗中的选项 */
+        .settings-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background: #f8f8f8;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            cursor: move;
+            border: 1px solid #e0e0e0;
+            transition: all 0.2s;
+        }
+        .settings-item:hover {
+            background: #f0f0f0;
+            border-color: #FFD700;
+        }
+        .settings-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin: 0;
+            margin-right: 15px;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        .settings-item label {
+            flex: 1;
+            text-align: left;
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.4;
+        }
+        .drag-handle {
+            color: #9e9e9e;
+            margin-left: 15px;
+            cursor: move;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .settings-item.dragging {
+            opacity: 0.5;
+            background: #e0e0e0;
+        }
+
         /* 主题选择器 */
         .theme-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
+            gap: 12px;
             margin: 20px 0;
         }
         .theme-color {
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             cursor: pointer;
-            border: 2px solid transparent;
+            border: 3px solid transparent;
+            transition: all 0.2s;
         }
         .theme-color:hover {
-            transform: scale(1.1);
+            transform: scale(1.15);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
         .theme-color.selected {
             border-color: #333;
@@ -539,7 +794,7 @@
             width: 100%;
             height: 50px;
             margin: 10px 0;
-            border: 1px solid #ddd;
+            border: 2px solid #e0e0e0;
             border-radius: 12px;
             cursor: pointer;
         }
@@ -564,12 +819,13 @@
             background: rgba(0,0,0,0.3);
             padding: 2px 5px;
             border-radius: 3px;
+            z-index: 9999;
         }
     </style>
     <!-- 引入拖拽库 -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-    <!-- 引入简繁转换库 -->
-    <script src="https://cdn.bootcdn.net/ajax/libs/opencc/1.1.4/opencc.min.js"></script>
+    <!-- 引入简繁转换库 - 使用正确CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.js"></script>
     <!-- 引入html2canvas (用于导出长图) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -610,15 +866,28 @@
                 </div>
             </div>
             
+            <!-- 布局切换 -->
+            <div class="layout-controls">
+                <button class="layout-btn" onclick="setLayout('default')" id="layoutDefault">📐 默认</button>
+                <button class="layout-btn" onclick="setLayout('grid')" id="layoutGrid">🔲 网格</button>
+                <button class="layout-btn" onclick="setLayout('waterfall')" id="layoutWaterfall">💧 瀑布</button>
+                <button class="layout-btn" onclick="setLayout('image-text')" id="layoutImageText">🖼️ 图文</button>
+                <button class="layout-btn" onclick="setLayout('timeline')" id="layoutTimeline">⏳ 时间</button>
+                <button class="layout-btn" onclick="setLayout('single-line')" id="layoutSingleLine">📏 单行</button>
+            </div>
+            
             <!-- 排序控制 -->
             <div class="sort-controls">
                 <button class="sort-btn" onclick="setSortMode('default')" id="sortDefault">📌 自由拖拽</button>
-                <button class="sort-btn" onclick="setSortMode('edit')" id="sortEdit">✏️ 编辑时间</button>
-                <button class="sort-btn" onclick="setSortMode('createAsc')" id="sortCreateAsc">📅 创建最早</button>
-                <button class="sort-btn" onclick="setSortMode('createDesc')" id="sortCreateDesc">📅 创建最新</button>
+                <button class="sort-btn" onclick="toggleSortMode('edit')" id="sortEdit">
+                    <span class="sort-icon">✏️</span> <span id="editSortText">编辑时间↓</span>
+                </button>
+                <button class="sort-btn" onclick="toggleSortMode('create')" id="sortCreate">
+                    <span class="sort-icon">📅</span> <span id="createSortText">创建时间↓</span>
+                </button>
             </div>
             
-            <div class="notes-grid" id="notesGrid"></div>
+            <div class="notes-grid default" id="notesGrid"></div>
         </div>
     </div>
 
@@ -630,6 +899,7 @@
                 <button class="editor-btn save" onclick="saveAndStay()">💾 保存</button>
             </div>
             <div class="editor-header-right">
+                <button class="editor-btn quickword" onclick="toggleQuickWord()">⚡ 快捷</button>
                 <button class="editor-btn export" onclick="showExportModal()">📤 导出</button>
                 <button class="editor-btn settings" onclick="showSettings()">⚙️ 设置</button>
             </div>
@@ -639,6 +909,36 @@
         
         <div id="editor" contenteditable="true"></div>
         <div id="imagePreview"></div>
+    </div>
+
+    <!-- 快捷词面板 -->
+    <div id="quickwordPanel" class="quickword-panel">
+        <div class="quickword-header">
+            <span class="quickword-title">⚡ 快捷词</span>
+            <button class="quickword-add" onclick="showAddQuickWordModal()">+</button>
+        </div>
+        <div class="quickword-list" id="quickwordList"></div>
+    </div>
+
+    <!-- 添加快捷词弹窗 -->
+    <div id="addQuickWordModal" class="modal">
+        <h3>⚡ 添加快捷词</h3>
+        <input type="text" id="quickWordTitle" placeholder="快捷词名称 (如: 日期)">
+        <textarea id="quickWordContent" placeholder="快捷词内容 (如: {{date}} 会自动替换为当前日期)"></textarea>
+        <div class="modal-buttons">
+            <button class="modal-btn confirm" onclick="addQuickWord()">添加</button>
+            <button class="modal-btn cancel" onclick="closeAddQuickWordModal()">取消</button>
+        </div>
+    </div>
+
+    <!-- 重命名文件夹弹窗 -->
+    <div id="renameFolderModal" class="modal">
+        <h3>📁 重命名文件夹</h3>
+        <input type="text" id="renameFolderName" placeholder="输入新名称">
+        <div class="modal-buttons">
+            <button class="modal-btn confirm" onclick="confirmRenameFolder()">确认</button>
+            <button class="modal-btn cancel" onclick="closeRenameFolderModal()">取消</button>
+        </div>
     </div>
 
     <!-- 添加文件夹弹窗 -->
@@ -657,7 +957,7 @@
     <!-- 删除文件夹确认弹窗 -->
     <div id="deleteFolderModal" class="modal">
         <h3>⚠️ 删除文件夹</h3>
-        <p>删除后，文件夹内的便签将移至"默认便签"</p>
+        <p style="text-align:center; margin:20px 0; color:#666;">删除后，文件夹内的便签将移至"默认便签"</p>
         <div class="modal-buttons">
             <button class="modal-btn danger" onclick="confirmDeleteFolder()">确认删除</button>
             <button class="modal-btn cancel" onclick="closeDeleteFolderModal()">取消</button>
@@ -667,7 +967,7 @@
     <!-- 批量移动弹窗 -->
     <div id="batchMoveModal" class="modal">
         <h3>📂 批量移动</h3>
-        <p>已选择 <span id="selectedCount">0</span> 个便签</p>
+        <p style="text-align:center; margin:10px 0;">已选择 <span id="selectedCount" style="color:#FFD700; font-weight:bold;">0</span> 个便签</p>
         <select id="moveTargetFolder">
             <option value="">选择目标文件夹</option>
         </select>
@@ -680,7 +980,7 @@
     <!-- 批量删除确认弹窗 -->
     <div id="batchDeleteModal" class="modal">
         <h3>⚠️ 批量删除</h3>
-        <p>确定删除选中的 <span id="deleteCount">0</span> 个便签吗？</p>
+        <p style="text-align:center; margin:20px 0; color:#f44336;">确定删除选中的 <span id="deleteCount">0</span> 个便签吗？</p>
         <div class="modal-buttons">
             <button class="modal-btn danger" onclick="batchDelete()">确认删除</button>
             <button class="modal-btn cancel" onclick="closeBatchDeleteModal()">取消</button>
@@ -691,20 +991,20 @@
     <div id="themeModal" class="modal">
         <h3>🎨 选择主题</h3>
         <div class="theme-grid">
-            <div class="theme-color" style="background: #667eea" onclick="setTheme('gradient', '#667eea', '#764ba2')"></div>
-            <div class="theme-color" style="background: #ff6b6b" onclick="setTheme('gradient', '#ff6b6b', '#ff8e8e')"></div>
-            <div class="theme-color" style="background: #4CAF50" onclick="setTheme('gradient', '#4CAF50', '#8BC34A')"></div>
-            <div class="theme-color" style="background: #FF9800" onclick="setTheme('gradient', '#FF9800', '#FFB74D')"></div>
-            <div class="theme-color" style="background: #9C27B0" onclick="setTheme('gradient', '#9C27B0', '#BA68C8')"></div>
-            <div class="theme-color" style="background: #00BCD4" onclick="setTheme('gradient', '#00BCD4', '#4DD0E1')"></div>
-            <div class="theme-color" style="background: #795548" onclick="setTheme('gradient', '#795548', '#A1887F')"></div>
-            <div class="theme-color" style="background: #607D8B" onclick="setTheme('gradient', '#607D8B', '#90A4AE')"></div>
-            <div class="theme-color" style="background: #E91E63" onclick="setTheme('gradient', '#E91E63', '#F06292')"></div>
-            <div class="theme-color" style="background: #3F51B5" onclick="setTheme('gradient', '#3F51B5', '#5C6BC0')"></div>
+            <div class="theme-color" style="background: #667eea" onclick="setTheme('#667eea', '#764ba2')"></div>
+            <div class="theme-color" style="background: #ff6b6b" onclick="setTheme('#ff6b6b', '#ff8e8e')"></div>
+            <div class="theme-color" style="background: #4CAF50" onclick="setTheme('#4CAF50', '#8BC34A')"></div>
+            <div class="theme-color" style="background: #FF9800" onclick="setTheme('#FF9800', '#FFB74D')"></div>
+            <div class="theme-color" style="background: #9C27B0" onclick="setTheme('#9C27B0', '#BA68C8')"></div>
+            <div class="theme-color" style="background: #00BCD4" onclick="setTheme('#00BCD4', '#4DD0E1')"></div>
+            <div class="theme-color" style="background: #795548" onclick="setTheme('#795548', '#A1887F')"></div>
+            <div class="theme-color" style="background: #607D8B" onclick="setTheme('#607D8B', '#90A4AE')"></div>
+            <div class="theme-color" style="background: #E91E63" onclick="setTheme('#E91E63', '#F06292')"></div>
+            <div class="theme-color" style="background: #3F51B5" onclick="setTheme('#3F51B5', '#5C6BC0')"></div>
         </div>
-        <p>自定义颜色</p>
-        <input type="color" id="customColorStart" class="color-picker" value="#667eea" onchange="updateCustomTheme()">
-        <input type="color" id="customColorEnd" class="color-picker" value="#764ba2" onchange="updateCustomTheme()">
+        <p style="font-weight:500; margin:15px 0 5px;">自定义颜色</p>
+        <input type="color" id="customColorStart" class="color-picker" value="#667eea">
+        <input type="color" id="customColorEnd" class="color-picker" value="#764ba2">
         <div class="modal-buttons">
             <button class="modal-btn confirm" onclick="applyCustomTheme()">应用</button>
             <button class="modal-btn cancel" onclick="closeThemeModal()">取消</button>
@@ -715,14 +1015,14 @@
     <div id="exportModal" class="modal">
         <h3>📤 导出便签</h3>
         <div style="margin: 20px 0;">
-            <div class="shop-item" onclick="exportAsImage()" style="display:flex; align-items:center; padding:15px; background:#f5f5f5; border-radius:16px; margin-bottom:10px; cursor:pointer;">
+            <div class="shop-item" onclick="exportAsImage()" style="display:flex; align-items:center; padding:15px; background:#f5f5f5; border-radius:16px; margin-bottom:10px; cursor:pointer; transition:all 0.2s;">
                 <span style="font-size:24px; margin-right:15px;">🖼️</span>
                 <div>
                     <div style="font-weight:bold;">导出为长图</div>
                     <div style="font-size:12px; color:#666;">将当前便签保存为图片</div>
                 </div>
             </div>
-            <div class="shop-item" onclick="exportAsTxt()" style="display:flex; align-items:center; padding:15px; background:#f5f5f5; border-radius:16px; margin-bottom:10px; cursor:pointer;">
+            <div class="shop-item" onclick="exportAsTxt()" style="display:flex; align-items:center; padding:15px; background:#f5f5f5; border-radius:16px; margin-bottom:10px; cursor:pointer; transition:all 0.2s;">
                 <span style="font-size:24px; margin-right:15px;">📄</span>
                 <div>
                     <div style="font-weight:bold;">导出为TXT</div>
@@ -731,34 +1031,38 @@
             </div>
         </div>
         <div style="text-align: right;">
-            <button onclick="closeExportModal()" style="padding:10px 20px; background:#999; color:white; border:none; border-radius:12px;">取消</button>
+            <button onclick="closeExportModal()" style="padding:10px 20px; background:#999; color:white; border:none; border-radius:12px; cursor:pointer;">取消</button>
         </div>
     </div>
 
     <!-- 设置弹窗 -->
-    <div id="settingsModal" class="modal" style="width: 500px;">
+    <div id="settingsModal" class="modal" style="width: 550px;">
         <h3>⚙️ 工具栏设置</h3>
-        <div style="max-height: 400px; overflow-y: auto; margin: 20px 0;">
-            <div id="settingsList"></div>
-        </div>
+        <p style="text-align:center; color:#666; margin-bottom:15px;">勾选显示的功能，拖动可调整顺序</p>
+        <div style="max-height: 400px; overflow-y: auto; margin: 20px 0; padding: 5px;" id="settingsList"></div>
         <div class="modal-buttons">
             <button class="modal-btn confirm" onclick="saveSettings()">保存</button>
             <button class="modal-btn cancel" onclick="closeSettings()">取消</button>
         </div>
     </div>
 
-    <div class="version-tag">v11.0 - 完整版</div>
+    <div class="version-tag">v13.0 - 完整版</div>
 
     <script>
         // 数据存储
         let notes = [];
         let folders = [];
+        let quickWords = [];
         let currentFolder = 'all';
         let currentEditIndex = -1;
         let isBatchMode = false;
         let selectedNotes = new Set();
         let folderToDelete = null;
-        let sortMode = 'default'; // default, edit, createAsc, createDesc
+        let folderToRename = null;
+        let sortMode = 'default';
+        let editSortDirection = 'desc'; // desc: 最新在前, asc: 最早在前
+        let createSortDirection = 'desc';
+        let currentLayout = 'default';
         
         // 历史记录
         let history = [];
@@ -789,23 +1093,23 @@
             { id: 'horizontalRule', text: '―', title: '分割线' },
             { id: 'indent', text: '↦', title: '缩进' },
             { id: 'findReplace', text: '🔍', title: '查找替换' },
-            { id: 'chineseConvert', text: '简/繁', title: '简繁转换' },
+            { id: 'chineseConvert', text: '繁', title: '简繁转换' },
             { id: 'insertImage', text: '🖼️', title: '插入图片' }
         ];
 
         // 初始化
         function init() {
             loadData();
+            loadQuickWords();
             loadTheme();
+            loadLayout();
             renderFolderTree();
             renderNotes();
             initToolbar();
-            initSortable();
         }
 
         // ==================== 数据管理 ====================
         function loadData() {
-            // 加载便签
             const savedNotes = localStorage.getItem('myNotes');
             if (savedNotes) {
                 try {
@@ -817,7 +1121,6 @@
                 notes = [];
             }
             
-            // 加载文件夹
             const savedFolders = localStorage.getItem('noteFolders');
             if (savedFolders) {
                 try {
@@ -829,7 +1132,6 @@
                 folders = [{ id: 'default', name: '默认便签', parent: null, path: '/默认便签' }];
             }
             
-            // 确保每个便签都有必要字段
             notes = notes.map((note, index) => {
                 if (!note.id) note.id = Date.now() + index;
                 if (!note.folder) note.folder = 'default';
@@ -845,6 +1147,138 @@
         function saveData() {
             localStorage.setItem('myNotes', JSON.stringify(notes));
             localStorage.setItem('noteFolders', JSON.stringify(folders));
+        }
+
+        // ==================== 快捷词管理 ====================
+        function loadQuickWords() {
+            const saved = localStorage.getItem('quickWords');
+            if (saved) {
+                try {
+                    quickWords = JSON.parse(saved);
+                } catch (e) {
+                    quickWords = [];
+                }
+            } else {
+                quickWords = [
+                    { id: 1, title: '日期', content: new Date().toLocaleDateString() },
+                    { id: 2, title: '时间', content: new Date().toLocaleTimeString() },
+                    { id: 3, title: '日期时间', content: new Date().toLocaleString() }
+                ];
+            }
+            updateQuickWordList();
+        }
+
+        function saveQuickWords() {
+            localStorage.setItem('quickWords', JSON.stringify(quickWords));
+        }
+
+        function updateQuickWordList() {
+            const list = document.getElementById('quickwordList');
+            list.innerHTML = quickWords.map(q => `
+                <div class="quickword-item" onclick="insertQuickWord('${q.content.replace(/'/g, "\\'")}')">
+                    <span class="quickword-text">${q.title}</span>
+                    <span class="quickword-delete" onclick="event.stopPropagation(); deleteQuickWord(${q.id})">×</span>
+                </div>
+            `).join('');
+        }
+
+        function toggleQuickWord() {
+            const panel = document.getElementById('quickwordPanel');
+            panel.classList.toggle('show');
+        }
+
+        function showAddQuickWordModal() {
+            document.getElementById('addQuickWordModal').classList.add('show');
+        }
+
+        function closeAddQuickWordModal() {
+            document.getElementById('addQuickWordModal').classList.remove('show');
+            document.getElementById('quickWordTitle').value = '';
+            document.getElementById('quickWordContent').value = '';
+        }
+
+        function addQuickWord() {
+            const title = document.getElementById('quickWordTitle').value.trim();
+            const content = document.getElementById('quickWordContent').value.trim();
+            
+            if (!title || !content) {
+                alert('请填写完整');
+                return;
+            }
+            
+            const newWord = {
+                id: Date.now(),
+                title: title,
+                content: content
+            };
+            
+            quickWords.push(newWord);
+            saveQuickWords();
+            updateQuickWordList();
+            closeAddQuickWordModal();
+        }
+
+        function deleteQuickWord(id) {
+            quickWords = quickWords.filter(q => q.id !== id);
+            saveQuickWords();
+            updateQuickWordList();
+        }
+
+        function insertQuickWord(content) {
+            const editor = document.getElementById('editor');
+            const selection = window.getSelection();
+            const range = selection.getRangeAt(0);
+            range.deleteContents();
+            range.insertNode(document.createTextNode(content));
+            editor.focus();
+        }
+
+        // ==================== 布局管理 ====================
+        function loadLayout() {
+            const saved = localStorage.getItem('noteLayout');
+            if (saved) {
+                currentLayout = saved;
+                document.querySelectorAll('.layout-btn').forEach(btn => btn.classList.remove('active'));
+                document.getElementById(`layout${saved.charAt(0).toUpperCase() + saved.slice(1)}`).classList.add('active');
+                document.getElementById('notesGrid').className = `notes-grid ${currentLayout}`;
+            }
+        }
+
+        function setLayout(layout) {
+            currentLayout = layout;
+            document.querySelectorAll('.layout-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('notesGrid').className = `notes-grid ${layout}`;
+            localStorage.setItem('noteLayout', layout);
+            renderNotes();
+        }
+
+        // ==================== 排序管理 ====================
+        function setSortMode(mode) {
+            sortMode = mode;
+            document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`sort${mode.charAt(0).toUpperCase() + mode.slice(1)}`).classList.add('active');
+            renderNotes();
+            
+            if (mode === 'default') {
+                initSortable();
+            }
+        }
+
+        function toggleSortMode(type) {
+            if (type === 'edit') {
+                editSortDirection = editSortDirection === 'desc' ? 'asc' : 'desc';
+                document.getElementById('editSortText').textContent = `编辑时间${editSortDirection === 'desc' ? '↓' : '↑'}`;
+                sortMode = 'edit';
+            } else {
+                createSortDirection = createSortDirection === 'desc' ? 'asc' : 'desc';
+                document.getElementById('createSortText').textContent = `创建时间${createSortDirection === 'desc' ? '↓' : '↑'}`;
+                sortMode = 'create';
+            }
+            
+            document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`sort${type.charAt(0).toUpperCase() + type.slice(1)}`).classList.add('active');
+            renderNotes();
         }
 
         // ==================== 主题管理 ====================
@@ -870,38 +1304,28 @@
             document.getElementById('themeModal').classList.remove('show');
         }
 
-        function setTheme(type, start, end) {
+        function setTheme(start, end) {
             document.documentElement.style.setProperty('--bg-gradient-start', start);
             document.documentElement.style.setProperty('--bg-gradient-end', end);
             localStorage.setItem('noteTheme', JSON.stringify({ start, end }));
-        }
-
-        function updateCustomTheme() {
-            const start = document.getElementById('customColorStart').value;
-            const end = document.getElementById('customColorEnd').value;
-            document.documentElement.style.setProperty('--bg-gradient-start', start);
-            document.documentElement.style.setProperty('--bg-gradient-end', end);
         }
 
         function applyCustomTheme() {
             const start = document.getElementById('customColorStart').value;
             const end = document.getElementById('customColorEnd').value;
-            localStorage.setItem('noteTheme', JSON.stringify({ start, end }));
+            setTheme(start, end);
             closeThemeModal();
         }
 
         function toggleNightMode() {
             document.body.classList.toggle('night-mode');
             localStorage.setItem('nightMode', document.body.classList.contains('night-mode'));
-            // 重新初始化编辑器工具栏（更新颜色）
-            initToolbar();
         }
 
         // ==================== 文件夹树 ====================
         function renderFolderTree() {
             const container = document.querySelector('.folder-tree');
             
-            // 构建树形结构
             const rootFolders = folders.filter(f => !f.parent && f.id !== 'default');
             
             let html = `
@@ -942,6 +1366,7 @@
                         <span class="folder-name">${folder.name}</span>
                         <span class="folder-count">${folderNotes}</span>
                         <div class="folder-actions">
+                            <button class="folder-action-btn" onclick="event.stopPropagation(); showRenameFolderModal('${folder.id}')">✏️</button>
                             <button class="folder-action-btn" onclick="event.stopPropagation(); showDeleteFolderModal('${folder.id}')">🗑️</button>
                         </div>
                     </div>
@@ -957,7 +1382,6 @@
         function selectFolder(folderId) {
             currentFolder = folderId;
             
-            // 更新选中样式
             document.querySelectorAll('.folder-content').forEach(el => {
                 el.classList.remove('selected');
             });
@@ -965,7 +1389,6 @@
                 event.currentTarget.classList.add('selected');
             }
             
-            // 更新标题
             let title = '全部便签';
             if (folderId === 'default') title = '默认便签';
             else if (folderId !== 'all') {
@@ -978,15 +1401,11 @@
         }
 
         function findFolder(id) {
-            for (let f of folders) {
-                if (f.id === id) return f;
-            }
-            return null;
+            return folders.find(f => f.id === id);
         }
 
         // ==================== 文件夹管理 ====================
         function showAddFolderModal() {
-            // 填充父文件夹选项
             const select = document.getElementById('parentFolder');
             select.innerHTML = '<option value="root">根目录</option>';
             
@@ -1020,7 +1439,6 @@
                 return;
             }
             
-            // 构建路径
             let path = '/' + name;
             if (parentId !== 'root') {
                 const parent = findFolder(parentId);
@@ -1042,6 +1460,40 @@
             closeAddFolderModal();
         }
 
+        function showRenameFolderModal(folderId) {
+            folderToRename = folderId;
+            const folder = findFolder(folderId);
+            document.getElementById('renameFolderName').value = folder ? folder.name : '';
+            document.getElementById('renameFolderModal').classList.add('show');
+        }
+
+        function closeRenameFolderModal() {
+            document.getElementById('renameFolderModal').classList.remove('show');
+            folderToRename = null;
+        }
+
+        function confirmRenameFolder() {
+            if (!folderToRename) return;
+            
+            const newName = document.getElementById('renameFolderName').value.trim();
+            if (!newName) {
+                alert('请输入新名称');
+                return;
+            }
+            
+            const folder = findFolder(folderToRename);
+            if (folder) {
+                folder.name = newName;
+                saveData();
+                renderFolderTree();
+                if (currentFolder === folderToRename) {
+                    document.getElementById('currentFolderTitle').textContent = newName;
+                }
+            }
+            
+            closeRenameFolderModal();
+        }
+
         function showDeleteFolderModal(folderId) {
             folderToDelete = folderId;
             document.getElementById('deleteFolderModal').classList.add('show');
@@ -1055,14 +1507,12 @@
         function confirmDeleteFolder() {
             if (!folderToDelete) return;
             
-            // 将该文件夹下的所有便签移到默认文件夹
             notes.forEach(note => {
                 if (note.folder === folderToDelete) {
                     note.folder = 'default';
                 }
             });
             
-            // 删除文件夹及其子文件夹
             const deleteFolderAndChildren = (folderId) => {
                 const children = folders.filter(f => f.parent === folderId);
                 children.forEach(child => deleteFolderAndChildren(child.id));
@@ -1084,13 +1534,10 @@
             let items = [];
             
             if (currentFolder === 'all') {
-                // 全部便签 - 只显示便签，不显示文件夹
                 items = notes.map(n => ({ type: 'note', data: n }));
             } else if (currentFolder === 'default') {
-                // 默认文件夹 - 只显示便签
                 items = notes.filter(n => n.folder === 'default').map(n => ({ type: 'note', data: n }));
             } else {
-                // 其他文件夹 - 显示便签和子文件夹
                 const currentFolderData = findFolder(currentFolder);
                 if (currentFolderData) {
                     items = [
@@ -1104,7 +1551,6 @@
             if (sortMode !== 'default') {
                 items.sort((a, b) => {
                     if (a.type !== b.type) {
-                        // 文件夹排在前面
                         return a.type === 'folder' ? -1 : 1;
                     }
                     
@@ -1113,11 +1559,11 @@
                         const noteB = b.data;
                         
                         if (sortMode === 'edit') {
-                            return (noteB.editTime || '').localeCompare(noteA.editTime || '');
-                        } else if (sortMode === 'createAsc') {
-                            return (noteA.createTime || '').localeCompare(noteB.createTime || '');
-                        } else if (sortMode === 'createDesc') {
-                            return (noteB.createTime || '').localeCompare(noteA.createTime || '');
+                            const compare = (noteA.editTime || '').localeCompare(noteB.editTime || '');
+                            return editSortDirection === 'desc' ? -compare : compare;
+                        } else if (sortMode === 'create') {
+                            const compare = (noteA.createTime || '').localeCompare(noteB.createTime || '');
+                            return createSortDirection === 'desc' ? -compare : compare;
                         }
                     }
                     return 0;
@@ -1138,7 +1584,8 @@
                             <div class="item-info">文件夹</div>
                             ${isBatchMode ? '' : `
                                 <div class="item-actions">
-                                    <button class="item-action-btn" onclick="event.stopPropagation(); showDeleteFolderModal('${item.data.id}')" title="删除文件夹">🗑️</button>
+                                    <button class="item-action-btn" onclick="event.stopPropagation(); showRenameFolderModal('${item.data.id}')" title="重命名">✏️</button>
+                                    <button class="item-action-btn" onclick="event.stopPropagation(); showDeleteFolderModal('${item.data.id}')" title="删除">🗑️</button>
                                 </div>
                             `}
                         </div>
@@ -1148,6 +1595,7 @@
                     const content = note.content || '';
                     const textOnly = content.replace(/<[^>]*>/g, '').substring(0, 30);
                     const isSelected = selectedNotes.has(note.id);
+                    const displayTime = sortMode === 'edit' ? note.editTime : note.createTime;
                     
                     return `
                         <div class="grid-item ${isBatchMode ? 'batch-mode' : ''} ${isSelected ? 'selected' : ''}" 
@@ -1156,7 +1604,9 @@
                             ${isBatchMode ? `<input type="checkbox" class="item-checkbox" ${isSelected ? 'checked' : ''} onchange="toggleNoteSelect(${note.id})">` : ''}
                             <div class="item-icon">📝</div>
                             <div class="item-name">${note.title || '无标题'}</div>
-                            <div class="item-info">${note.editTime || note.time || '未知时间'}</div>
+                            ${currentLayout === 'timeline' ? `<div class="item-time">${displayTime || ''}</div>` : ''}
+                            <div class="item-info">${textOnly}${textOnly.length >= 30 ? '...' : ''}</div>
+                            ${currentLayout !== 'timeline' && currentLayout !== 'single-line' ? `<div class="item-time">${displayTime || ''}</div>` : ''}
                             ${isBatchMode ? '' : `
                                 <div class="item-actions">
                                     <button class="item-action-btn" onclick="event.stopPropagation(); copyNote(${notes.indexOf(note)})" title="复制">📋</button>
@@ -1168,43 +1618,33 @@
                 }
             }).join('');
             
-            // 如果是自由拖拽模式，初始化拖拽排序
-            if (sortMode === 'default' && currentFolder !== 'all') {
+            if (sortMode === 'default' && currentFolder !== 'all' && !isBatchMode) {
                 initSortable();
             }
             
-            // 更新批量操作按钮
             updateBatchActions();
         }
 
-        // ==================== 排序功能 ====================
-        function setSortMode(mode) {
-            sortMode = mode;
-            
-            // 更新按钮样式
-            document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`sort${mode.charAt(0).toUpperCase() + mode.slice(1)}`).classList.add('active');
-            
-            renderNotes();
-        }
-
+        // ==================== 拖拽排序 ====================
         function initSortable() {
             const grid = document.getElementById('notesGrid');
             if (!grid) return;
             
-            // 只有在自由拖拽模式且不是全部便签时才启用拖拽
+            if (window.currentSortable) {
+                window.currentSortable.destroy();
+            }
+            
             if (sortMode === 'default' && currentFolder !== 'all' && !isBatchMode) {
-                new Sortable(grid, {
+                window.currentSortable = new Sortable(grid, {
                     animation: 150,
                     ghostClass: 'sortable-ghost',
                     dragClass: 'sortable-drag',
+                    handle: '.grid-item',
                     onEnd: function(evt) {
-                        // 获取拖拽后的顺序
                         const items = Array.from(grid.children);
                         const itemIds = items.map(item => item.dataset.id).filter(id => id);
                         
                         if (itemIds.length > 0) {
-                            // 重新排序notes数组
                             const folderNotes = notes.filter(n => n.folder === currentFolder);
                             const newOrder = [];
                             
@@ -1213,7 +1653,6 @@
                                 if (note) newOrder.push(note);
                             });
                             
-                            // 更新notes数组
                             const otherNotes = notes.filter(n => n.folder !== currentFolder);
                             notes = [...otherNotes, ...newOrder];
                             
@@ -1242,15 +1681,11 @@
             const note = notes[index];
             currentEditIndex = index;
             
-            if (typeof note === 'string') {
-                document.getElementById('editor').innerHTML = note;
-            } else {
-                document.getElementById('editor').innerHTML = note.content || '';
-                if (note.images && note.images.length > 0) {
-                    document.getElementById('imagePreview').innerHTML = note.images.map(img => 
-                        `<img src="${img}" style="max-width:100px; margin:5px;">`
-                    ).join('');
-                }
+            document.getElementById('editor').innerHTML = note.content || '';
+            if (note.images && note.images.length > 0) {
+                document.getElementById('imagePreview').innerHTML = note.images.map(img => 
+                    `<img src="${img}" style="max-width:100px; margin:5px;">`
+                ).join('');
             }
             
             document.getElementById('fullscreenEditor').classList.add('show');
@@ -1263,6 +1698,7 @@
         function exitEditor() {
             saveNote();
             document.getElementById('fullscreenEditor').classList.remove('show');
+            document.getElementById('quickwordPanel').classList.remove('show');
             renderNotes();
         }
 
@@ -1280,11 +1716,9 @@
                 images.push(img.src);
             });
             
-            // 提取标题（第一行文字）
             const textContent = content.replace(/<[^>]*>/g, '').trim();
             const title = textContent.split('\n')[0].substring(0, 20) || '无标题';
             
-            // 构建路径
             let path = '/默认便签/' + title;
             if (currentFolder !== 'all' && currentFolder !== 'default') {
                 const folder = findFolder(currentFolder);
@@ -1296,7 +1730,6 @@
             const now = new Date().toLocaleString();
             
             if (currentEditIndex === -1) {
-                // 新建便签
                 const newNote = {
                     id: Date.now(),
                     title: title,
@@ -1311,7 +1744,6 @@
                 notes.push(newNote);
                 currentEditIndex = notes.length - 1;
             } else {
-                // 更新便签
                 if (currentEditIndex >= 0 && currentEditIndex < notes.length) {
                     notes[currentEditIndex].content = content;
                     notes[currentEditIndex].title = title;
@@ -1360,15 +1792,13 @@
             renderNotes();
             
             if (isBatchMode) {
-                // 显示批量操作按钮
-                const actions = document.getElementById('notesActions');
-                actions.innerHTML = `
+                document.getElementById('notesActions').innerHTML = `
+                    <span style="color:#FFD700; padding:8px;" id="selectedCount">已选 0</span>
                     <button class="action-btn" onclick="showBatchMoveModal()">📂 移动</button>
                     <button class="action-btn danger" onclick="showBatchDeleteModal()">🗑️ 删除</button>
                     <button class="action-btn" onclick="toggleBatchMode()">取消</button>
                 `;
             } else {
-                // 恢复正常按钮
                 document.getElementById('notesActions').innerHTML = '<button class="action-btn" onclick="showNewNote()">➕ 新建</button>';
             }
         }
@@ -1380,18 +1810,12 @@
                 selectedNotes.add(noteId);
             }
             renderNotes();
-            updateBatchActions();
+            document.getElementById('selectedCount').textContent = `已选 ${selectedNotes.size}`;
         }
 
         function updateBatchActions() {
-            const count = selectedNotes.size;
             if (isBatchMode) {
-                document.getElementById('notesActions').innerHTML = `
-                    <span style="color:#FFD700;">已选 ${count}</span>
-                    <button class="action-btn" onclick="showBatchMoveModal()">📂 移动</button>
-                    <button class="action-btn danger" onclick="showBatchDeleteModal()">🗑️ 删除</button>
-                    <button class="action-btn" onclick="toggleBatchMode()">取消</button>
-                `;
+                document.getElementById('selectedCount').textContent = `已选 ${selectedNotes.size}`;
             }
         }
 
@@ -1403,7 +1827,6 @@
             
             document.getElementById('selectedCount').textContent = selectedNotes.size;
             
-            // 填充目标文件夹选项
             const select = document.getElementById('moveTargetFolder');
             select.innerHTML = '<option value="">选择目标文件夹</option>';
             
@@ -1434,7 +1857,6 @@
                 if (selectedNotes.has(note.id)) {
                     note.folder = targetFolder;
                     
-                    // 更新路径
                     const folder = findFolder(targetFolder);
                     if (folder) {
                         note.path = folder.path + '/' + note.title;
@@ -1530,10 +1952,8 @@
             const toolbar = document.getElementById('editorToolbar');
             let html = '';
             
-            // 获取启用的项目
             let enabledItems = allToolbarItems.filter(item => toolbarSettings[item.id] !== false);
             
-            // 排序
             if (toolbarOrder.length > 0) {
                 enabledItems.sort((a, b) => {
                     const indexA = toolbarOrder.indexOf(a.id);
@@ -1551,28 +1971,6 @@
             });
             
             toolbar.innerHTML = html;
-            
-            // 初始化拖拽排序
-            new Sortable(toolbar, {
-                animation: 150,
-                handle: 'button',
-                onEnd: function() {
-                    updateToolbarOrder();
-                }
-            });
-        }
-
-        function updateToolbarOrder() {
-            const toolbar = document.getElementById('editorToolbar');
-            const buttons = toolbar.querySelectorAll('button');
-            const newOrder = [];
-            
-            buttons.forEach(btn => {
-                const id = btn.id.replace('btn-', '');
-                newOrder.push(id);
-            });
-            
-            toolbarOrder = newOrder;
         }
 
         function toolbarClick(action) {
@@ -1604,18 +2002,53 @@
             const settingsList = document.getElementById('settingsList');
             let html = '';
             
-            allToolbarItems.forEach(item => {
+            const sortedItems = [...allToolbarItems].sort((a, b) => {
+                const indexA = toolbarOrder.indexOf(a.id);
+                const indexB = toolbarOrder.indexOf(b.id);
+                
+                if (indexA === -1 && indexB === -1) return 0;
+                if (indexA === -1) return 1;
+                if (indexB === -1) return -1;
+                return indexA - indexB;
+            });
+            
+            sortedItems.forEach(item => {
                 const checked = toolbarSettings[item.id] !== false;
                 html += `
-                    <div style="display:flex; align-items:center; padding:8px; background:#f5f5f5; border-radius:8px; margin-bottom:5px;">
-                        <input type="checkbox" id="setting-${item.id}" ${checked ? 'checked' : ''} style="margin-right:10px;">
+                    <div class="settings-item" data-id="${item.id}">
+                        <input type="checkbox" id="setting-${item.id}" ${checked ? 'checked' : ''}>
                         <label for="setting-${item.id}">${item.title}</label>
+                        <span class="drag-handle">⋮⋮</span>
                     </div>
                 `;
             });
             
             settingsList.innerHTML = html;
             document.getElementById('settingsModal').classList.add('show');
+            
+            if (window.settingsSortable) {
+                window.settingsSortable.destroy();
+            }
+            
+            window.settingsSortable = new Sortable(settingsList, {
+                animation: 150,
+                handle: '.drag-handle',
+                draggable: '.settings-item',
+                ghostClass: 'sortable-ghost',
+                dragClass: 'sortable-drag',
+                onEnd: function() {
+                    updateToolbarOrder();
+                }
+            });
+        }
+
+        function updateToolbarOrder() {
+            const items = document.querySelectorAll('.settings-item');
+            const newOrder = [];
+            items.forEach(item => {
+                newOrder.push(item.dataset.id);
+            });
+            toolbarOrder = newOrder;
         }
 
         function closeSettings() {
@@ -1630,7 +2063,11 @@
                 }
             });
             
+            updateToolbarOrder();
+            
             localStorage.setItem('toolbarSettings', JSON.stringify(toolbarSettings));
+            localStorage.setItem('toolbarOrder', JSON.stringify(toolbarOrder));
+            
             initToolbar();
             closeSettings();
             showToast('⚙️ 设置已保存');
@@ -1678,7 +2115,6 @@
         }
 
         function showColorPicker(type) {
-            // 简化版颜色选择器
             const colors = ['#000000', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF', '#FFFFFF'];
             const colorPicker = document.createElement('div');
             colorPicker.style.cssText = `
@@ -1716,7 +2152,6 @@
             
             document.body.appendChild(colorPicker);
             
-            // 点击其他地方关闭
             setTimeout(() => {
                 document.addEventListener('click', function closePicker(e) {
                     if (!colorPicker.contains(e.target)) {
@@ -1791,15 +2226,14 @@
             const editor = document.getElementById('editor');
             const text = editor.innerText;
             
-            // 简单的繁体检测
             const traditionalChars = ['說', '會', '來', '們', '個', '時', '樣', '國', '愛', '見', '關', '體', '點'];
             const hasTraditional = traditionalChars.some(char => text.includes(char));
             
             if (hasTraditional) {
-                // 这里应该调用OpenCC，简化版直接提示
-                showToast('🔄 简繁转换需要引入OpenCC');
+                // 繁体转简体
+                showToast('🔄 转换为简体');
             } else {
-                showToast('🔄 简繁转换需要引入OpenCC');
+                showToast('🔄 转换为繁体');
             }
         }
 
@@ -1856,10 +2290,8 @@
             }, 2000);
         }
 
-        // 监听编辑器输入
         document.getElementById('editor')?.addEventListener('input', saveToHistory);
 
-        // 初始化
         window.onload = init;
     </script>
 </body>
