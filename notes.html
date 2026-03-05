@@ -11,10 +11,36 @@
             font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         }
 
+        /* 主题变量 */
+        :root {
+            --bg-gradient-start: #667eea;
+            --bg-gradient-end: #764ba2;
+            --card-bg: rgba(255,255,255,0.1);
+            --text-color: white;
+            --border-color: rgba(255,255,255,0.2);
+            --hover-bg: rgba(255,255,255,0.2);
+            --selected-bg: #FFD700;
+            --selected-text: #333;
+        }
+
+        /* 夜间模式 */
+        body.night-mode {
+            --bg-gradient-start: #1a1a2e;
+            --bg-gradient-end: #16213e;
+            --card-bg: rgba(0,0,0,0.3);
+            --text-color: #e0e0e0;
+            --border-color: rgba(255,255,255,0.1);
+            --hover-bg: rgba(255,255,255,0.1);
+            --selected-bg: #4a4a4a;
+            --selected-text: white;
+        }
+
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
             min-height: 100vh;
             padding: 20px;
+            color: var(--text-color);
+            transition: all 0.3s;
         }
 
         /* 顶部导航 */
@@ -23,17 +49,16 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
-            background: rgba(255,255,255,0.1);
+            background: var(--card-bg);
             backdrop-filter: blur(10px);
             padding: 15px 25px;
             border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
+            border: 1px solid var(--border-color);
         }
         .back-btn {
             background: rgba(255,255,255,0.2);
             padding: 10px 20px;
-            color: white;
+            color: var(--text-color);
             border: none;
             border-radius: 12px;
             cursor: pointer;
@@ -46,14 +71,23 @@
         .nav-btn {
             background: rgba(255,255,255,0.2);
             padding: 10px 20px;
-            color: white;
+            color: var(--text-color);
             border: none;
             border-radius: 12px;
             cursor: pointer;
         }
         .nav-btn.active {
-            background: #FFD700;
-            color: #333;
+            background: var(--selected-bg);
+            color: var(--selected-text);
+        }
+        .theme-btn {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            color: var(--text-color);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-left: 10px;
         }
 
         /* 主布局 - 两栏 */
@@ -65,13 +99,12 @@
 
         /* 左侧索引栏 */
         .left-index {
-            width: 250px;
-            background: rgba(255,255,255,0.1);
+            width: 280px;
+            background: var(--card-bg);
             backdrop-filter: blur(10px);
             border-radius: 24px;
             padding: 20px;
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
+            border: 1px solid var(--border-color);
             overflow-y: auto;
         }
         .index-header {
@@ -87,18 +120,27 @@
         .add-folder-btn {
             background: rgba(255,255,255,0.2);
             border: none;
-            color: white;
+            color: var(--text-color);
             width: 30px;
             height: 30px;
             border-radius: 8px;
             cursor: pointer;
             font-size: 18px;
         }
-        .folder-list {
+        .batch-edit-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: var(--text-color);
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .folder-tree {
             list-style: none;
         }
         .folder-item {
-            margin-bottom: 5px;
+            margin-bottom: 2px;
         }
         .folder-content {
             display: flex;
@@ -109,11 +151,11 @@
             transition: all 0.2s;
         }
         .folder-content:hover {
-            background: rgba(255,255,255,0.2);
+            background: var(--hover-bg);
         }
         .folder-content.selected {
-            background: #FFD700;
-            color: #333;
+            background: var(--selected-bg);
+            color: var(--selected-text);
         }
         .folder-icon {
             margin-right: 8px;
@@ -125,26 +167,40 @@
         .folder-count {
             font-size: 12px;
             opacity: 0.7;
+            margin-right: 8px;
+        }
+        .folder-actions {
+            display: none;
+            gap: 5px;
+        }
+        .folder-content:hover .folder-actions {
+            display: flex;
+        }
+        .folder-action-btn {
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            font-size: 12px;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        .folder-action-btn:hover {
+            background: rgba(0,0,0,0.2);
         }
         .folder-children {
             margin-left: 20px;
             list-style: none;
         }
-        .default-folders {
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-        }
 
         /* 右侧内容区 */
         .right-content {
             flex: 1;
-            background: rgba(255,255,255,0.1);
+            background: var(--card-bg);
             backdrop-filter: blur(10px);
             border-radius: 24px;
             padding: 20px;
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
+            border: 1px solid var(--border-color);
             overflow-y: auto;
         }
         .notes-header {
@@ -164,7 +220,7 @@
         .action-btn {
             background: rgba(255,255,255,0.2);
             border: none;
-            color: white;
+            color: var(--text-color);
             padding: 8px 16px;
             border-radius: 12px;
             cursor: pointer;
@@ -173,57 +229,81 @@
             gap: 5px;
         }
         .action-btn:hover {
-            background: rgba(255,255,255,0.3);
+            background: var(--hover-bg);
+        }
+        .action-btn.danger {
+            background: rgba(244,67,54,0.8);
+        }
+        .action-btn.danger:hover {
+            background: #f44336;
         }
 
-        /* 便签网格 */
+        /* 便签网格 - 文件和文件夹混合显示 */
         .notes-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 15px;
         }
-        .note-card {
+        .grid-item {
             background: rgba(255,255,255,0.05);
             border-radius: 16px;
             padding: 15px;
             cursor: pointer;
             transition: all 0.2s;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid var(--border-color);
             position: relative;
         }
-        .note-card:hover {
+        .grid-item:hover {
             transform: translateY(-2px);
             border-color: #FFD700;
             background: rgba(255,255,255,0.1);
         }
-        .note-card .note-time {
+        .grid-item.folder-item {
+            background: rgba(255,215,0,0.1);
+        }
+        .grid-item.selected {
+            border: 2px solid #FFD700;
+            background: rgba(255,215,0,0.2);
+        }
+        .grid-item .item-icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+        .grid-item .item-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+            word-break: break-word;
+        }
+        .grid-item .item-info {
             font-size: 11px;
             color: rgba(255,255,255,0.5);
-            margin-bottom: 8px;
         }
-        .note-card .note-title {
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #FFD700;
+        .grid-item .item-checkbox {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            display: none;
         }
-        .note-card .note-preview {
-            font-size: 13px;
-            color: rgba(255,255,255,0.8);
-            line-height: 1.5;
-            max-height: 100px;
-            overflow: hidden;
+        .grid-item.batch-mode .item-checkbox {
+            display: block;
         }
-        .note-card .note-actions {
+        .grid-item .item-actions {
             position: absolute;
             top: 10px;
             right: 10px;
             display: none;
             gap: 5px;
         }
-        .note-card:hover .note-actions {
+        .grid-item:hover .item-actions {
             display: flex;
         }
-        .note-card .note-action-btn {
+        .grid-item.batch-mode:hover .item-actions {
+            display: none;
+        }
+        .item-action-btn {
             background: rgba(0,0,0,0.5);
             border: none;
             color: white;
@@ -235,7 +315,7 @@
             align-items: center;
             justify-content: center;
         }
-        .note-card .note-action-btn:hover {
+        .item-action-btn:hover {
             background: #FFD700;
             color: #333;
         }
@@ -306,18 +386,6 @@
             padding: 15px;
             margin-bottom: 20px;
         }
-        .editor-toolbar button {
-            padding: 8px 16px;
-            background: #f0f0f0;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            cursor: move;
-            min-width: 40px;
-        }
-        .editor-toolbar button.active {
-            background: #4CAF50;
-            color: white;
-        }
         #editor {
             flex: 1;
             padding: 20px;
@@ -329,8 +397,8 @@
             outline: none;
         }
 
-        /* 文件夹弹窗 */
-        .folder-modal {
+        /* 弹窗样式 */
+        .modal {
             position: fixed;
             top: 50%;
             left: 50%;
@@ -340,24 +408,32 @@
             border-radius: 24px;
             z-index: 2100;
             display: none;
-            width: 350px;
+            width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+            color: #333;
         }
-        .folder-modal.show {
+        .modal.show {
             display: block;
         }
-        .folder-modal input, .folder-modal select {
+        .modal h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .modal input, .modal select {
             width: 100%;
             padding: 12px;
             margin: 10px 0;
-            border: 1px solid #eee;
+            border: 1px solid #ddd;
             border-radius: 12px;
+            font-size: 14px;
         }
-        .folder-modal-buttons {
+        .modal-buttons {
             display: flex;
             gap: 10px;
             margin-top: 20px;
         }
-        .folder-modal-btn {
+        .modal-btn {
             flex: 1;
             padding: 12px;
             border: none;
@@ -365,61 +441,46 @@
             cursor: pointer;
             font-weight: bold;
         }
-        .folder-modal-btn.confirm {
+        .modal-btn.confirm {
             background: #4CAF50;
             color: white;
         }
-        .folder-modal-btn.cancel {
+        .modal-btn.cancel {
             background: #999;
             color: white;
         }
+        .modal-btn.danger {
+            background: #f44336;
+            color: white;
+        }
 
-        /* 导出弹窗 */
-        .export-modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 30px;
-            border-radius: 24px;
-            z-index: 2100;
-            display: none;
-            width: 350px;
-        }
-        .export-modal.show {
-            display: block;
-        }
-        .export-options {
+        /* 主题选择器 */
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
             margin: 20px 0;
         }
-        .export-option {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            background: #f5f5f5;
-            border-radius: 16px;
-            margin-bottom: 10px;
+        .theme-color {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             cursor: pointer;
-            transition: all 0.2s;
+            border: 2px solid transparent;
         }
-        .export-option:hover {
-            background: #e0e0e0;
+        .theme-color:hover {
+            transform: scale(1.1);
         }
-        .export-option-icon {
-            font-size: 24px;
-            margin-right: 15px;
+        .theme-color.selected {
+            border-color: #333;
         }
-        .export-option-info {
-            flex: 1;
-        }
-        .export-option-title {
-            font-weight: bold;
-            margin-bottom: 3px;
-        }
-        .export-option-desc {
-            font-size: 12px;
-            color: #666;
+        .color-picker {
+            width: 100%;
+            height: 50px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            cursor: pointer;
         }
 
         .version-tag {
@@ -448,6 +509,8 @@
         <div class="nav-buttons">
             <button class="nav-btn" onclick="switchView('notes')">📝 便签</button>
             <button class="nav-btn active" onclick="switchView('folders')">📁 分组</button>
+            <button class="theme-btn" onclick="showThemeModal()">🎨 主题</button>
+            <button class="theme-btn" onclick="toggleNightMode()">🌙 夜间</button>
         </div>
     </div>
 
@@ -457,36 +520,20 @@
         <div class="left-index">
             <div class="index-header">
                 <h3>📁 所有分组</h3>
-                <button class="add-folder-btn" onclick="showAddFolderModal()">+</button>
+                <div>
+                    <button class="batch-edit-btn" onclick="toggleBatchMode()" id="batchModeBtn">✏️ 批量</button>
+                    <button class="add-folder-btn" onclick="showAddFolderModal()">+</button>
+                </div>
             </div>
             
-            <!-- 默认文件夹 -->
-            <div class="default-folders">
-                <div class="folder-item">
-                    <div class="folder-content selected" onclick="selectFolder('all')">
-                        <span class="folder-icon">📋</span>
-                        <span class="folder-name">全部便签</span>
-                        <span class="folder-count" id="allCount">0</span>
-                    </div>
-                </div>
-                <div class="folder-item">
-                    <div class="folder-content" onclick="selectFolder('default')">
-                        <span class="folder-icon">📄</span>
-                        <span class="folder-name">默认便签</span>
-                        <span class="folder-count" id="defaultCount">0</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 自定义文件夹树 -->
-            <ul class="folder-list" id="folderTree"></ul>
+            <ul class="folder-tree" id="folderTree"></ul>
         </div>
 
         <!-- 右侧内容区 -->
         <div class="right-content">
             <div class="notes-header">
                 <h2 id="currentFolderTitle">全部便签</h2>
-                <div class="notes-actions">
+                <div class="notes-actions" id="notesActions">
                     <button class="action-btn" onclick="showNewNote()">➕ 新建</button>
                 </div>
             </div>
@@ -514,34 +561,91 @@
     </div>
 
     <!-- 添加文件夹弹窗 -->
-    <div id="addFolderModal" class="folder-modal">
-        <h3 style="margin-top:0;">📁 新建分组</h3>
+    <div id="addFolderModal" class="modal">
+        <h3>📁 新建分组</h3>
         <input type="text" id="folderName" placeholder="分组名称">
         <select id="parentFolder">
             <option value="root">根目录</option>
         </select>
-        <div class="folder-modal-buttons">
-            <button class="folder-modal-btn confirm" onclick="addFolder()">创建</button>
-            <button class="folder-modal-btn cancel" onclick="closeAddFolderModal()">取消</button>
+        <div class="modal-buttons">
+            <button class="modal-btn confirm" onclick="addFolder()">创建</button>
+            <button class="modal-btn cancel" onclick="closeAddFolderModal()">取消</button>
+        </div>
+    </div>
+
+    <!-- 删除文件夹确认弹窗 -->
+    <div id="deleteFolderModal" class="modal">
+        <h3>⚠️ 删除文件夹</h3>
+        <p>删除后，文件夹内的便签将移至"默认便签"</p>
+        <div class="modal-buttons">
+            <button class="modal-btn danger" onclick="confirmDeleteFolder()">确认删除</button>
+            <button class="modal-btn cancel" onclick="closeDeleteFolderModal()">取消</button>
+        </div>
+    </div>
+
+    <!-- 批量移动弹窗 -->
+    <div id="batchMoveModal" class="modal">
+        <h3>📂 批量移动</h3>
+        <p>已选择 <span id="selectedCount">0</span> 个便签</p>
+        <select id="moveTargetFolder">
+            <option value="">选择目标文件夹</option>
+        </select>
+        <div class="modal-buttons">
+            <button class="modal-btn confirm" onclick="batchMove()">移动</button>
+            <button class="modal-btn cancel" onclick="closeBatchMoveModal()">取消</button>
+        </div>
+    </div>
+
+    <!-- 批量删除确认弹窗 -->
+    <div id="batchDeleteModal" class="modal">
+        <h3>⚠️ 批量删除</h3>
+        <p>确定删除选中的 <span id="deleteCount">0</span> 个便签吗？</p>
+        <div class="modal-buttons">
+            <button class="modal-btn danger" onclick="batchDelete()">确认删除</button>
+            <button class="modal-btn cancel" onclick="closeBatchDeleteModal()">取消</button>
+        </div>
+    </div>
+
+    <!-- 主题选择弹窗 -->
+    <div id="themeModal" class="modal">
+        <h3>🎨 选择主题</h3>
+        <div class="theme-grid">
+            <div class="theme-color" style="background: #667eea" onclick="setTheme('gradient', '#667eea', '#764ba2')"></div>
+            <div class="theme-color" style="background: #ff6b6b" onclick="setTheme('gradient', '#ff6b6b', '#ff8e8e')"></div>
+            <div class="theme-color" style="background: #4CAF50" onclick="setTheme('gradient', '#4CAF50', '#8BC34A')"></div>
+            <div class="theme-color" style="background: #FF9800" onclick="setTheme('gradient', '#FF9800', '#FFB74D')"></div>
+            <div class="theme-color" style="background: #9C27B0" onclick="setTheme('gradient', '#9C27B0', '#BA68C8')"></div>
+            <div class="theme-color" style="background: #00BCD4" onclick="setTheme('gradient', '#00BCD4', '#4DD0E1')"></div>
+            <div class="theme-color" style="background: #795548" onclick="setTheme('gradient', '#795548', '#A1887F')"></div>
+            <div class="theme-color" style="background: #607D8B" onclick="setTheme('gradient', '#607D8B', '#90A4AE')"></div>
+            <div class="theme-color" style="background: #E91E63" onclick="setTheme('gradient', '#E91E63', '#F06292')"></div>
+            <div class="theme-color" style="background: #3F51B5" onclick="setTheme('gradient', '#3F51B5', '#5C6BC0')"></div>
+        </div>
+        <p>自定义颜色</p>
+        <input type="color" id="customColorStart" class="color-picker" value="#667eea" onchange="updateCustomTheme()">
+        <input type="color" id="customColorEnd" class="color-picker" value="#764ba2" onchange="updateCustomTheme()">
+        <div class="modal-buttons">
+            <button class="modal-btn confirm" onclick="applyCustomTheme()">应用</button>
+            <button class="modal-btn cancel" onclick="closeThemeModal()">取消</button>
         </div>
     </div>
 
     <!-- 导出弹窗 -->
-    <div id="exportModal" class="export-modal">
-        <h3 style="margin-top:0; text-align:center;">📤 导出便签</h3>
-        <div class="export-options">
-            <div class="export-option" onclick="exportAsImage()">
-                <span class="export-option-icon">🖼️</span>
-                <div class="export-option-info">
-                    <div class="export-option-title">导出为长图</div>
-                    <div class="export-option-desc">将当前便签保存为图片</div>
+    <div id="exportModal" class="modal">
+        <h3>📤 导出便签</h3>
+        <div style="margin: 20px 0;">
+            <div class="shop-item" onclick="exportAsImage()" style="display:flex; align-items:center; padding:15px; background:#f5f5f5; border-radius:16px; margin-bottom:10px; cursor:pointer;">
+                <span style="font-size:24px; margin-right:15px;">🖼️</span>
+                <div>
+                    <div style="font-weight:bold;">导出为长图</div>
+                    <div style="font-size:12px; color:#666;">将当前便签保存为图片</div>
                 </div>
             </div>
-            <div class="export-option" onclick="exportAsTxt()">
-                <span class="export-option-icon">📄</span>
-                <div class="export-option-info">
-                    <div class="export-option-title">导出为TXT</div>
-                    <div class="export-option-desc">保存为文本文件</div>
+            <div class="shop-item" onclick="exportAsTxt()" style="display:flex; align-items:center; padding:15px; background:#f5f5f5; border-radius:16px; margin-bottom:10px; cursor:pointer;">
+                <span style="font-size:24px; margin-right:15px;">📄</span>
+                <div>
+                    <div style="font-weight:bold;">导出为TXT</div>
+                    <div style="font-size:12px; color:#666;">保存为文本文件</div>
                 </div>
             </div>
         </div>
@@ -550,7 +654,7 @@
         </div>
     </div>
 
-    <div class="version-tag">v9.0 - 便签分组+复制+导出</div>
+    <div class="version-tag">v10.0 - 完整版</div>
 
     <script>
         // 数据存储
@@ -558,6 +662,9 @@
         let folders = [];
         let currentFolder = 'all';
         let currentEditIndex = -1;
+        let isBatchMode = false;
+        let selectedNotes = new Set();
+        let folderToDelete = null;
         
         // 历史记录
         let history = [];
@@ -595,6 +702,7 @@
         // 初始化
         function init() {
             loadData();
+            loadTheme();
             renderFolderTree();
             renderNotes();
             initToolbar();
@@ -616,18 +724,15 @@
                 folders = JSON.parse(savedFolders);
             } else {
                 folders = [
-                    { id: 'default', name: '默认便签', parent: null, children: [] }
+                    { id: 'default', name: '默认便签', parent: null, path: '/默认便签' }
                 ];
             }
             
-            // 确保每个便签都有folder字段
+            // 确保每个便签都有必要字段
             notes = notes.map((note, index) => {
-                if (!note.folder) {
-                    note.folder = 'default';
-                }
-                if (!note.id) {
-                    note.id = Date.now() + index;
-                }
+                if (!note.id) note.id = Date.now() + index;
+                if (!note.folder) note.folder = 'default';
+                if (!note.path) note.path = '/默认便签/' + (note.title || '未命名');
                 return note;
             });
             
@@ -641,32 +746,57 @@
 
         // ==================== 文件夹树 ====================
         function renderFolderTree() {
-            const container = document.getElementById('folderTree');
+            const container = document.querySelector('.folder-tree');
             
-            // 更新计数
-            document.getElementById('allCount').textContent = notes.length;
-            document.getElementById('defaultCount').textContent = notes.filter(n => n.folder === 'default').length;
-            
-            // 渲染自定义文件夹
+            // 构建树形结构
             const rootFolders = folders.filter(f => !f.parent);
-            container.innerHTML = rootFolders.map(f => renderFolder(f)).join('');
+            
+            let html = `
+                <li class="folder-item">
+                    <div class="folder-content ${currentFolder === 'all' ? 'selected' : ''}" onclick="selectFolder('all')">
+                        <span class="folder-icon">📋</span>
+                        <span class="folder-name">全部便签</span>
+                        <span class="folder-count">${notes.length}</span>
+                    </div>
+                </li>
+                <li class="folder-item">
+                    <div class="folder-content ${currentFolder === 'default' ? 'selected' : ''}" onclick="selectFolder('default')">
+                        <span class="folder-icon">📄</span>
+                        <span class="folder-name">默认便签</span>
+                        <span class="folder-count">${notes.filter(n => n.folder === 'default').length}</span>
+                    </div>
+                </li>
+            `;
+            
+            rootFolders.forEach(folder => {
+                if (folder.id !== 'default') {
+                    html += renderFolderItem(folder);
+                }
+            });
+            
+            container.innerHTML = html;
         }
 
-        function renderFolder(folder, level = 0) {
+        function renderFolderItem(folder, level = 0) {
             const folderNotes = notes.filter(n => n.folder === folder.id).length;
             const children = folders.filter(f => f.parent === folder.id);
+            const indent = level * 20;
             
             return `
                 <li class="folder-item">
                     <div class="folder-content ${currentFolder === folder.id ? 'selected' : ''}" 
-                         onclick="selectFolder('${folder.id}')">
+                         onclick="selectFolder('${folder.id}')"
+                         style="padding-left: ${indent + 8}px">
                         <span class="folder-icon">📂</span>
                         <span class="folder-name">${folder.name}</span>
                         <span class="folder-count">${folderNotes}</span>
+                        <div class="folder-actions">
+                            <button class="folder-action-btn" onclick="event.stopPropagation(); showDeleteFolderModal('${folder.id}')">🗑️</button>
+                        </div>
                     </div>
                     ${children.length > 0 ? `
                         <ul class="folder-children">
-                            ${children.map(c => renderFolder(c, level + 1)).join('')}
+                            ${children.map(c => renderFolderItem(c, level + 1)).join('')}
                         </ul>
                     ` : ''}
                 </li>
@@ -685,7 +815,7 @@
             // 更新标题
             let title = '全部便签';
             if (folderId === 'default') title = '默认便签';
-            else {
+            else if (folderId !== 'all') {
                 const folder = findFolder(folderId);
                 if (folder) title = folder.name;
             }
@@ -718,7 +848,7 @@
                 });
             };
             
-            folders.filter(f => !f.parent).forEach(f => addFolderOptions(f));
+            folders.filter(f => !f.parent && f.id !== 'default').forEach(f => addFolderOptions(f));
             
             document.getElementById('addFolderModal').classList.add('show');
         }
@@ -737,11 +867,20 @@
                 return;
             }
             
+            // 构建路径
+            let path = '/' + name;
+            if (parentId !== 'root') {
+                const parent = findFolder(parentId);
+                if (parent) {
+                    path = parent.path + '/' + name;
+                }
+            }
+            
             const newFolder = {
                 id: 'folder_' + Date.now(),
                 name: name,
                 parent: parentId === 'root' ? null : parentId,
-                children: []
+                path: path
             };
             
             folders.push(newFolder);
@@ -750,42 +889,106 @@
             closeAddFolderModal();
         }
 
+        function showDeleteFolderModal(folderId) {
+            folderToDelete = folderId;
+            document.getElementById('deleteFolderModal').classList.add('show');
+        }
+
+        function closeDeleteFolderModal() {
+            document.getElementById('deleteFolderModal').classList.remove('show');
+            folderToDelete = null;
+        }
+
+        function confirmDeleteFolder() {
+            if (!folderToDelete) return;
+            
+            // 将该文件夹下的所有便签移到默认文件夹
+            notes.forEach(note => {
+                if (note.folder === folderToDelete) {
+                    note.folder = 'default';
+                }
+            });
+            
+            // 删除文件夹
+            folders = folders.filter(f => f.id !== folderToDelete);
+            
+            saveData();
+            renderFolderTree();
+            renderNotes();
+            closeDeleteFolderModal();
+        }
+
         // ==================== 便签显示 ====================
         function renderNotes() {
             const grid = document.getElementById('notesGrid');
             
-            let filteredNotes = [];
+            let items = [];
+            
             if (currentFolder === 'all') {
-                filteredNotes = notes;
+                // 显示所有便签和文件夹
+                items = [
+                    ...folders.filter(f => f.id !== 'default' && !f.parent).map(f => ({ type: 'folder', data: f })),
+                    ...notes.map(n => ({ type: 'note', data: n }))
+                ];
             } else if (currentFolder === 'default') {
-                filteredNotes = notes.filter(n => !n.folder || n.folder === 'default');
+                // 只显示默认文件夹的便签
+                items = notes.filter(n => n.folder === 'default').map(n => ({ type: 'note', data: n }));
             } else {
-                filteredNotes = notes.filter(n => n.folder === currentFolder);
+                // 显示当前文件夹的便签和子文件夹
+                const currentFolderData = findFolder(currentFolder);
+                if (currentFolderData) {
+                    items = [
+                        ...folders.filter(f => f.parent === currentFolder).map(f => ({ type: 'folder', data: f })),
+                        ...notes.filter(n => n.folder === currentFolder).map(n => ({ type: 'note', data: n }))
+                    ];
+                }
             }
             
-            if (filteredNotes.length === 0) {
-                grid.innerHTML = '<div style="text-align:center; padding:60px; color:rgba(255,255,255,0.5);">暂无便签</div>';
+            if (items.length === 0) {
+                grid.innerHTML = '<div style="text-align:center; padding:60px; color:rgba(255,255,255,0.5);">暂无内容</div>';
                 return;
             }
             
-            grid.innerHTML = filteredNotes.map((note, index) => {
-                const content = note.content || note;
-                const textOnly = content.replace(/<[^>]*>/g, '').substring(0, 50);
-                const time = note.time || '未知时间';
-                
-                return `
-                    <div class="note-card" onclick="editNote(${notes.indexOf(note)})">
-                        <div class="note-time">${time}</div>
-                        <div class="note-title">${note.title || '无标题'}</div>
-                        <div class="note-preview">${textOnly}${textOnly.length >= 50 ? '...' : ''}</div>
-                        <div class="note-actions">
-                            <button class="note-action-btn" onclick="event.stopPropagation(); copyNote(${notes.indexOf(note)})" title="复制">📋</button>
-                            <button class="note-action-btn" onclick="event.stopPropagation(); moveNote(${notes.indexOf(note)})" title="移动">📂</button>
-                            <button class="note-action-btn" onclick="event.stopPropagation(); deleteNote(${notes.indexOf(note)})" title="删除">🗑️</button>
+            grid.innerHTML = items.map(item => {
+                if (item.type === 'folder') {
+                    return `
+                        <div class="grid-item folder-item" onclick="selectFolder('${item.data.id}')">
+                            <div class="item-icon">📁</div>
+                            <div class="item-name">${item.data.name}</div>
+                            <div class="item-info">文件夹</div>
+                            ${isBatchMode ? '' : `
+                                <div class="item-actions">
+                                    <button class="item-action-btn" onclick="event.stopPropagation(); showDeleteFolderModal('${item.data.id}')" title="删除文件夹">🗑️</button>
+                                </div>
+                            `}
                         </div>
-                    </div>
-                `;
+                    `;
+                } else {
+                    const note = item.data;
+                    const content = note.content || '';
+                    const textOnly = content.replace(/<[^>]*>/g, '').substring(0, 30);
+                    const isSelected = selectedNotes.has(note.id);
+                    
+                    return `
+                        <div class="grid-item ${isBatchMode ? 'batch-mode' : ''} ${isSelected ? 'selected' : ''}" 
+                             onclick="${isBatchMode ? 'toggleNoteSelect(' + note.id + ')' : 'editNote(' + notes.indexOf(note) + ')'}">
+                            ${isBatchMode ? `<input type="checkbox" class="item-checkbox" ${isSelected ? 'checked' : ''} onchange="toggleNoteSelect(${note.id})">` : ''}
+                            <div class="item-icon">📝</div>
+                            <div class="item-name">${note.title || '无标题'}</div>
+                            <div class="item-info">${note.time || '未知时间'}</div>
+                            ${isBatchMode ? '' : `
+                                <div class="item-actions">
+                                    <button class="item-action-btn" onclick="event.stopPropagation(); copyNote(${notes.indexOf(note)})" title="复制">📋</button>
+                                    <button class="item-action-btn" onclick="event.stopPropagation(); deleteNote(${notes.indexOf(note)})" title="删除">🗑️</button>
+                                </div>
+                            `}
+                        </div>
+                    `;
+                }
             }).join('');
+            
+            // 更新批量操作按钮
+            updateBatchActions();
         }
 
         // ==================== 便签操作 ====================
@@ -794,7 +997,6 @@
             document.getElementById('editor').innerHTML = '';
             document.getElementById('imagePreview').innerHTML = '';
             document.getElementById('fullscreenEditor').classList.add('show');
-            document.getElementById('listView').style.display = 'none';
             
             history = [];
             historyIndex = -1;
@@ -845,19 +1047,30 @@
             
             // 提取标题（第一行文字）
             const textContent = content.replace(/<[^>]*>/g, '').trim();
-            const title = textContent.split('\n')[0].substring(0, 20);
+            const title = textContent.split('\n')[0].substring(0, 20) || '无标题';
+            
+            // 构建路径
+            let path = '/默认便签/' + title;
+            if (currentFolder !== 'all' && currentFolder !== 'default') {
+                const folder = findFolder(currentFolder);
+                if (folder) {
+                    path = folder.path + '/' + title;
+                }
+            }
             
             const newNote = {
                 id: currentEditIndex === -1 ? Date.now() : notes[currentEditIndex].id,
-                title: title || '无标题',
+                title: title,
                 content: content,
                 time: new Date().toLocaleString(),
                 images: images,
-                folder: currentEditIndex === -1 ? (currentFolder === 'all' ? 'default' : currentFolder) : notes[currentEditIndex].folder
+                folder: currentEditIndex === -1 ? (currentFolder === 'all' ? 'default' : currentFolder) : notes[currentEditIndex].folder,
+                path: path
             };
             
             if (currentEditIndex === -1) {
                 notes.push(newNote);
+                currentEditIndex = notes.length - 1; // 设置当前编辑索引，防止重复保存
             } else {
                 notes[currentEditIndex] = newNote;
             }
@@ -871,30 +1084,12 @@
             copy.id = Date.now();
             copy.time = new Date().toLocaleString();
             copy.title = copy.title + ' (副本)';
+            copy.path = copy.path + ' (副本)';
             
             notes.push(copy);
             saveData();
             renderNotes();
             showToast('📋 已复制');
-        }
-
-        function moveNote(index) {
-            // 简单起见，弹出文件夹选择
-            const folderList = folders.map(f => f.name).join('\n');
-            const folderName = prompt('输入目标文件夹名称:\n' + folderList);
-            if (!folderName) return;
-            
-            const targetFolder = folders.find(f => f.name === folderName);
-            if (!targetFolder) {
-                alert('文件夹不存在');
-                return;
-            }
-            
-            notes[index].folder = targetFolder.id;
-            saveData();
-            renderNotes();
-            renderFolderTree();
-            showToast('📂 已移动');
         }
 
         function deleteNote(index) {
@@ -903,6 +1098,181 @@
             saveData();
             renderNotes();
             renderFolderTree();
+        }
+
+        // ==================== 批量操作 ====================
+        function toggleBatchMode() {
+            isBatchMode = !isBatchMode;
+            document.getElementById('batchModeBtn').textContent = isBatchMode ? '✅ 完成' : '✏️ 批量';
+            selectedNotes.clear();
+            renderNotes();
+            
+            if (isBatchMode) {
+                // 显示批量操作按钮
+                const actions = document.getElementById('notesActions');
+                actions.innerHTML = `
+                    <button class="action-btn" onclick="showBatchMoveModal()">📂 移动</button>
+                    <button class="action-btn danger" onclick="showBatchDeleteModal()">🗑️ 删除</button>
+                    <button class="action-btn" onclick="toggleBatchMode()">取消</button>
+                `;
+            } else {
+                // 恢复正常按钮
+                document.getElementById('notesActions').innerHTML = '<button class="action-btn" onclick="showNewNote()">➕ 新建</button>';
+            }
+        }
+
+        function toggleNoteSelect(noteId) {
+            if (selectedNotes.has(noteId)) {
+                selectedNotes.delete(noteId);
+            } else {
+                selectedNotes.add(noteId);
+            }
+            renderNotes();
+            updateBatchActions();
+        }
+
+        function updateBatchActions() {
+            const count = selectedNotes.size;
+            if (isBatchMode) {
+                document.getElementById('notesActions').innerHTML = `
+                    <span style="color:#FFD700;">已选 ${count}</span>
+                    <button class="action-btn" onclick="showBatchMoveModal()">📂 移动</button>
+                    <button class="action-btn danger" onclick="showBatchDeleteModal()">🗑️ 删除</button>
+                    <button class="action-btn" onclick="toggleBatchMode()">取消</button>
+                `;
+            }
+        }
+
+        function showBatchMoveModal() {
+            if (selectedNotes.size === 0) {
+                alert('请先选择要移动的便签');
+                return;
+            }
+            
+            document.getElementById('selectedCount').textContent = selectedNotes.size;
+            
+            // 填充目标文件夹选项
+            const select = document.getElementById('moveTargetFolder');
+            select.innerHTML = '<option value="">选择目标文件夹</option>';
+            
+            folders.forEach(folder => {
+                if (folder.id !== 'default') {
+                    const option = document.createElement('option');
+                    option.value = folder.id;
+                    option.textContent = folder.name;
+                    select.appendChild(option);
+                }
+            });
+            
+            document.getElementById('batchMoveModal').classList.add('show');
+        }
+
+        function closeBatchMoveModal() {
+            document.getElementById('batchMoveModal').classList.remove('show');
+        }
+
+        function batchMove() {
+            const targetFolder = document.getElementById('moveTargetFolder').value;
+            if (!targetFolder) {
+                alert('请选择目标文件夹');
+                return;
+            }
+            
+            notes.forEach(note => {
+                if (selectedNotes.has(note.id)) {
+                    note.folder = targetFolder;
+                    
+                    // 更新路径
+                    const folder = findFolder(targetFolder);
+                    if (folder) {
+                        note.path = folder.path + '/' + note.title;
+                    }
+                }
+            });
+            
+            saveData();
+            selectedNotes.clear();
+            toggleBatchMode();
+            renderNotes();
+            renderFolderTree();
+            closeBatchMoveModal();
+            showToast('📂 移动完成');
+        }
+
+        function showBatchDeleteModal() {
+            if (selectedNotes.size === 0) {
+                alert('请先选择要删除的便签');
+                return;
+            }
+            
+            document.getElementById('deleteCount').textContent = selectedNotes.size;
+            document.getElementById('batchDeleteModal').classList.add('show');
+        }
+
+        function closeBatchDeleteModal() {
+            document.getElementById('batchDeleteModal').classList.remove('show');
+        }
+
+        function batchDelete() {
+            notes = notes.filter(note => !selectedNotes.has(note.id));
+            saveData();
+            selectedNotes.clear();
+            toggleBatchMode();
+            renderNotes();
+            renderFolderTree();
+            closeBatchDeleteModal();
+            showToast('🗑️ 删除完成');
+        }
+
+        // ==================== 主题管理 ====================
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('noteTheme');
+            if (savedTheme) {
+                const theme = JSON.parse(savedTheme);
+                document.documentElement.style.setProperty('--bg-gradient-start', theme.start);
+                document.documentElement.style.setProperty('--bg-gradient-end', theme.end);
+            }
+            
+            const nightMode = localStorage.getItem('nightMode') === 'true';
+            if (nightMode) {
+                document.body.classList.add('night-mode');
+            }
+        }
+
+        function showThemeModal() {
+            document.getElementById('themeModal').classList.add('show');
+        }
+
+        function closeThemeModal() {
+            document.getElementById('themeModal').classList.remove('show');
+        }
+
+        function setTheme(type, start, end) {
+            document.documentElement.style.setProperty('--bg-gradient-start', start);
+            document.documentElement.style.setProperty('--bg-gradient-end', end);
+            
+            localStorage.setItem('noteTheme', JSON.stringify({ start, end }));
+        }
+
+        function updateCustomTheme() {
+            // 实时预览
+            const start = document.getElementById('customColorStart').value;
+            const end = document.getElementById('customColorEnd').value;
+            document.documentElement.style.setProperty('--bg-gradient-start', start);
+            document.documentElement.style.setProperty('--bg-gradient-end', end);
+        }
+
+        function applyCustomTheme() {
+            const start = document.getElementById('customColorStart').value;
+            const end = document.getElementById('customColorEnd').value;
+            
+            localStorage.setItem('noteTheme', JSON.stringify({ start, end }));
+            closeThemeModal();
+        }
+
+        function toggleNightMode() {
+            document.body.classList.toggle('night-mode');
+            localStorage.setItem('nightMode', document.body.classList.contains('night-mode'));
         }
 
         // ==================== 导出功能 ====================
@@ -917,7 +1287,6 @@
         function exportAsImage() {
             const editor = document.getElementById('editor');
             
-            // 创建一个临时容器用于导出
             const container = document.createElement('div');
             container.style.padding = '40px';
             container.style.background = 'white';
@@ -933,7 +1302,6 @@
                 scale: 2,
                 backgroundColor: '#ffffff'
             }).then(canvas => {
-                // 创建下载链接
                 const link = document.createElement('a');
                 link.download = `便签-${new Date().toLocaleDateString()}.png`;
                 link.href = canvas.toDataURL('image/png');
@@ -1069,9 +1437,6 @@
                 document.body.removeChild(toast);
             }, 2000);
         }
-
-        // 颜色选择器、字体大小等函数保持与原代码一致
-        // 由于篇幅限制，这里省略，实际使用时需要完整复制之前的函数
 
         // 初始化
         window.onload = init;
