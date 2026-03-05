@@ -1,2530 +1,973 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-    <title>我的动物庄园</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的动态空间</title>
+    <!-- 引入优雅的圆体字库 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-        }
-
-        /* 主题变量 */
         :root {
-            --bg-gradient-start: #1a472a;
-            --bg-gradient-end: #2d6a4f;
-            --card-bg: rgba(255,255,255,0.1);
-            --text-color: white;
-            --border-color: rgba(255,255,255,0.2);
-            --hover-bg: rgba(255,255,255,0.2);
-            --selected-bg: #FFD700;
-            --selected-text: #333;
+            /* 配色方案：柔和、现代、高级 */
+            --primary: #6C5CE7;       /* 主色调：普罗旺斯紫 */
+            --primary-light: #A29BFE; /* 辅色：淡紫 */
+            --accent: #FF7675;        /* 强调色：珊瑚红 */
+            --bg-color: #DFE6E9;      /* 背景：云雾灰 */
+            --card-bg: #FFFFFF;       /* 卡片白 */
+            --text-main: #2D3436;     /* 主文字 */
+            --text-sub: #636E72;      /* 副文字 */
+            --radius-lg: 24px;        /* 大圆角 */
+            --radius-md: 16px;        /* 中圆角 */
+            --radius-sm: 10px;        /* 小圆角 */
+            --shadow: 0 10px 30px rgba(0,0,0,0.05); /* 悬浮阴影 */
         }
 
-        /* 夜间模式 */
-        body.night-mode {
-            --bg-gradient-start: #0a1f0a;
-            --bg-gradient-end: #1a3a1a;
-            --card-bg: rgba(0,0,0,0.5);
-            --text-color: #e0e0e0;
-            --border-color: rgba(255,255,255,0.1);
-        }
+        * { box-sizing: border-box; outline: none; }
 
         body {
-            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
-            min-height: 100vh;
-            padding: 20px;
-            color: var(--text-color);
-            transition: all 0.3s;
-        }
-
-        /* 顶部导航 */
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            padding: 15px 25px;
-            border-radius: 20px;
-            border: 1px solid var(--border-color);
-        }
-        .back-btn {
-            background: rgba(255,255,255,0.2);
-            padding: 10px 20px;
-            color: var(--text-color);
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            text-decoration: none;
-        }
-        .points-display {
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .points-display span {
-            color: #FFD700;
-            font-size: 24px;
-            margin-left: 10px;
-        }
-        .nav-buttons {
-            display: flex;
-            gap: 8px;
-        }
-        .nav-btn {
-            background: rgba(255,255,255,0.2);
-            padding: 10px 16px;
-            color: var(--text-color);
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .nav-btn:hover {
-            background: rgba(255,255,255,0.3);
-        }
-        .nav-btn.developer {
-            background: rgba(244,67,54,0.3);
-        }
-        .nav-btn.developer:hover {
-            background: rgba(244,67,54,0.5);
-        }
-
-        /* 三栏布局 */
-        .main-layout {
-            display: flex;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        /* 左侧栏 */
-        .left-column {
-            width: 250px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        /* 签到卡片 */
-        .sign-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 20px;
-            border: 1px solid var(--border-color);
-        }
-        .sign-title {
-            font-size: 14px;
-            color: #FFD700;
-            margin-bottom: 10px;
-        }
-        .sign-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .sign-points {
-            font-size: 20px;
-            font-weight: bold;
-        }
-        .sign-btn {
-            padding: 8px 16px;
-            background: linear-gradient(135deg, #FFD700, #FFA500);
-            border: none;
-            border-radius: 16px;
-            color: #333;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .sign-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* 抽蛋卡片 */
-        .gacha-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 20px;
-            border: 1px solid var(--border-color);
-        }
-        .gacha-title {
-            font-size: 14px;
-            color: #FFD700;
-            margin-bottom: 15px;
-        }
-        .gacha-buttons {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .gacha-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .gacha-btn.single {
-            background: linear-gradient(135deg, #FFD700, #FFA500);
-        }
-        .gacha-btn.ten {
-            background: linear-gradient(135deg, #9C27B0, #7B1FA2);
-            color: white;
-        }
-        .gacha-btn:hover {
-            transform: translateY(-2px);
-        }
-
-        /* 动物列表 */
-        .animals-list-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 20px;
-            border: 1px solid var(--border-color);
-            flex: 1;
-        }
-        .animals-list-title {
-            font-size: 14px;
-            color: #FFD700;
-            margin-bottom: 15px;
-        }
-        .animals-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        .animal-item {
-            background: rgba(255,255,255,0.05);
-            border-radius: 16px;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: all 0.2s;
-        }
-        .animal-item:hover {
-            border-color: #FFD700;
-        }
-        .animal-item.selected {
-            border-color: #FFD700;
-            background: rgba(255,215,0,0.1);
-        }
-        .animal-item.dead {
-            opacity: 0.5;
-            filter: grayscale(100%);
-        }
-        .animal-avatar {
-            width: 50px;
-            height: 50px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 25px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            margin-bottom: 5px;
-        }
-        .animal-name {
-            font-size: 12px;
-            font-weight: bold;
-            text-align: center;
-        }
-        .animal-level {
-            font-size: 10px;
-            color: #FFD700;
-        }
-        .animal-days {
-            font-size: 9px;
-            color: #aaa;
-        }
-
-        /* 中间栏 - 动物抚养 */
-        .middle-column {
-            flex: 2;
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            padding: 25px;
-            border: 1px solid var(--border-color);
-        }
-        .pet-area {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-        .pet-avatar {
-            width: 120px;
-            height: 120px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 60px;
-            margin-bottom: 15px;
-            border: 3px solid #FFD700;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .pet-avatar:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px #FFD700;
-        }
-        .pet-avatar.dead {
-            filter: grayscale(100%);
-            border-color: #666;
-        }
-        .pet-name {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 5px;
-            cursor: pointer;
-        }
-        .pet-name:hover {
-            color: #FFD700;
-        }
-        .pet-level {
-            font-size: 16px;
-            color: #FFD700;
-            margin-bottom: 10px;
-        }
-        .pet-days {
-            font-size: 14px;
-            color: #aaa;
-            margin-bottom: 10px;
-        }
-        .exp-bar {
-            width: 100%;
-            height: 8px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 10px 0;
-        }
-        .exp-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #FFD700, #FFA500);
-            width: 0%;
-            transition: width 0.3s;
-        }
-        .talent-display {
-            display: flex;
-            gap: 15px;
-            margin: 10px 0;
-            font-size: 14px;
-        }
-        .talent-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .talent-label {
-            font-size: 11px;
-            color: #aaa;
-        }
-        .talent-value {
-            font-weight: bold;
-            color: #FFD700;
-        }
-
-        /* 属性条 */
-        .stats-bars {
-            width: 100%;
-            margin: 20px 0;
-        }
-        .stat-bar {
-            display: flex;
-            align-items: center;
-            margin: 10px 0;
-        }
-        .stat-label {
-            width: 60px;
-            font-size: 14px;
-        }
-        .bar-container {
-            flex: 1;
-            height: 20px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 0 10px;
-        }
-        .bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #FFD700, #FFA500);
-            width: 50%;
-            transition: width 0.3s;
-        }
-        .stat-value {
-            width: 50px;
-            font-size: 14px;
-        }
-        .health-bar {
-            margin-top: 15px;
-            padding: 10px;
-            background: rgba(244,67,54,0.2);
-            border-radius: 10px;
-            border: 1px solid #f44336;
-        }
-        .health-title {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 5px;
-            font-size: 12px;
-        }
-        .health-fill {
-            height: 15px;
-            background: linear-gradient(90deg, #f44336, #ff9800, #4CAF50);
-            border-radius: 8px;
-            width: 100%;
-            transition: width 0.3s;
-        }
-
-        /* 互动按钮 */
-        .interaction-buttons {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin: 20px 0;
-        }
-        .interact-btn {
-            padding: 12px;
-            background: rgba(255,255,255,0.2);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            color: var(--text-color);
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .interact-btn:hover {
-            background: #FFD700;
-            color: #333;
-        }
-        .interact-btn span {
-            font-size: 20px;
-            margin-bottom: 5px;
-        }
-        .interact-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* 右侧栏 */
-        .right-column {
-            width: 280px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        /* 孵化器 */
-        .incubator-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 20px;
-            border: 1px solid var(--border-color);
-        }
-        .incubator-title {
-            font-size: 16px;
-            color: #FFD700;
-            margin-bottom: 15px;
-        }
-        .egg-selector {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .egg-option {
-            background: rgba(0,0,0,0.3);
-            border-radius: 16px;
-            padding: 15px 10px;
-            text-align: center;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: all 0.2s;
-        }
-        .egg-option:hover {
-            border-color: #FFD700;
-        }
-        .egg-option.selected {
-            border-color: #FFD700;
-            background: rgba(255,215,0,0.1);
-        }
-        .egg-option .egg-icon {
-            font-size: 24px;
-            margin-bottom: 5px;
-        }
-        .egg-option .egg-name {
-            font-size: 12px;
-            margin-bottom: 3px;
-        }
-        .egg-option .egg-count {
-            font-size: 14px;
-            font-weight: bold;
-            color: #FFD700;
-        }
-        .incubator-box {
-            background: rgba(0,0,0,0.3);
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            min-height: 150px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid transparent;
-            transition: all 0.3s;
-        }
-        .incubator-box.hatching {
-            border-color: #FFD700;
-            animation: glow 2s infinite;
-        }
-        @keyframes glow {
-            0%, 100% { box-shadow: 0 0 10px #FFD700; }
-            50% { box-shadow: 0 0 30px #FFD700; }
-        }
-        .incubator-egg {
-            font-size: 60px;
-            margin-bottom: 10px;
-            animation: float 3s ease-in-out infinite;
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        .incubator-timer {
-            font-size: 24px;
-            font-weight: bold;
-            color: #FFD700;
-            margin: 10px 0;
-        }
-        .incubator-progress {
-            width: 100%;
-            height: 8px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 10px 0;
-        }
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #FFD700, #FFA500);
-            width: 0%;
-            transition: width 1s;
-        }
-        .incubator-btn {
-            padding: 10px 20px;
-            background: #FFD700;
-            border: none;
-            border-radius: 20px;
-            color: #333;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        /* 收藏卡片 */
-        .collection-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 20px;
-            border: 1px solid var(--border-color);
-        }
-        .collection-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        .collection-title {
-            font-size: 16px;
-            color: #FFD700;
-        }
-        .collection-filters {
-            display: flex;
-            gap: 5px;
-        }
-        .filter-btn {
-            padding: 4px 8px;
-            background: rgba(255,255,255,0.1);
-            border: none;
-            border-radius: 8px;
-            color: var(--text-color);
-            cursor: pointer;
-            font-size: 11px;
-        }
-        .filter-btn.active {
-            background: #FFD700;
-            color: #333;
-        }
-        .collection-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        .collection-item {
-            text-align: center;
-            padding: 8px;
-            border-radius: 12px;
-            background: rgba(255,255,255,0.05);
-            border: 2px solid transparent;
-        }
-        .collection-item.owned {
-            opacity: 1;
-        }
-        .collection-item.not-owned {
-            opacity: 0.3;
-            filter: grayscale(100%);
-        }
-        .collection-item.max-level {
-            border-color: #FFD700;
-        }
-        .collection-emoji {
-            font-size: 24px;
-            margin-bottom: 3px;
-        }
-        .collection-name {
-            font-size: 10px;
-        }
-
-        /* 背包弹窗 */
-        .backpack-modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 25px;
-            border-radius: 24px;
-            z-index: 2100;
-            display: none;
-            width: 400px;
-            max-height: 500px;
-            overflow-y: auto;
-            color: #333;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-        .backpack-modal.show {
-            display: block;
-        }
-        .backpack-modal h3 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #333;
-        }
-        .backpack-section {
-            margin-bottom: 20px;
-        }
-        .backpack-section h4 {
-            margin-bottom: 10px;
-            padding-bottom: 5px;
-            border-bottom: 2px solid #FFD700;
-            color: #333;
-        }
-        .backpack-items {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
-        .backpack-item {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            background: #f5f5f5;
-            border-radius: 12px;
-        }
-        .backpack-item-icon {
-            font-size: 24px;
-            margin-right: 10px;
-        }
-        .backpack-item-info {
-            flex: 1;
-        }
-        .backpack-item-name {
-            font-size: 13px;
-            font-weight: bold;
-        }
-        .backpack-item-count {
-            font-size: 16px;
-            color: #FFD700;
-            font-weight: bold;
-        }
-
-        /* 商城弹窗 */
-        .shop-modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 30px;
-            border-radius: 24px;
-            z-index: 2300;
-            display: none;
-            width: 500px;
-            max-height: 80vh;
-            overflow-y: auto;
-            color: #333;
-        }
-        .shop-modal.show {
-            display: block;
-        }
-        .shop-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .shop-header h3 {
+            font-family: 'Nunito', 'Noto Sans SC', sans-serif;
+            background: var(--bg-color);
             margin: 0;
-            color: #333;
+            padding: 20px;
+            color: var(--text-main);
+            min-height: 100vh;
         }
-        .shop-close {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #999;
-        }
-        .shop-close:hover {
-            color: #f44336;
-        }
-        .shop-category {
+
+        /* --- 顶部导航栏 --- */
+        .nav-bar {
+            background: var(--card-bg);
+            padding: 15px 30px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 25px;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
         }
-        .shop-category h4 {
-            color: #333;
-            margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #FFD700;
-        }
-        .shop-item {
+
+        .brand {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--primary);
             display: flex;
             align-items: center;
-            padding: 15px;
-            background: #f5f5f5;
-            border-radius: 16px;
-            margin-bottom: 10px;
-        }
-        .shop-item-icon {
-            font-size: 30px;
-            margin-right: 15px;
-        }
-        .shop-item-info {
-            flex: 1;
-        }
-        .shop-item-name {
-            font-weight: bold;
-            margin-bottom: 3px;
-        }
-        .shop-item-desc {
-            font-size: 12px;
-            color: #666;
-        }
-        .shop-item-price {
-            font-size: 18px;
-            font-weight: bold;
-            color: #FFD700;
-            margin: 0 15px;
-        }
-        .shop-item-btn {
-            padding: 8px 16px;
-            background: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
+            gap: 10px;
         }
 
-        /* 开发者弹窗 */
-        .dev-modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 30px;
-            border-radius: 24px;
-            z-index: 2400;
-            display: none;
-            width: 400px;
-            color: #333;
+        .btn {
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
         }
-        .dev-modal.show {
-            display: block;
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
         }
-        .dev-modal input, .dev-modal select {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 12px;
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(108, 92, 231, 0.4); }
+
+        .btn-ghost {
+            background: #f1f2f6;
+            color: var(--text-sub);
         }
-        .dev-buttons {
+        .btn-ghost:hover { background: #dfe4ea; }
+
+        /* --- 核心三栏布局 --- */
+        .layout-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+            grid-template-columns: 280px 1fr 320px;
+            gap: 25px;
+            max-width: 1400px;
+            margin: 0 auto;
+            align-items: start;
+        }
+
+        /* --- 通用卡片 --- */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            transition: transform 0.2s;
+        }
+
+        .card-header {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f5f6fa;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* --- 左侧：数据与日历 --- */
+        .stats-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            text-align: center;
+        }
+        .stat-num { font-size: 20px; font-weight: 800; color: var(--primary); }
+        .stat-label { font-size: 12px; color: var(--text-sub); margin-top: 4px; }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
             margin-top: 15px;
         }
-        .dev-btn {
-            padding: 12px;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .dev-btn.green { background: #4CAF50; color: white; }
-        .dev-btn.orange { background: #FF9800; color: white; }
-        .dev-btn.purple { background: #9C27B0; color: white; }
-        .dev-btn.red { background: #f44336; color: white; }
-
-        /* 主题选择弹窗 */
-        .theme-modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 30px;
-            border-radius: 24px;
-            z-index: 2300;
-            display: none;
-            width: 450px;
-            color: #333;
-        }
-        .theme-modal.show {
-            display: block;
-        }
-        .theme-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
-            margin: 20px 0;
-        }
-        .theme-color {
-            width: 50px;
-            height: 50px;
+        .cal-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
             border-radius: 50%;
             cursor: pointer;
-            border: 2px solid transparent;
+            transition: 0.2s;
+            color: var(--text-sub);
         }
-        .theme-color:hover {
-            transform: scale(1.1);
+        .cal-day:hover { background: #eee; }
+        .cal-day.today { border: 2px solid var(--primary); font-weight: bold; color: var(--primary); }
+        .cal-day.has-data { background: var(--accent); color: white; }
+
+        .memory-card {
+            background: linear-gradient(135deg, #a8e063, #56ab2f);
+            color: white;
         }
-        .theme-color.selected {
-            border-color: #333;
-        }
-        .color-picker {
-            width: 100%;
-            height: 50px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            cursor: pointer;
+        .memory-text { font-size: 14px; line-height: 1.5; opacity: 0.95; font-style: italic; }
+
+        /* --- 中间：动态流 --- */
+        .feed-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            align-items: center;
         }
 
-        .version-tag {
-            position: fixed;
-            bottom: 5px;
-            right: 5px;
+        .moment-item {
+            position: relative;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .moment-top {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 12px;
+        }
+
+        .avatar-frame {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            background: #f5f6fa;
+            border: 3px solid white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .user-info h4 { margin: 0 0 4px 0; font-size: 16px; }
+        .user-info p { margin: 0; font-size: 12px; color: var(--text-sub); }
+
+        .info-badges {
+            display: flex;
+            gap: 6px;
+            margin-top: 6px;
+        }
+        .badge {
             font-size: 10px;
-            color: rgba(255,255,255,0.5);
-            background: rgba(0,0,0,0.3);
-            padding: 2px 5px;
-            border-radius: 3px;
+            padding: 3px 8px;
+            border-radius: 20px;
+            background: #f1f2f6;
+            color: var(--text-sub);
+        }
+
+        .moment-text {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #2d3436;
+            margin-bottom: 12px;
+            white-space: pre-wrap;
+        }
+
+        .moment-imgs {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .moment-imgs img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: var(--radius-md);
+            cursor: zoom-in;
+        }
+
+        .moment-actions {
+            border-top: 1px solid #f1f2f6;
+            padding-top: 12px;
+            display: flex;
+            gap: 20px;
+        }
+        .action-icon {
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text-sub);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: 0.2s;
+        }
+        .action-icon:hover { color: var(--primary); }
+        .action-icon.active { color: var(--accent); font-weight: bold; }
+
+        /* --- 右侧：功能区 --- */
+        .collection-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: 0.2s;
+            margin-bottom: 8px;
+        }
+        .collection-item:hover { background: #f5f6fa; }
+        .collection-item.active { background: #eef2ff; color: var(--primary); font-weight: 600; }
+        .folder-icon { margin-right: 12px; font-size: 18px; }
+
+        /* 右侧身份矩阵 - 圆框设计 */
+        .identity-matrix {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            padding: 5px;
+        }
+        .id-circle-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+        }
+        .id-avatar-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            background: white;
+            border: 2px solid #eee;
+            transition: all 0.2s;
+            margin-bottom: 6px;
+        }
+        .id-circle-wrap:hover .id-avatar-circle { transform: scale(1.1); border-color: var(--primary); }
+        .id-name-limit {
+            font-size: 11px;
+            width: 100%;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; /* 文字出框修复：超出显示省略号 */
+            color: var(--text-sub);
+        }
+
+        /* --- 搜索框 --- */
+        .search-bar {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #f1f2f6;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            transition: 0.3s;
+        }
+        .search-bar:focus { border-color: var(--primary); }
+
+        /* --- 全屏编辑器 (新版布局) --- */
+        .editor-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .editor-modal.show { opacity: 1; }
+
+        .editor-container {
+            width: 900px;
+            height: 600px;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            display: flex;
+            overflow: hidden;
+            border: 1px solid #eee;
+        }
+
+        /* 编辑器左侧 */
+        .editor-left {
+            flex: 1.8;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #f5f6fa;
+        }
+        .editor-textarea {
+            flex: 1;
+            border: none;
+            resize: none;
+            font-size: 18px;
+            line-height: 1.6;
+            color: var(--text-main);
+            margin-bottom: 20px;
+        }
+        .preview-zone { display: flex; gap: 10px; overflow-x: auto; height: 90px; padding: 5px; }
+        .preview-img { height: 80px; width: 80px; border-radius: 12px; object-fit: cover; }
+
+        /* 编辑器右侧 */
+        .editor-right {
+            flex: 1.2;
+            padding: 30px;
+            background: #FAFBFC;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            overflow-y: auto;
+        }
+
+        .section-label { font-size: 12px; font-weight: 700; color: #b2bec3; margin-bottom: 10px; letter-spacing: 1px; }
+
+        /* 第一行：身份选择 (圆头像横向滚动) */
+        .avatar-scroll {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+        .avatar-option {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            flex-shrink: 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .avatar-option.selected { border-color: var(--primary); background: #eef2ff; transform: scale(1.1); }
+
+        /* 第二行：环境信息 */
+        .env-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .select-styled {
+            width: 100%;
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid #dfe6e9;
+            background: white;
+            font-size: 13px;
+        }
+
+        /* 第三行：标签与收藏 */
+        .tag-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #dfe6e9;
+            border-radius: 12px;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 900px) {
+            .layout-grid { grid-template-columns: 1fr; }
+            .editor-container { flex-direction: column; width: 100%; height: 100%; border-radius: 0; }
+            .editor-left { height: 50%; }
+            .editor-right { height: 50%; }
         }
     </style>
 </head>
 <body>
-    <div class="top-bar">
-        <div>
-            <a href="index.html"><button class="back-btn">← 返回首页</button></a>
+
+    <!-- 顶部导航 -->
+    <nav class="nav-bar">
+        <div class="brand">
+            <span style="font-size: 28px;">🦄</span> 我的动态空间
         </div>
-        <div class="points-display">
-            积分 <span id="totalPoints">1000</span>
+        <div style="display: flex; gap: 12px;">
+            <button class="btn btn-ghost" onclick="resetAll()">🧹 清空重置</button>
+            <button class="btn btn-primary" onclick="showEditor()">✨ 写动态</button>
         </div>
-        <div class="nav-buttons">
-            <button class="nav-btn" onclick="showDevModal()">👑 开发</button>
-            <button class="nav-btn" onclick="showThemeModal()">🎨 主题</button>
-            <button class="nav-btn" onclick="toggleNightMode()">🌙 夜间</button>
-            <button class="nav-btn" onclick="showShopModal()">🛒 商城</button>
-            <button class="nav-btn" onclick="showBackpack()">🎒 背包</button>
-        </div>
+    </nav>
+
+    <!-- 主布局 -->
+    <div class="layout-grid">
+        
+        <!-- 左侧：统计区 -->
+        <aside>
+            <div class="card">
+                <div class="card-header">📊 记录统计</div>
+                <div class="stats-box">
+                    <div>
+                        <div class="stat-num" id="count-moments">0</div>
+                        <div class="stat-label">总动态</div>
+                    </div>
+                    <div>
+                        <div class="stat-num" id="count-likes">0</div>
+                        <div class="stat-label">获赞数</div>
+                    </div>
+                    <div>
+                        <div class="stat-num" id="count-days">0</div>
+                        <div class="stat-label">记录天数</div>
+                    </div>
+                    <div>
+                        <div class="stat-num" id="current-year">2026</div>
+                        <div class="stat-label">年份</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 去年今天功能 -->
+            <div class="card memory-card">
+                <div class="card-header" style="border-color: rgba(255,255,255,0.2); color:white;">🕰️ 去年今天</div>
+                <div id="last-year-content" class="memory-text">
+                    正在检索时空碎片...
+                </div>
+            </div>
+
+            <!-- 日历 -->
+            <div class="card">
+                <div class="card-header">
+                    <span id="cal-title">📅 日历</span>
+                    <div style="font-size: 14px;">
+                        <span onclick="switchMonth(-1)" style="cursor:pointer">◀</span>
+                        <span onclick="switchMonth(1)" style="cursor:pointer; margin-left:10px;">▶</span>
+                    </div>
+                </div>
+                <div class="calendar-grid" id="calendar-view"></div>
+            </div>
+        </aside>
+
+        <!-- 中间：内容流 -->
+        <main>
+            <div class="feed-controls">
+                <h3 style="margin:0;">⏳ 时间轴</h3>
+                <button class="btn btn-ghost" onclick="toggleSort()" id="sort-btn">⬇️ 时间倒序</button>
+            </div>
+            <div id="feed-container"></div>
+        </main>
+
+        <!-- 右侧：功能区 -->
+        <aside>
+            <!-- 收藏夹 -->
+            <div class="card">
+                <div class="card-header">📁 收藏夹</div>
+                <div id="collection-list">
+                    <div class="collection-item active" onclick="setFilter('all', this)">
+                        <span class="folder-icon">📑</span> 全部动态
+                    </div>
+                    <div class="collection-item" onclick="setFilter('favorites', this)">
+                        <span class="folder-icon">⭐</span> 默认收藏夹
+                    </div>
+                    <div id="custom-albums"></div>
+                </div>
+            </div>
+
+            <!-- 身份矩阵 (圆框修复版) -->
+            <div class="card">
+                <div class="card-header">
+                    <span>👥 身份管理</span>
+                    <span style="font-size:12px; color:var(--primary); cursor:pointer;" onclick="createNewIdentity()">+新增</span>
+                </div>
+                <div class="identity-matrix" id="sidebar-identities">
+                    <!-- JS 生成 -->
+                </div>
+            </div>
+
+            <!-- 搜索 -->
+            <div class="card">
+                <div class="card-header">🔍 搜索</div>
+                <input type="text" class="search-bar" placeholder="搜索内容或标签..." oninput="handleSearch(this.value)">
+            </div>
+        </aside>
+
     </div>
 
-    <!-- 三栏布局 -->
-    <div class="main-layout">
-        <!-- 左侧栏 -->
-        <div class="left-column">
-            <!-- 签到卡片 -->
-            <div class="sign-card">
-                <div class="sign-title">📅 每日签到</div>
-                <div class="sign-content">
-                    <span class="sign-points" id="todayPoints">0</span>
-                    <button class="sign-btn" id="signBtn" onclick="signIn()">签到</button>
-                </div>
-            </div>
-
-            <!-- 抽蛋卡片 -->
-            <div class="gacha-card">
-                <div class="gacha-title">🥚 抽取动物蛋</div>
-                <div class="gacha-buttons">
-                    <button class="gacha-btn single" onclick="drawEgg(1)">单抽 100</button>
-                    <button class="gacha-btn ten" onclick="drawEgg(10)">十连 900</button>
-                </div>
-            </div>
-
-            <!-- 我的动物列表 -->
-            <div class="animals-list-card">
-                <div class="animals-list-title">🐾 我的动物</div>
-                <div class="animals-grid" id="animalsGrid"></div>
-            </div>
-        </div>
-
-        <!-- 中间栏 - 动物抚养 -->
-        <div class="middle-column">
-            <div class="pet-area" id="petArea">
-                <div class="pet-avatar" onclick="showRenameModal()" id="petAvatar">🥚</div>
-                <div class="pet-name" onclick="showRenameModal()" id="petName">选择动物</div>
-                <div class="pet-level" id="petLevel">Lv.1</div>
-                <div class="pet-days" id="petDays">陪伴 0 天</div>
-                <div class="exp-bar">
-                    <div class="exp-fill" id="expBar" style="width: 0%"></div>
-                </div>
-                <div class="talent-display" id="talentDisplay">
-                    <div class="talent-item">
-                        <span class="talent-label">力量</span>
-                        <span class="talent-value" id="talentStrength">0</span>
-                    </div>
-                    <div class="talent-item">
-                        <span class="talent-label">敏捷</span>
-                        <span class="talent-value" id="talentAgility">0</span>
-                    </div>
-                    <div class="talent-item">
-                        <span class="talent-label">智力</span>
-                        <span class="talent-value" id="talentIntelligence">0</span>
-                    </div>
-                    <div class="talent-item">
-                        <span class="talent-label">魅力</span>
-                        <span class="talent-value" id="talentCharm">0</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 生命值条 -->
-            <div class="health-bar" id="healthBar">
-                <div class="health-title">
-                    <span>❤️ 生命值</span>
-                    <span id="healthValue">100/100</span>
-                </div>
-                <div class="health-fill" id="healthFill" style="width: 100%"></div>
-            </div>
-
-            <div class="stats-bars" id="statsBars">
-                <div class="stat-bar">
-                    <span class="stat-label">饱食</span>
-                    <div class="bar-container"><div class="bar-fill" id="hungerBar" style="width: 0%"></div></div>
-                    <span class="stat-value" id="hungerValue">0/100</span>
-                </div>
-                <div class="stat-bar">
-                    <span class="stat-label">水分</span>
-                    <div class="bar-container"><div class="bar-fill" id="waterBar" style="width: 0%"></div></div>
-                    <span class="stat-value" id="waterValue">0/100</span>
-                </div>
-                <div class="stat-bar">
-                    <span class="stat-label">心情</span>
-                    <div class="bar-container"><div class="bar-fill" id="moodBar" style="width: 0%"></div></div>
-                    <span class="stat-value" id="moodValue">0/100</span>
-                </div>
-                <div class="stat-bar">
-                    <span class="stat-label">精力</span>
-                    <div class="bar-container"><div class="bar-fill" id="energyBar" style="width: 0%"></div></div>
-                    <span class="stat-value" id="energyValue">0/100</span>
-                </div>
-            </div>
-
-            <div class="interaction-buttons" id="interactionButtons">
-                <button class="interact-btn" onclick="interact('feed')"><span>🍖</span>喂食</button>
-                <button class="interact-btn" onclick="interact('water')"><span>💧</span>喂水</button>
-                <button class="interact-btn" onclick="interact('play')"><span>🎾</span>玩耍</button>
-                <button class="interact-btn" onclick="interact('clean')"><span>🧼</span>清洁</button>
-                <button class="interact-btn" onclick="interact('sleep')"><span>😴</span>睡觉</button>
-                <button class="interact-btn" onclick="interact('medicine')"><span>💊</span>吃药</button>
-                <button class="interact-btn" onclick="interact('train')"><span>🏋️</span>训练</button>
-                <button class="interact-btn" onclick="interact('gift')"><span>🎁</span>礼物</button>
-                <button class="interact-btn" onclick="interact('massage')"><span>💆</span>按摩</button>
-            </div>
-        </div>
-
-        <!-- 右侧栏 -->
-        <div class="right-column">
-            <!-- 孵化器 -->
-            <div class="incubator-card">
-                <div class="incubator-title">⏳ 孵化器</div>
+    <!-- 全屏编辑器 (完全修复版) -->
+    <div class="editor-modal" id="editor" style="display: none;">
+        <div class="editor-container">
+            <!-- 左侧：输入区 -->
+            <div class="editor-left">
+                <h2 style="margin-top:0; color:var(--primary);">📝 记录当下</h2>
+                <textarea id="post-content" class="editor-textarea" placeholder="此刻在想什么？..."></textarea>
                 
-                <!-- 蛋选择器 - 圆框矩阵 -->
-                <div class="egg-selector" id="eggSelector"></div>
+                <div class="preview-zone" id="post-previews"></div>
                 
-                <div class="incubator-box" id="incubatorBox">
-                    <div class="incubator-egg" id="incubatorEgg">🥚</div>
-                    <div class="incubator-timer" id="incubatorTimer">--:--</div>
-                    <div class="incubator-progress">
-                        <div class="progress-fill" id="incubatorProgress" style="width: 0%"></div>
-                    </div>
-                    <button class="incubator-btn" id="incubatorAction" onclick="handleIncubatorAction()">开始孵化</button>
+                <div style="margin-top: auto; display: flex; gap: 15px; align-items: center;">
+                    <button class="btn btn-ghost" onclick="document.getElementById('file-input').click()">📷 添加图片</button>
+                    <input type="file" id="file-input" hidden multiple accept="image/*" onchange="processImages(this)">
+                    <div style="flex:1"></div>
+                    <button class="btn btn-ghost" onclick="hideEditor()">取消</button>
+                    <button class="btn btn-primary" onclick="submitPost()">🚀 发布</button>
                 </div>
             </div>
 
-            <!-- 收藏图鉴 -->
-            <div class="collection-card">
-                <div class="collection-header">
-                    <span class="collection-title">📚 动物图鉴</span>
-                    <div class="collection-filters">
-                        <button class="filter-btn" onclick="filterCollection('all')" id="filterAll">全部</button>
-                        <button class="filter-btn" onclick="filterCollection('owned')" id="filterOwned">已有</button>
-                        <button class="filter-btn" onclick="filterCollection('unowned')" id="filterUnowned">未得</button>
+            <!-- 右侧：设置区 -->
+            <div class="editor-right">
+                <!-- 第一行：身份选择 -->
+                <div>
+                    <div class="section-label">选择身份</div>
+                    <div class="avatar-scroll" id="editor-identities">
+                        <!-- JS 填充 -->
                     </div>
                 </div>
-                <div class="collection-grid" id="collectionGrid"></div>
+
+                <!-- 第二行：心情/天气/地点 -->
+                <div>
+                    <div class="section-label">状态 & 环境</div>
+                    <div class="env-grid">
+                        <select id="post-mood" class="select-styled">
+                            <option value="😊">😊 开心</option>
+                            <option value="😐">😐 平淡</option>
+                            <option value="😔">😔 难过</option>
+                            <option value="😡">😡 生气</option>
+                            <option value="😴">😴 疲惫</option>
+                            <option value="🥳">🥳 狂欢</option>
+                        </select>
+                        <select id="post-weather" class="select-styled">
+                            <option value="☀️">☀️ 晴朗</option>
+                            <option value="☁️">☁️ 多云</option>
+                            <option value="🌧️">🌧️ 下雨</option>
+                            <option value="❄️">❄️ 下雪</option>
+                            <option value="⛈️">⛈️ 雷阵雨</option>
+                        </select>
+                    </div>
+                    <input type="text" id="post-location" class="select-styled" placeholder="📍 地点 (可选)" style="margin-top:10px;">
+                </div>
+
+                <!-- 第三行：归档 -->
+                <div>
+                    <div class="section-label">归档分类</div>
+                    <input type="text" id="post-tags" class="tag-input" placeholder="#标签 (空格分隔)">
+                    <select id="post-album" class="select-styled">
+                        <option value="">📂 选择动态册 (默认)</option>
+                        <option value="日常琐事">🥗 日常琐事</option>
+                        <option value="特别纪念">🎁 特别纪念</option>
+                        <option value="灵感笔记">💡 灵感笔记</option>
+                        <option value="旅行日记">✈️ 旅行日记</option>
+                    </select>
+                </div>
             </div>
         </div>
     </div>
-
-    <!-- 背包弹窗 -->
-    <div id="backpackModal" class="backpack-modal">
-        <h3>🎒 我的背包</h3>
-        
-        <div class="backpack-section">
-            <h4>🥚 动物蛋</h4>
-            <div class="backpack-items" id="backpackEggs"></div>
-        </div>
-        
-        <div class="backpack-section">
-            <h4>📦 道具</h4>
-            <div class="backpack-items" id="backpackItems"></div>
-        </div>
-        
-        <div class="backpack-section">
-            <h4>💀 墓碑</h4>
-            <div class="backpack-items" id="backpackTombstones"></div>
-        </div>
-        
-        <div style="text-align: right; margin-top: 20px;">
-            <button onclick="closeBackpack()" style="padding:10px 20px; background:#999; color:white; border:none; border-radius:12px;">关闭</button>
-        </div>
-    </div>
-
-    <!-- 抽奖结果弹窗 -->
-    <div id="drawResultModal" class="draw-result-modal" style="display:none;">
-        <!-- 内容动态生成 -->
-    </div>
-
-    <!-- 破壳命名弹窗 -->
-    <div id="hatchModal" class="hatch-modal" style="display:none;">
-        <!-- 内容动态生成 -->
-    </div>
-
-    <!-- 商城弹窗 -->
-    <div id="shopModal" class="shop-modal">
-        <div class="shop-header">
-            <h3>🛒 动物商城</h3>
-            <button class="shop-close" onclick="closeShopModal()">×</button>
-        </div>
-        
-        <div class="shop-category">
-            <h4>🥚 稀有蛋</h4>
-            <div class="shop-item">
-                <span class="shop-item-icon">⚪</span>
-                <div class="shop-item-info">
-                    <div class="shop-item-name">基础蛋</div>
-                    <div class="shop-item-desc">随机获得基础动物</div>
-                </div>
-                <span class="shop-item-price">200</span>
-                <button class="shop-item-btn" onclick="buyEgg('common')">购买</button>
-            </div>
-            <div class="shop-item">
-                <span class="shop-item-icon">🟢</span>
-                <div class="shop-item-info">
-                    <div class="shop-item-name">普通蛋</div>
-                    <div class="shop-item-desc">随机获得普通动物</div>
-                </div>
-                <span class="shop-item-price">500</span>
-                <button class="shop-item-btn" onclick="buyEgg('uncommon')">购买</button>
-            </div>
-            <div class="shop-item">
-                <span class="shop-item-icon">🔵</span>
-                <div class="shop-item-info">
-                    <div class="shop-item-name">稀有蛋</div>
-                    <div class="shop-item-desc">随机获得稀有动物</div>
-                </div>
-                <span class="shop-item-price">1000</span>
-                <button class="shop-item-btn" onclick="buyEgg('rare')">购买</button>
-            </div>
-            <div class="shop-item">
-                <span class="shop-item-icon">🟣</span>
-                <div class="shop-item-info">
-                    <div class="shop-item-name">史诗蛋</div>
-                    <div class="shop-item-desc">随机获得史诗动物</div>
-                </div>
-                <span class="shop-item-price">2000</span>
-                <button class="shop-item-btn" onclick="buyEgg('epic')">购买</button>
-            </div>
-            <div class="shop-item">
-                <span class="shop-item-icon">🟡</span>
-                <div class="shop-item-info">
-                    <div class="shop-item-name">传说蛋</div>
-                    <div class="shop-item-desc">随机获得传说动物</div>
-                </div>
-                <span class="shop-item-price">5000</span>
-                <button class="shop-item-btn" onclick="buyEgg('legendary')">购买</button>
-            </div>
-        </div>
-
-        <div class="shop-category">
-            <h4>📦 特殊道具</h4>
-            <div class="shop-item">
-                <span class="shop-item-icon">📛</span>
-                <div class="shop-item-info">
-                    <div class="shop-item-name">改名卡</div>
-                    <div class="shop-item-desc">可重命名动物一次</div>
-                </div>
-                <span class="shop-item-price">300</span>
-                <button class="shop-item-btn" onclick="buyItem('rename_card')">购买</button>
-            </div>
-            <div class="shop-item">
-                <span class="shop-item-icon">💊</span>
-                <div class="shop-item-info">
-                    <div class="shop-item-name">复活药水</div>
-                    <div class="shop-item-desc">复活死亡的动物</div>
-                </div>
-                <span class="shop-item-price">500</span>
-                <button class="shop-item-btn" onclick="buyItem('revive_potion')">购买</button>
-            </div>
-        </div>
-
-        <div class="shop-category">
-            <h4>🍖 饲料</h4>
-            <div class="shop-item">
-                <span class="shop-item-icon">🍎</span>
-                <div class="shop-item-info">
-                    <div class="shop-item-name">普通饲料</div>
-                    <div class="shop-item-desc">饱食+20</div>
-                </div>
-                <span class="shop-item-price">30</span>
-                <button class="shop-item-btn" onclick="buyItem('food_normal')">购买</button>
-            </div>
-            <div class="shop-item">
-                <span class="shop-item-icon">🥩</span>
-                <div class="shop-item-info">
-                    <div class="shop-item-name">高级饲料</div>
-                    <div class="shop-item-desc">饱食+50，经验+5</div>
-                </div>
-                <span class="shop-item-price">60</span>
-                <button class="shop-item-btn" onclick="buyItem('food_premium')">购买</button>
-            </div>
-        </div>
-
-        <div class="shop-category">
-            <h4>💧 饮水</h4>
-            <div class="shop-item">
-                <span class="shop-item-icon">💧</span>
-                <div class="shop-item-info">
-                    <div class="shop-item-name">纯净水</div>
-                    <div class="shop-item-desc">水分+20</div>
-                </div>
-                <span class="shop-item-price">20</span>
-                <button class="shop-item-btn" onclick="buyItem('water_normal')">购买</button>
-            </div>
-            <div class="shop-item">
-                <span class="shop-item-icon">🧃</span>
-                <div class="shop-item-info">
-                    <div class="shop-item-name">果汁</div>
-                    <div class="shop-item-desc">水分+30，心情+10</div>
-                </div>
-                <span class="shop-item-price">40</span>
-                <button class="shop-item-btn" onclick="buyItem('water_premium')">购买</button>
-            </div>
-        </div>
-
-        <div class="shop-category">
-            <h4>🎾 玩具</h4>
-            <div class="shop-item">
-                <span class="shop-item-icon">🎾</span>
-                <div class="shop-item-info">
-                    <div class="shop-item-name">小球</div>
-                    <div class="shop-item-desc">心情+15</div>
-                </div>
-                <span class="shop-item-price">25</span>
-                <button class="shop-item-btn" onclick="buyItem('toy_ball')">购买</button>
-            </div>
-            <div class="shop-item">
-                <span class="shop-item-icon">🧸</span>
-                <div class="shop-item-info">
-                    <div class="shop-item-name">毛绒玩具</div>
-                    <div class="shop-item-desc">心情+30</div>
-                </div>
-                <span class="shop-item-price">50</span>
-                <button class="shop-item-btn" onclick="buyItem('toy_plush')">购买</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 开发者弹窗 -->
-    <div id="devModal" class="dev-modal">
-        <h3 style="text-align:center;">👑 开发者模式</h3>
-        <input type="password" id="devPassword" placeholder="输入密码">
-        <div class="dev-buttons">
-            <button class="dev-btn green" onclick="devAddPoints()">+1000积分</button>
-            <button class="dev-btn orange" onclick="devCompleteHatch()">立即孵化</button>
-            <button class="dev-btn purple" onclick="devAddEgg('legendary')">传说蛋</button>
-            <button class="dev-btn purple" onclick="devAddEgg('epic')">史诗蛋</button>
-            <button class="dev-btn" style="background:#2196F3;" onclick="devAddEgg('rare')">稀有蛋</button>
-            <button class="dev-btn" style="background:#4CAF50;" onclick="devAddEgg('uncommon')">普通蛋</button>
-            <button class="dev-btn" style="background:#9E9E9E;" onclick="devAddEgg('common')">基础蛋</button>
-            <button class="dev-btn red" onclick="devReset()">重置数据</button>
-        </div>
-        <div style="text-align: right; margin-top: 15px;">
-            <button onclick="closeDevModal()" style="padding:10px 20px; background:#999; color:white; border:none; border-radius:12px;">关闭</button>
-        </div>
-    </div>
-
-    <!-- 主题选择弹窗 -->
-    <div id="themeModal" class="theme-modal">
-        <h3 style="text-align:center;">🎨 选择主题</h3>
-        <div class="theme-grid">
-            <div class="theme-color" style="background: #1a472a" onclick="setTheme('#1a472a', '#2d6a4f')"></div>
-            <div class="theme-color" style="background: #2c3e50" onclick="setTheme('#2c3e50', '#3498db')"></div>
-            <div class="theme-color" style="background: #8e44ad" onclick="setTheme('#8e44ad', '#9b59b6')"></div>
-            <div class="theme-color" style="background: #e67e22" onclick="setTheme('#e67e22', '#f39c12')"></div>
-            <div class="theme-color" style="background: #16a085" onclick="setTheme('#16a085', '#1abc9c')"></div>
-            <div class="theme-color" style="background: #c0392b" onclick="setTheme('#c0392b', '#e74c3c')"></div>
-            <div class="theme-color" style="background: #2980b9" onclick="setTheme('#2980b9', '#3498db')"></div>
-            <div class="theme-color" style="background: #f39c12" onclick="setTheme('#f39c12', '#f1c40f')"></div>
-            <div class="theme-color" style="background: #7f8c8d" onclick="setTheme('#7f8c8d', '#95a5a6')"></div>
-            <div class="theme-color" style="background: #27ae60" onclick="setTheme('#27ae60', '#2ecc71')"></div>
-        </div>
-        <p>自定义颜色</p>
-        <input type="color" id="customColorStart" class="color-picker" value="#1a472a">
-        <input type="color" id="customColorEnd" class="color-picker" value="#2d6a4f">
-        <div style="display: flex; gap: 10px; margin-top: 20px;">
-            <button class="incubator-btn" onclick="applyCustomTheme()" style="flex:1;">应用</button>
-            <button class="incubator-btn" onclick="closeThemeModal()" style="flex:1; background:#999;">取消</button>
-        </div>
-    </div>
-
-    <div class="version-tag">v7.0 - 生命值+图鉴+背包</div>
 
     <script>
-        // 动物数据
-        const ANIMALS = {
-            common: [
-                { emoji: '🐣', name: '小鸡', rarity: 'common', hatchTime: 1, 
-                  baseStats: { hunger: 80, water: 70, mood: 60, energy: 70 },
-                  baseTalents: { strength: 8, agility: 6, intelligence: 5, charm: 4 } },
-                { emoji: '🐥', name: '小鸭', rarity: 'common', hatchTime: 1,
-                  baseStats: { hunger: 70, water: 80, mood: 70, energy: 60 },
-                  baseTalents: { strength: 5, agility: 7, intelligence: 6, charm: 5 } },
-                { emoji: '🐰', name: '兔子', rarity: 'common', hatchTime: 1,
-                  baseStats: { hunger: 60, water: 60, mood: 80, energy: 80 },
-                  baseTalents: { strength: 4, agility: 9, intelligence: 6, charm: 7 } }
+        // === 数据核心 ===
+        const STORAGE_KEY = 'my_space_data_v3'; // 独立存储键
+        let db = {
+            moments: [],
+            identities: [
+                { id: 1, name: '我', avatar: '🐱', color: '#6C5CE7' },
+                { id: 2, name: '工作状态', avatar: '💼', color: '#0984e3' }
             ],
-            uncommon: [
-                { emoji: '🦊', name: '狐狸', rarity: 'uncommon', hatchTime: 2,
-                  baseStats: { hunger: 70, water: 60, mood: 80, energy: 70 },
-                  baseTalents: { strength: 7, agility: 9, intelligence: 8, charm: 8 } },
-                { emoji: '🐱', name: '小猫', rarity: 'uncommon', hatchTime: 2,
-                  baseStats: { hunger: 60, water: 70, mood: 90, energy: 60 },
-                  baseTalents: { strength: 6, agility: 9, intelligence: 7, charm: 9 } },
-                { emoji: '🐶', name: '小狗', rarity: 'uncommon', hatchTime: 2,
-                  baseStats: { hunger: 80, water: 70, mood: 80, energy: 80 },
-                  baseTalents: { strength: 8, agility: 7, intelligence: 6, charm: 8 } }
-            ],
-            rare: [
-                { emoji: '🦌', name: '小鹿', rarity: 'rare', hatchTime: 3,
-                  baseStats: { hunger: 70, water: 70, mood: 70, energy: 70 },
-                  baseTalents: { strength: 8, agility: 9, intelligence: 8, charm: 9 } },
-                { emoji: '🐨', name: '考拉', rarity: 'rare', hatchTime: 3,
-                  baseStats: { hunger: 60, water: 50, mood: 80, energy: 50 },
-                  baseTalents: { strength: 7, agility: 5, intelligence: 7, charm: 10 } },
-                { emoji: '🦔', name: '刺猬', rarity: 'rare', hatchTime: 3,
-                  baseStats: { hunger: 70, water: 60, mood: 70, energy: 70 },
-                  baseTalents: { strength: 7, agility: 6, intelligence: 7, charm: 6 } }
-            ],
-            epic: [
-                { emoji: '🦅', name: '雄鹰', rarity: 'epic', hatchTime: 4,
-                  baseStats: { hunger: 80, water: 70, mood: 80, energy: 90 },
-                  baseTalents: { strength: 9, agility: 10, intelligence: 8, charm: 8 } },
-                { emoji: '🐺', name: '狼', rarity: 'epic', hatchTime: 4,
-                  baseStats: { hunger: 90, water: 70, mood: 70, energy: 80 },
-                  baseTalents: { strength: 10, agility: 9, intelligence: 8, charm: 7 } },
-                { emoji: '🐻', name: '熊', rarity: 'epic', hatchTime: 4,
-                  baseStats: { hunger: 90, water: 60, mood: 70, energy: 70 },
-                  baseTalents: { strength: 10, agility: 5, intelligence: 7, charm: 8 } }
-            ],
-            legendary: [
-                { emoji: '🐉', name: '小龙', rarity: 'legendary', hatchTime: 6,
-                  baseStats: { hunger: 100, water: 100, mood: 100, energy: 100 },
-                  baseTalents: { strength: 12, agility: 10, intelligence: 11, charm: 12 } },
-                { emoji: '🦄', name: '独角兽', rarity: 'legendary', hatchTime: 6,
-                  baseStats: { hunger: 90, water: 90, mood: 100, energy: 90 },
-                  baseTalents: { strength: 9, agility: 12, intelligence: 10, charm: 13 } },
-                { emoji: '🐲', name: '麒麟', rarity: 'legendary', hatchTime: 6,
-                  baseStats: { hunger: 100, water: 90, mood: 90, energy: 90 },
-                  baseTalents: { strength: 11, agility: 10, intelligence: 12, charm: 11 } }
-            ]
+            albums: ['日常琐事', '特别纪念', '灵感笔记', '旅行日记']
         };
 
-        // 所有动物的平铺列表（用于图鉴）
-        const ALL_ANIMALS = [
-            ...ANIMALS.common,
-            ...ANIMALS.uncommon,
-            ...ANIMALS.rare,
-            ...ANIMALS.epic,
-            ...ANIMALS.legendary
-        ];
-
-        // 概率配置
-        const PROBABILITIES = [
-            { rarity: 'common', rate: 0.6 },
-            { rarity: 'uncommon', rate: 0.25 },
-            { rarity: 'rare', rate: 0.1 },
-            { rarity: 'epic', rate: 0.04 },
-            { rarity: 'legendary', rate: 0.01 }
-        ];
-
-        // 稀有度显示配置
-        const RARITY_CONFIG = {
-            common: { name: '⚪ 基础', color: '#ffffff', icon: '⚪' },
-            uncommon: { name: '🟢 普通', color: '#4CAF50', icon: '🟢' },
-            rare: { name: '🔵 稀有', color: '#2196F3', icon: '🔵' },
-            epic: { name: '🟣 史诗', color: '#9C27B0', icon: '🟣' },
-            legendary: { name: '🟡 传说', color: '#FFD700', icon: '🟡' }
+        let tempImages = [];
+        let viewState = {
+            sortDesc: true,
+            filterType: 'all', // 'all', 'favorites', or albumName
+            searchQuery: '',
+            calDate: new Date()
         };
 
-        // 等级经验配置
-        const LEVEL_EXP = [0, 100, 250, 450, 700, 1000, 1350, 1750, 2200, 2700, 3250];
+        // === 初始化 ===
+        window.onload = function() {
+            loadData();
+            refreshUI();
+            
+            // 修复年份显示
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+        };
 
-        // 游戏数据
-        let gameData = JSON.parse(localStorage.getItem('animalGame') || JSON.stringify({
-            totalPoints: 1000,
-            lastSignDate: null,
-            todayPoints: 0,
-            eggs: [],
-            incubating: null,
-            animals: [],
-            tombstones: [], // 墓碑 [{ animal, deathTime }]
-            currentPet: null,
-            renameCounts: {}, // 记录每个动物重命名次数 { animalId: count }
-            items: {
-                food_normal: 5,
-                food_premium: 0,
-                water_normal: 5,
-                water_premium: 0,
-                toy_ball: 2,
-                toy_plush: 0,
-                speed_potion: 0,
-                medicine: 0,
-                strength_potion: 0,
-                agility_potion: 0,
-                intelligence_potion: 0,
-                charm_potion: 0,
-                exp_boost: 0,
-                happiness_candy: 0,
-                energy_drink: 0,
-                miracle_food: 0,
-                golden_leaf: 0,
-                lucky_clover: 0,
-                rename_card: 0,
-                revive_potion: 0
+        function loadData() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                db = JSON.parse(saved);
             }
-        }));
-
-        let incubatorTimer = null;
-        let statsTimer = null;
-        let selectedRarity = null;
-        let hatchingEgg = null;
-        let devAuthed = false;
-        let collectionFilter = 'all';
-
-        // 初始化
-        function init() {
-            loadTheme();
-            updatePointsDisplay();
-            updateEggsDisplay();
-            updateEggSelector();
-            updateIncubatorDisplay();
-            updateAnimalsDisplay();
-            updateCurrentPet();
-            updateBackpack();
-            updateCollection();
-            checkSignStatus();
-            startTimers();
-            updateDaysCounter();
-        }
-
-        // ==================== 签到系统 ====================
-        function checkSignStatus() {
-            const today = new Date().toDateString();
-            const signBtn = document.getElementById('signBtn');
-            
-            if (gameData.lastSignDate === today) {
-                signBtn.disabled = true;
-                signBtn.textContent = '已签到';
-            } else {
-                signBtn.disabled = false;
-                signBtn.textContent = '签到';
-            }
-            document.getElementById('todayPoints').textContent = gameData.todayPoints || 0;
-        }
-
-        function signIn() {
-            const today = new Date().toDateString();
-            if (gameData.lastSignDate === today) {
-                alert('今天已经签到过了');
-                return;
-            }
-            
-            const points = Math.floor(Math.random() * 101);
-            
-            gameData.totalPoints += points;
-            gameData.lastSignDate = today;
-            gameData.todayPoints = points;
-            
-            saveGameData();
-            updatePointsDisplay();
-            checkSignStatus();
-            showToast(`✨ 签到成功 +${points}积分`);
-        }
-
-        // ==================== 抽蛋系统 ====================
-        function drawEgg(count) {
-            const cost = count === 10 ? 900 : 100;
-            
-            if (gameData.totalPoints < cost) {
-                alert(`积分不足，需要 ${cost} 积分`);
-                return;
-            }
-            
-            gameData.totalPoints -= cost;
-            
-            let results = [];
-            for (let i = 0; i < count; i++) {
-                let rateMultiplier = 1;
-                if (gameData.items.lucky_clover > 0) {
-                    rateMultiplier = 1.5;
-                    gameData.items.lucky_clover--;
-                }
-                
-                const rand = Math.random() / rateMultiplier;
-                let cumulative = 0;
-                let selectedRarity = null;
-                
-                for (const p of PROBABILITIES) {
-                    cumulative += p.rate;
-                    if (rand < cumulative) {
-                        selectedRarity = p.rarity;
-                        break;
-                    }
-                }
-                
-                gameData.eggs.push({
-                    id: Date.now() + i + Math.random(),
-                    rarity: selectedRarity
-                });
-                
-                results.push(selectedRarity);
-            }
-            
-            saveGameData();
-            updatePointsDisplay();
-            updateEggsDisplay();
-            updateEggSelector();
-            updateBackpack();
-            
-            // 显示抽奖结果
-            showToast(`🎉 获得 ${count} 个蛋`);
-        }
-
-        // ==================== 蛋选择器 ====================
-        function updateEggSelector() {
-            const selector = document.getElementById('eggSelector');
-            
-            const counts = {
-                common: gameData.eggs.filter(e => e.rarity === 'common').length,
-                uncommon: gameData.eggs.filter(e => e.rarity === 'uncommon').length,
-                rare: gameData.eggs.filter(e => e.rarity === 'rare').length,
-                epic: gameData.eggs.filter(e => e.rarity === 'epic').length,
-                legendary: gameData.eggs.filter(e => e.rarity === 'legendary').length
-            };
-            
-            selector.innerHTML = '';
-            
-            ['common', 'uncommon', 'rare', 'epic', 'legendary'].forEach(rarity => {
-                const config = RARITY_CONFIG[rarity];
-                const count = counts[rarity];
-                
-                const option = document.createElement('div');
-                option.className = `egg-option ${selectedRarity === rarity ? 'selected' : ''}`;
-                option.onclick = () => selectEggRarity(rarity);
-                
-                option.innerHTML = `
-                    <div class="egg-icon">${config.icon}</div>
-                    <div class="egg-name">${config.name}</div>
-                    <div class="egg-count">${count}</div>
-                `;
-                
-                selector.appendChild(option);
+            // 确保每个动态都有收藏字段
+            db.moments.forEach(m => {
+                if (m.isFavorite === undefined) m.isFavorite = false;
             });
         }
 
-        function selectEggRarity(rarity) {
-            if (gameData.incubating) {
-                alert('已有正在孵化的蛋');
-                return;
-            }
-            
-            const count = gameData.eggs.filter(e => e.rarity === rarity).length;
-            if (count === 0) {
-                alert('没有这种蛋');
-                return;
-            }
-            
-            selectedRarity = rarity;
-            updateEggSelector();
-            document.getElementById('incubatorAction').disabled = false;
+        function saveData() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+            refreshUI();
         }
 
-        // ==================== 孵化系统 ====================
-        function handleIncubatorAction() {
-            if (gameData.incubating) {
-                if (Date.now() >= gameData.incubating.endTime) {
-                    hatchEgg();
-                } else {
-                    useSpeedPotion();
-                }
-            } else {
-                startIncubation();
+        function resetAll() {
+            if (confirm('确定要清空所有数据吗？此操作不可撤销！')) {
+                localStorage.removeItem(STORAGE_KEY);
+                location.reload();
             }
         }
 
-        function startIncubation() {
-            if (!selectedRarity) {
-                alert('请先选择蛋的等级');
-                return;
-            }
-            
-            if (gameData.incubating) {
-                alert('已有正在孵化的蛋');
-                return;
-            }
-            
-            const eggIndex = gameData.eggs.findIndex(e => e.rarity === selectedRarity);
-            if (eggIndex === -1) return;
-            
-            const egg = gameData.eggs[eggIndex];
-            const hatchTime = ANIMALS[egg.rarity][0].hatchTime;
-            const hatchTimeMs = hatchTime * 60 * 60 * 1000;
-            const now = Date.now();
-            
-            gameData.incubating = {
-                egg: egg,
-                rarity: egg.rarity,
-                startTime: now,
-                endTime: now + hatchTimeMs
-            };
-            
-            gameData.eggs.splice(eggIndex, 1);
-            
-            saveGameData();
-            updateEggsDisplay();
-            updateEggSelector();
-            updateIncubatorDisplay();
-            updateBackpack();
+        function refreshUI() {
+            renderFeed();
+            renderStats();
+            renderCalendar();
+            renderLastYear();
+            renderSidebarIdentities();
+            renderAlbums();
         }
 
-        function updateIncubatorDisplay() {
-            const box = document.getElementById('incubatorBox');
-            const eggEl = document.getElementById('incubatorEgg');
-            const timerEl = document.getElementById('incubatorTimer');
-            const progressEl = document.getElementById('incubatorProgress');
-            const actionBtn = document.getElementById('incubatorAction');
-            
-            if (!gameData.incubating) {
-                box.classList.remove('hatching');
-                eggEl.textContent = '🥚';
-                timerEl.textContent = '--:--';
-                progressEl.style.width = '0%';
-                actionBtn.textContent = '开始孵化';
-                actionBtn.disabled = true;
-                return;
-            }
-            
-            box.classList.add('hatching');
-            
-            const now = Date.now();
-            const remaining = Math.max(0, gameData.incubating.endTime - now);
-            const total = gameData.incubating.endTime - gameData.incubating.startTime;
-            const progress = ((total - remaining) / total) * 100;
-            
-            const hours = Math.floor(remaining / (60 * 60 * 1000));
-            const minutes = Math.floor((remaining % (60 * 60 * 1000)) / (60 * 1000));
-            
-            eggEl.textContent = RARITY_CONFIG[gameData.incubating.rarity].icon;
-            timerEl.textContent = `${hours}:${minutes.toString().padStart(2, '0')}`;
-            progressEl.style.width = progress + '%';
-            
-            if (remaining <= 0) {
-                actionBtn.textContent = '🐣 孵化';
-                actionBtn.disabled = false;
-            } else {
-                actionBtn.textContent = '⚡ 加速';
-                actionBtn.disabled = false;
-            }
-        }
+        // === 渲染逻辑 ===
+        function renderFeed() {
+            const container = document.getElementById('feed-container');
+            container.innerHTML = '';
 
-        function hatchEgg() {
-            if (!gameData.incubating) return;
-            
-            const rarity = gameData.incubating.rarity;
-            const rarityAnimals = ANIMALS[rarity];
-            const animal = rarityAnimals[Math.floor(Math.random() * rarityAnimals.length)];
-            
-            const talents = {
-                strength: animal.baseTalents.strength + Math.floor(Math.random() * 5) - 2,
-                agility: animal.baseTalents.agility + Math.floor(Math.random() * 5) - 2,
-                intelligence: animal.baseTalents.intelligence + Math.floor(Math.random() * 5) - 2,
-                charm: animal.baseTalents.charm + Math.floor(Math.random() * 5) - 2
-            };
-            
-            Object.keys(talents).forEach(key => {
-                talents[key] = Math.max(1, talents[key]);
+            let list = db.moments.filter(m => {
+                // 搜索过滤
+                const matchSearch = m.content.toLowerCase().includes(viewState.searchQuery.toLowerCase()) || 
+                                    (m.tags && m.tags.some(t => t.includes(viewState.searchQuery)));
+                if (!matchSearch) return false;
+
+                // 分类过滤
+                if (viewState.filterType === 'all') return true;
+                if (viewState.filterType === 'favorites') return m.isFavorite;
+                return m.album === viewState.filterType;
             });
-            
-            const now = Date.now();
-            
-            hatchingEgg = {
-                ...animal,
-                id: Date.now(),
-                name: animal.name,
-                level: 1,
-                exp: 0,
-                health: 100,
-                maxHealth: 100,
-                stats: { ...animal.baseStats },
-                talents: talents,
-                joinDate: now,
-                lastUpdate: now,
-                renameCount: 0
-            };
-            
-            gameData.incubating = null;
-            
-            saveGameData();
-            updateIncubatorDisplay();
-            showHatchModal();
-        }
 
-        function useSpeedPotion() {
-            if (!gameData.incubating) {
-                alert('没有正在孵化的蛋');
+            // 排序
+            list.sort((a, b) => viewState.sortDesc ? b.time - a.time : a.time - b.time);
+
+            if (list.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:50px; color:#b2bec3;">
+                    📭 暂无内容，去写一条吧~
+                </div>`;
                 return;
             }
-            
-            if (gameData.items.speed_potion <= 0) {
-                alert('没有加速药水');
-                return;
-            }
-            
-            gameData.incubating.endTime -= 2 * 60 * 60 * 1000;
-            gameData.items.speed_potion--;
-            
-            saveGameData();
-            updateIncubatorDisplay();
-            updateBackpack();
-        }
 
-        // ==================== 破壳命名 ====================
-        function showHatchModal() {
-            if (!hatchingEgg) return;
-            
-            const modal = document.createElement('div');
-            modal.className = 'hatch-modal';
-            modal.style.cssText = `
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: white;
-                padding: 30px;
-                border-radius: 24px;
-                z-index: 2200;
-                width: 450px;
-                color: #333;
-            `;
-            
-            const talentHtml = Object.entries(hatchingEgg.talents).map(([key, value]) => {
-                const labels = { strength: '力量', agility: '敏捷', intelligence: '智力', charm: '魅力' };
-                return `
-                    <div style="text-align:center;">
-                        <div style="font-size:12px; color:#666;">${labels[key]}</div>
-                        <div style="font-size:18px; font-weight:bold; color:#FFD700;">${value}</div>
-                    </div>
-                `;
-            }).join('');
-            
-            modal.innerHTML = `
-                <h3 style="text-align:center; margin-top:0;">🎉 新生命诞生！</h3>
-                <div style="text-align:center; margin:20px 0;">
-                    <div style="font-size:100px; animation: bounce 1s infinite;">${hatchingEgg.emoji}</div>
-                    <div style="font-size:24px; font-weight:bold; margin:10px 0;">${hatchingEgg.name}</div>
-                </div>
-                <div style="display:flex; justify-content:space-around; margin:20px 0; padding:15px; background:#f5f5f5; border-radius:16px;">
-                    ${talentHtml}
-                </div>
-                <input type="text" id="hatchPetName" style="width:100%; padding:12px; border:2px solid #FFD700; border-radius:12px; font-size:16px; margin:20px 0;" placeholder="给动物起个名字" value="${hatchingEgg.name}">
-                <div style="display:flex; gap:10px;">
-                    <button onclick="confirmHatch('${hatchingEgg.id}')" style="flex:1; padding:12px; background:#4CAF50; color:white; border:none; border-radius:12px; cursor:pointer;">确定</button>
-                    <button onclick="closeHatchModal()" style="flex:1; padding:12px; background:#999; color:white; border:none; border-radius:12px; cursor:pointer;">跳过</button>
-                </div>
-            `;
-            
-            document.body.appendChild(modal);
-        }
-
-        function closeHatchModal() {
-            const modal = document.querySelector('.hatch-modal');
-            if (modal) modal.remove();
-            hatchingEgg = null;
-        }
-
-        function confirmHatch(eggId) {
-            if (!hatchingEgg) return;
-            
-            const nameInput = document.getElementById('hatchPetName');
-            const newName = nameInput ? nameInput.value.trim() : '';
-            if (newName) {
-                hatchingEgg.name = newName;
-            }
-            
-            gameData.animals.push(hatchingEgg);
-            gameData.renameCounts[hatchingEgg.id] = 0;
-            
-            if (!gameData.currentPet) {
-                gameData.currentPet = hatchingEgg.id;
-            }
-            
-            saveGameData();
-            closeHatchModal();
-            updateAnimalsDisplay();
-            updateCurrentPet();
-            updateBackpack();
-            updateCollection();
-            showToast(`🎉 欢迎 ${hatchingEgg.name} 加入！`);
-        }
-
-        // ==================== 生命值系统 ====================
-        function updateHealth(pet) {
-            // 基于饱食度、水分等计算生命值变化
-            let healthChange = 0;
-            
-            // 太饱（>90）会扣生命
-            if (pet.stats.hunger > 90) {
-                healthChange -= 2;
-            }
-            // 太饿（<20）会扣生命
-            if (pet.stats.hunger < 20) {
-                healthChange -= 3;
-            }
-            
-            // 太渴（<20）会扣生命
-            if (pet.stats.water < 20) {
-                healthChange -= 3;
-            }
-            
-            // 心情太低（<20）会扣生命
-            if (pet.stats.mood < 20) {
-                healthChange -= 2;
-            }
-            
-            // 精力太低（<20）会扣生命
-            if (pet.stats.energy < 20) {
-                healthChange -= 1;
-            }
-            
-            // 如果所有状态都很好，缓慢恢复生命
-            if (pet.stats.hunger > 70 && pet.stats.water > 70 && pet.stats.mood > 70 && pet.stats.energy > 70) {
-                healthChange += 1;
-            }
-            
-            pet.health = Math.max(0, Math.min(pet.maxHealth, pet.health + healthChange));
-            
-            // 检查是否死亡
-            if (pet.health <= 0) {
-                die(pet);
-            }
-        }
-
-        function die(pet) {
-            // 添加墓碑到背包
-            gameData.tombstones.push({
-                id: Date.now(),
-                animal: { ...pet },
-                deathTime: Date.now()
-            });
-            
-            // 从动物列表中移除
-            gameData.animals = gameData.animals.filter(a => a.id !== pet.id);
-            
-            if (gameData.currentPet === pet.id) {
-                gameData.currentPet = gameData.animals.length > 0 ? gameData.animals[0].id : null;
-            }
-            
-            saveGameData();
-            updateAnimalsDisplay();
-            updateCurrentPet();
-            updateBackpack();
-            showToast(`💔 ${pet.name} 去世了...`);
-        }
-
-        // ==================== 重命名系统 ====================
-        function showRenameModal() {
-            if (!gameData.currentPet) {
-                alert('请先选择一只动物');
-                return;
-            }
-            
-            const pet = gameData.animals.find(a => a.id === gameData.currentPet);
-            if (!pet) return;
-            
-            const modal = document.createElement('div');
-            modal.className = 'hatch-modal';
-            modal.style.cssText = `
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: white;
-                padding: 30px;
-                border-radius: 24px;
-                z-index: 2200;
-                width: 350px;
-                color: #333;
-            `;
-            
-            const renameCount = gameData.renameCounts[pet.id] || 0;
-            const canRenameFree = renameCount === 0;
-            const hasRenameCard = gameData.items.rename_card > 0;
-            
-            modal.innerHTML = `
-                <h3 style="text-align:center; margin-top:0;">✏️ 重命名</h3>
-                <div style="text-align:center; margin:20px 0;">
-                    <div style="font-size:60px;">${pet.emoji}</div>
-                    <div style="font-size:18px; margin:10px 0;">当前：${pet.name}</div>
-                </div>
-                <input type="text" id="renameInput" style="width:100%; padding:12px; border:2px solid #FFD700; border-radius:12px; font-size:16px; margin:10px 0;" placeholder="新名字" value="${pet.name}">
-                <div style="font-size:12px; color:#666; margin:10px 0;">
-                    ${canRenameFree ? '✨ 首次重命名免费' : `📛 需要改名卡 (拥有: ${gameData.items.rename_card})`}
-                </div>
-                <div style="display:flex; gap:10px;">
-                    <button onclick="confirmRename('${pet.id}')" style="flex:1; padding:12px; background:#4CAF50; color:white; border:none; border-radius:12px; cursor:pointer;" ${!canRenameFree && !hasRenameCard ? 'disabled' : ''}>确认</button>
-                    <button onclick="closeRenameModal()" style="flex:1; padding:12px; background:#999; color:white; border:none; border-radius:12px; cursor:pointer;">取消</button>
-                </div>
-            `;
-            
-            document.body.appendChild(modal);
-        }
-
-        function closeRenameModal() {
-            const modal = document.querySelector('.hatch-modal');
-            if (modal) modal.remove();
-        }
-
-        function confirmRename(petId) {
-            const pet = gameData.animals.find(a => a.id == petId);
-            if (!pet) return;
-            
-            const newName = document.getElementById('renameInput').value.trim();
-            if (!newName) return;
-            
-            const renameCount = gameData.renameCounts[petId] || 0;
-            
-            if (renameCount === 0) {
-                // 首次免费
-                pet.name = newName;
-                gameData.renameCounts[petId] = 1;
-                showToast('✅ 重命名成功');
-            } else if (gameData.items.rename_card > 0) {
-                // 使用改名卡
-                pet.name = newName;
-                gameData.items.rename_card--;
-                gameData.renameCounts[petId] = (gameData.renameCounts[petId] || 0) + 1;
-                showToast('✅ 重命名成功');
-            } else {
-                alert('需要改名卡');
-                return;
-            }
-            
-            saveGameData();
-            closeRenameModal();
-            updateCurrentPet();
-            updateAnimalsDisplay();
-            updateBackpack();
-        }
-
-        // ==================== 动物系统 ====================
-        function updateAnimalsDisplay() {
-            const grid = document.getElementById('animalsGrid');
-            
-            if (gameData.animals.length === 0) {
-                grid.innerHTML = '<div style="text-align:center; grid-column:span 2; color:#aaa;">暂无动物</div>';
-                return;
-            }
-            
-            grid.innerHTML = gameData.animals.map(animal => {
-                const days = Math.floor((Date.now() - animal.joinDate) / (24 * 60 * 60 * 1000));
-                return `
-                    <div class="animal-item ${animal.id === gameData.currentPet ? 'selected' : ''} ${animal.health <= 0 ? 'dead' : ''}" onclick="setCurrentPet(${animal.id})">
-                        <div class="animal-avatar">${animal.emoji}</div>
-                        <div class="animal-name">${animal.name}</div>
-                        <div class="animal-level">Lv.${animal.level}</div>
-                        <div class="animal-days">${days}天</div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function setCurrentPet(id) {
-            gameData.currentPet = id;
-            saveGameData();
-            updateCurrentPet();
-            updateAnimalsDisplay();
-        }
-
-        function updateCurrentPet() {
-            if (!gameData.currentPet) {
-                document.getElementById('petAvatar').textContent = '🥚';
-                document.getElementById('petName').textContent = '选择动物';
-                document.getElementById('petLevel').textContent = 'Lv.0';
-                document.getElementById('petDays').textContent = '陪伴 0 天';
-                document.getElementById('expBar').style.width = '0%';
-                document.getElementById('healthFill').style.width = '0%';
-                document.getElementById('healthValue').textContent = '0/100';
-                return;
-            }
-            
-            const pet = gameData.animals.find(a => a.id === gameData.currentPet);
-            if (!pet) return;
-            
-            const now = Date.now();
-            const hoursPassed = (now - (pet.lastUpdate || now)) / (1000 * 60 * 60);
-            const days = Math.floor((now - pet.joinDate) / (24 * 60 * 60 * 1000));
-            
-            if (hoursPassed > 0) {
-                pet.stats.hunger = Math.max(0, pet.stats.hunger - hoursPassed * 5);
-                pet.stats.water = Math.max(0, pet.stats.water - hoursPassed * 5);
-                pet.stats.mood = Math.max(0, pet.stats.mood - hoursPassed * 3);
-                pet.stats.energy = Math.min(100, pet.stats.energy + hoursPassed * 2);
-                pet.lastUpdate = now;
+            list.forEach(m => {
+                const identity = db.identities.find(i => i.id === m.identityId) || db.identities[0];
+                const date = new Date(m.time);
+                const timeStr = `${date.getMonth()+1}月${date.getDate()}日 ${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}`;
                 
-                // 更新生命值
-                updateHealth(pet);
-            }
-            
-            const currentLevelExp = LEVEL_EXP[pet.level];
-            const nextLevelExp = LEVEL_EXP[pet.level + 1] || currentLevelExp;
-            const expProgress = ((pet.exp - currentLevelExp) / (nextLevelExp - currentLevelExp)) * 100;
-            
-            document.getElementById('petAvatar').className = `pet-avatar ${pet.health <= 0 ? 'dead' : ''}`;
-            document.getElementById('petAvatar').textContent = pet.emoji;
-            document.getElementById('petName').textContent = pet.name;
-            document.getElementById('petLevel').textContent = `Lv.${pet.level}`;
-            document.getElementById('petDays').textContent = `陪伴 ${days} 天`;
-            document.getElementById('expBar').style.width = Math.min(100, expProgress) + '%';
-            
-            // 生命值显示
-            const healthPercent = (pet.health / pet.maxHealth) * 100;
-            document.getElementById('healthFill').style.width = healthPercent + '%';
-            document.getElementById('healthValue').textContent = `${Math.floor(pet.health)}/${pet.maxHealth}`;
-            
-            document.getElementById('talentStrength').textContent = pet.talents.strength;
-            document.getElementById('talentAgility').textContent = pet.talents.agility;
-            document.getElementById('talentIntelligence').textContent = pet.talents.intelligence;
-            document.getElementById('talentCharm').textContent = pet.talents.charm;
-            
-            document.getElementById('hungerBar').style.width = pet.stats.hunger + '%';
-            document.getElementById('hungerValue').textContent = Math.floor(pet.stats.hunger) + '/100';
-            document.getElementById('waterBar').style.width = pet.stats.water + '%';
-            document.getElementById('waterValue').textContent = Math.floor(pet.stats.water) + '/100';
-            document.getElementById('moodBar').style.width = pet.stats.mood + '%';
-            document.getElementById('moodValue').textContent = Math.floor(pet.stats.mood) + '/100';
-            document.getElementById('energyBar').style.width = pet.stats.energy + '%';
-            document.getElementById('energyValue').textContent = Math.floor(pet.stats.energy) + '/100';
-            
-            // 如果动物死亡，禁用互动按钮
-            const buttons = document.querySelectorAll('.interact-btn');
-            buttons.forEach(btn => {
-                btn.disabled = pet.health <= 0;
-            });
-        }
-
-        function addExp(amount) {
-            const pet = gameData.animals.find(a => a.id === gameData.currentPet);
-            if (!pet || pet.level >= 10 || pet.health <= 0) return;
-            
-            let expMultiplier = 1;
-            if (gameData.items.exp_boost > 0) {
-                expMultiplier = 1.5;
-                gameData.items.exp_boost--;
-            }
-            
-            pet.exp += amount * expMultiplier;
-            
-            while (pet.level < 10 && pet.exp >= LEVEL_EXP[pet.level + 1]) {
-                pet.level++;
-                pet.stats.hunger = Math.min(100, pet.stats.hunger + 5);
-                pet.stats.water = Math.min(100, pet.stats.water + 5);
-                pet.stats.mood = Math.min(100, pet.stats.mood + 5);
-                pet.stats.energy = Math.min(100, pet.stats.energy + 5);
-                pet.maxHealth += 10;
-                pet.health = Math.min(pet.maxHealth, pet.health + 20);
-                
-                const talents = ['strength', 'agility', 'intelligence', 'charm'];
-                const randomTalent = talents[Math.floor(Math.random() * talents.length)];
-                pet.talents[randomTalent]++;
-            }
-            
-            saveGameData();
-            updateCurrentPet();
-        }
-
-        function interact(action) {
-            if (!gameData.currentPet) {
-                alert('请先选择一只动物');
-                return;
-            }
-            
-            const pet = gameData.animals.find(a => a.id === gameData.currentPet);
-            if (!pet) return;
-            
-            if (pet.health <= 0) {
-                alert('动物已死亡，无法互动');
-                return;
-            }
-            
-            let expGain = 0;
-            
-            switch(action) {
-                case 'feed':
-                    if (gameData.items.food_normal > 0) {
-                        pet.stats.hunger = Math.min(100, pet.stats.hunger + 20);
-                        gameData.items.food_normal--;
-                        expGain = 5;
-                    } else {
-                        alert('没有饲料，请先在商城购买');
-                        return;
-                    }
-                    break;
-                case 'water':
-                    if (gameData.items.water_normal > 0) {
-                        pet.stats.water = Math.min(100, pet.stats.water + 20);
-                        gameData.items.water_normal--;
-                        expGain = 3;
-                    } else {
-                        alert('没有饮水，请先在商城购买');
-                        return;
-                    }
-                    break;
-                case 'play':
-                    if (gameData.items.toy_ball > 0) {
-                        pet.stats.mood = Math.min(100, pet.stats.mood + 15);
-                        pet.stats.energy = Math.max(0, pet.stats.energy - 10);
-                        gameData.items.toy_ball--;
-                        expGain = 8;
-                    } else {
-                        alert('没有玩具，请先在商城购买');
-                        return;
-                    }
-                    break;
-                case 'clean':
-                    pet.stats.mood += 10;
-                    pet.stats.energy -= 5;
-                    expGain = 2;
-                    break;
-                case 'sleep':
-                    pet.stats.energy = Math.min(100, pet.stats.energy + 30);
-                    pet.stats.hunger -= 5;
-                    pet.stats.water -= 5;
-                    expGain = 1;
-                    break;
-                case 'medicine':
-                    if (gameData.items.medicine > 0) {
-                        pet.stats.hunger = Math.min(100, pet.stats.hunger + 30);
-                        pet.stats.water = Math.min(100, pet.stats.water + 30);
-                        pet.stats.mood = Math.min(100, pet.stats.mood + 30);
-                        gameData.items.medicine--;
-                        expGain = 15;
-                    } else {
-                        alert('没有药品，请先在商城购买');
-                        return;
-                    }
-                    break;
-                case 'train':
-                    if (gameData.items.energy_drink > 0) {
-                        pet.stats.energy = Math.min(100, pet.stats.energy + 20);
-                        expGain = 20;
-                        gameData.items.energy_drink--;
-                    } else {
-                        pet.stats.energy = Math.max(0, pet.stats.energy - 20);
-                        expGain = 10;
-                    }
-                    break;
-                case 'gift':
-                    if (gameData.items.happiness_candy > 0) {
-                        pet.stats.mood = Math.min(100, pet.stats.mood + 30);
-                        expGain = 15;
-                        gameData.items.happiness_candy--;
-                    } else {
-                        pet.stats.mood += 10;
-                        expGain = 5;
-                    }
-                    break;
-                case 'massage':
-                    pet.stats.mood += 15;
-                    pet.stats.energy -= 5;
-                    expGain = 8;
-                    break;
-            }
-            
-            Object.keys(pet.stats).forEach(key => {
-                pet.stats[key] = Math.min(100, Math.max(0, pet.stats[key]));
-            });
-            
-            pet.lastUpdate = Date.now();
-            
-            if (expGain > 0) {
-                addExp(expGain);
-            }
-            
-            saveGameData();
-            updateCurrentPet();
-            updateBackpack();
-        }
-
-        // ==================== 背包系统 ====================
-        function showBackpack() {
-            updateBackpack();
-            document.getElementById('backpackModal').classList.add('show');
-        }
-
-        function closeBackpack() {
-            document.getElementById('backpackModal').classList.remove('show');
-        }
-
-        function updateBackpack() {
-            // 更新蛋
-            const eggs = document.getElementById('backpackEggs');
-            const eggCounts = {
-                common: gameData.eggs.filter(e => e.rarity === 'common').length,
-                uncommon: gameData.eggs.filter(e => e.rarity === 'uncommon').length,
-                rare: gameData.eggs.filter(e => e.rarity === 'rare').length,
-                epic: gameData.eggs.filter(e => e.rarity === 'epic').length,
-                legendary: gameData.eggs.filter(e => e.rarity === 'legendary').length
-            };
-            
-            eggs.innerHTML = Object.entries(eggCounts).map(([rarity, count]) => {
-                if (count === 0) return '';
-                return `
-                    <div class="backpack-item">
-                        <span class="backpack-item-icon">${RARITY_CONFIG[rarity].icon}</span>
-                        <div class="backpack-item-info">
-                            <div class="backpack-item-name">${RARITY_CONFIG[rarity].name}</div>
+                const el = document.createElement('div');
+                el.className = 'card moment-item';
+                el.innerHTML = `
+                    <div class="moment-top">
+                        <div class="avatar-frame" style="color:${identity.color}">
+                            ${identity.avatar}
                         </div>
-                        <div class="backpack-item-count">${count}</div>
-                    </div>
-                `;
-            }).join('') || '<div style="grid-column:span 2; text-align:center; color:#999;">暂无蛋</div>';
-            
-            // 更新道具
-            const items = document.getElementById('backpackItems');
-            const itemList = [
-                { id: 'food_normal', icon: '🍎', name: '普通饲料' },
-                { id: 'food_premium', icon: '🥩', name: '高级饲料' },
-                { id: 'water_normal', icon: '💧', name: '纯净水' },
-                { id: 'water_premium', icon: '🧃', name: '果汁' },
-                { id: 'toy_ball', icon: '🎾', name: '小球' },
-                { id: 'toy_plush', icon: '🧸', name: '毛绒玩具' },
-                { id: 'speed_potion', icon: '⏰', name: '加速药水' },
-                { id: 'medicine', icon: '💊', name: '万能药' },
-                { id: 'strength_potion', icon: '💪', name: '力量药水' },
-                { id: 'agility_potion', icon: '⚡', name: '敏捷药水' },
-                { id: 'intelligence_potion', icon: '🧠', name: '智力药水' },
-                { id: 'charm_potion', icon: '✨', name: '魅力药水' },
-                { id: 'rename_card', icon: '📛', name: '改名卡' },
-                { id: 'revive_potion', icon: '💊', name: '复活药水' }
-            ];
-            
-            items.innerHTML = itemList.map(item => {
-                if (gameData.items[item.id] > 0) {
-                    return `
-                        <div class="backpack-item">
-                            <span class="backpack-item-icon">${item.icon}</span>
-                            <div class="backpack-item-info">
-                                <div class="backpack-item-name">${item.name}</div>
+                        <div class="user-info">
+                            <h4 style="color:${identity.color}">${identity.name}</h4>
+                            <p>${timeStr} ${m.location ? '· ' + m.location : ''}</p>
+                            <div class="info-badges">
+                                <span class="badge">${m.mood}</span>
+                                <span class="badge">${m.weather}</span>
+                                ${m.album ? `<span class="badge" style="background:#e3f2fd; color:#0984e3">${m.album}</span>` : ''}
                             </div>
-                            <div class="backpack-item-count">${gameData.items[item.id]}</div>
                         </div>
-                    `;
-                }
-                return '';
-            }).join('') || '<div style="grid-column:span 2; text-align:center; color:#999;">暂无道具</div>';
-            
-            // 更新墓碑
-            const tombstones = document.getElementById('backpackTombstones');
-            tombstones.innerHTML = gameData.tombstones.map(t => `
-                <div class="backpack-item">
-                    <span class="backpack-item-icon">💀</span>
-                    <div class="backpack-item-info">
-                        <div class="backpack-item-name">${t.animal.name}</div>
-                        <div style="font-size:11px; color:#666;">${new Date(t.deathTime).toLocaleDateString()}</div>
                     </div>
-                </div>
-            `).join('') || '<div style="grid-column:span 2; text-align:center; color:#999;">暂无墓碑</div>';
-        }
-
-        // ==================== 图鉴系统 ====================
-        function updateCollection() {
-            const grid = document.getElementById('collectionGrid');
-            const ownedAnimalNames = gameData.animals.map(a => a.name);
-            const maxLevelAnimals = gameData.animals.filter(a => a.level >= 10).map(a => a.name);
-            
-            let filteredAnimals = ALL_ANIMALS;
-            
-            if (collectionFilter === 'owned') {
-                filteredAnimals = ALL_ANIMALS.filter(a => ownedAnimalNames.includes(a.name));
-            } else if (collectionFilter === 'unowned') {
-                filteredAnimals = ALL_ANIMALS.filter(a => !ownedAnimalNames.includes(a.name));
-            }
-            
-            grid.innerHTML = filteredAnimals.map(animal => {
-                const owned = ownedAnimalNames.includes(animal.name);
-                const maxLevel = maxLevelAnimals.includes(animal.name);
-                
-                return `
-                    <div class="collection-item ${owned ? 'owned' : 'not-owned'} ${maxLevel ? 'max-level' : ''}">
-                        <div class="collection-emoji">${animal.emoji}</div>
-                        <div class="collection-name">${animal.name}</div>
+                    <div class="moment-text">${m.content}</div>
+                    ${m.images && m.images.length ? `
+                        <div class="moment-imgs">
+                            ${m.images.map(src => `<img src="${src}">`).join('')}
+                        </div>
+                    ` : ''}
+                    <div style="display:flex; gap:8px; margin-bottom:10px;">
+                        ${(m.tags||[]).map(t => `<span style="font-size:12px; color:var(--primary)">#${t}</span>`).join('')}
+                    </div>
+                    <div class="moment-actions">
+                        <div class="action-icon ${m.isLiked ? 'active' : ''}" onclick="toggleLike(${m.id})">
+                            ${m.isLiked ? '❤️' : '🤍'} ${m.likes || 0}
+                        </div>
+                        <div class="action-icon ${m.isFavorite ? 'active' : ''}" onclick="toggleFavorite(${m.id})">
+                            ${m.isFavorite ? '⭐ 已收藏' : '☆ 收藏'}
+                        </div>
+                        <div class="action-icon" style="margin-left:auto; color:#fab1a0;" onclick="deleteMoment(${m.id})">
+                            🗑️ 删除
+                        </div>
                     </div>
                 `;
-            }).join('');
-        }
-
-        function filterCollection(filter) {
-            collectionFilter = filter;
-            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`filter${filter.charAt(0).toUpperCase() + filter.slice(1)}`).classList.add('active');
-            updateCollection();
-        }
-
-        // ==================== 天数计数器 ====================
-        function updateDaysCounter() {
-            // 每天更新一次陪伴天数
-            setInterval(() => {
-                if (gameData.currentPet) {
-                    updateCurrentPet();
-                }
-            }, 24 * 60 * 60 * 1000);
-        }
-
-        // ==================== 商城系统 ====================
-        function showShopModal() {
-            document.getElementById('shopModal').classList.add('show');
-        }
-
-        function closeShopModal() {
-            document.getElementById('shopModal').classList.remove('show');
-        }
-
-        function buyEgg(rarity) {
-            const prices = {
-                common: 200,
-                uncommon: 500,
-                rare: 1000,
-                epic: 2000,
-                legendary: 5000
-            };
-            
-            const cost = prices[rarity];
-            if (gameData.totalPoints < cost) {
-                alert('积分不足');
-                return;
-            }
-            
-            gameData.totalPoints -= cost;
-            gameData.eggs.push({
-                id: Date.now(),
-                rarity: rarity
+                container.appendChild(el);
             });
-            
-            saveGameData();
-            updatePointsDisplay();
-            updateEggsDisplay();
-            updateEggSelector();
-            updateBackpack();
-            showToast(`✅ 购买成功，获得${RARITY_CONFIG[rarity].name}`);
         }
 
-        function buyItem(item) {
-            const prices = {
-                food_normal: 30,
-                food_premium: 60,
-                water_normal: 20,
-                water_premium: 40,
-                toy_ball: 25,
-                toy_plush: 50,
-                speed_potion: 80,
-                medicine: 100,
-                strength_potion: 150,
-                agility_potion: 150,
-                intelligence_potion: 150,
-                charm_potion: 150,
-                rename_card: 300,
-                revive_potion: 500
-            };
+        // === 编辑器逻辑 (核心修复) ===
+        let selectedIdentityId = null;
+
+        function showEditor() {
+            const modal = document.getElementById('editor');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('show'), 10);
             
-            const cost = prices[item];
-            if (gameData.totalPoints < cost) {
-                alert('积分不足');
+            // 重置表单
+            document.getElementById('post-content').value = '';
+            document.getElementById('post-previews').innerHTML = '';
+            document.getElementById('post-location').value = '';
+            document.getElementById('post-tags').value = '';
+            tempImages = [];
+            
+            // 渲染编辑器内的身份列表
+            renderEditorIdentities();
+        }
+
+        function hideEditor() {
+            const modal = document.getElementById('editor');
+            modal.classList.remove('show');
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
+
+        function renderEditorIdentities() {
+            const container = document.getElementById('editor-identities');
+            container.innerHTML = db.identities.map((i, idx) => `
+                <div class="avatar-option ${idx === 0 ? 'selected' : ''}" 
+                     onclick="selectEditorIdentity(this, ${i.id})"
+                     style="color:${i.color}">
+                    ${i.avatar}
+                </div>
+            `).join('');
+            selectedIdentityId = db.identities[0].id; // 默认选中第一个
+        }
+
+        function selectEditorIdentity(el, id) {
+            document.querySelectorAll('.avatar-option').forEach(e => e.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedIdentityId = id;
+        }
+
+        function processImages(input) {
+            const files = Array.from(input.files);
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    tempImages.push(e.target.result);
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'preview-img';
+                    document.getElementById('post-previews').appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function submitPost() {
+            const content = document.getElementById('post-content').value;
+            if (!content && tempImages.length === 0) {
+                alert("写点什么再发布吧~");
                 return;
             }
-            
-            gameData.totalPoints -= cost;
-            gameData.items[item] = (gameData.items[item] || 0) + 1;
-            
-            saveGameData();
-            updatePointsDisplay();
-            updateBackpack();
-            showToast('✅ 购买成功');
-        }
 
-        // ==================== 积分系统 ====================
-        function updatePointsDisplay() {
-            document.getElementById('totalPoints').textContent = gameData.totalPoints;
-        }
+            const rawTags = document.getElementById('post-tags').value;
+            const tags = rawTags.split(' ').filter(t => t.trim() !== '');
+            const album = document.getElementById('post-album').value;
 
-        // ==================== 蛋的显示 ====================
-        function updateEggsDisplay() {
-            // 用于更新其他地方的蛋显示
-        }
-
-        // ==================== 主题管理 ====================
-        function loadTheme() {
-            const savedTheme = localStorage.getItem('animalTheme');
-            if (savedTheme) {
-                const theme = JSON.parse(savedTheme);
-                document.documentElement.style.setProperty('--bg-gradient-start', theme.start);
-                document.documentElement.style.setProperty('--bg-gradient-end', theme.end);
+            // 如果选择了新动态册，保存它
+            if (album && !db.albums.includes(album)) {
+                db.albums.push(album);
             }
+
+            const newMoment = {
+                id: Date.now(),
+                time: Date.now(),
+                identityId: selectedIdentityId,
+                content: content,
+                images: [...tempImages],
+                mood: document.getElementById('post-mood').value,
+                weather: document.getElementById('post-weather').value,
+                location: document.getElementById('post-location').value,
+                tags: tags,
+                album: album,
+                likes: 0,
+                isLiked: false,
+                isFavorite: false
+            };
+
+            db.moments.unshift(newMoment);
+            saveData();
+            hideEditor();
+        }
+
+        // === 交互功能 ===
+        function toggleLike(id) {
+            const m = db.moments.find(x => x.id === id);
+            if (m) {
+                m.isLiked = !m.isLiked;
+                m.likes = m.isLiked ? (m.likes || 0) + 1 : (m.likes || 0) - 1;
+                saveData();
+            }
+        }
+
+        function toggleFavorite(id) {
+            const m = db.moments.find(x => x.id === id);
+            if (m) {
+                m.isFavorite = !m.isFavorite;
+                saveData();
+            }
+        }
+
+        function deleteMoment(id) {
+            if (confirm('确定删除这条动态吗？')) {
+                db.moments = db.moments.filter(x => x.id !== id);
+                saveData();
+            }
+        }
+
+        function handleSearch(val) {
+            viewState.searchQuery = val;
+            renderFeed();
+        }
+
+        function toggleSort() {
+            viewState.sortDesc = !viewState.sortDesc;
+            document.getElementById('sort-btn').innerText = viewState.sortDesc ? "⬇️ 时间倒序" : "⬆️ 时间正序";
+            renderFeed();
+        }
+
+        function setFilter(type, el) {
+            viewState.filterType = type;
+            // 更新选中样式
+            document.querySelectorAll('.collection-item').forEach(e => e.classList.remove('active'));
+            if(el) el.classList.add('active');
+            renderFeed();
+        }
+
+        // === 侧边栏功能 ===
+        function renderSidebarIdentities() {
+            const box = document.getElementById('sidebar-identities');
+            box.innerHTML = db.identities.map(i => `
+                <div class="id-circle-wrap">
+                    <div class="id-avatar-circle" style="color:${i.color}">
+                        ${i.avatar}
+                    </div>
+                    <div class="id-name-limit">${i.name}</div>
+                </div>
+            `).join('');
+        }
+
+        function createNewIdentity() {
+            const name = prompt("输入新身份名字:");
+            if (name) {
+                const avatar = prompt("输入一个Emoji作为头像:", "🐯");
+                db.identities.push({
+                    id: Date.now(),
+                    name: name,
+                    avatar: avatar || "👤",
+                    color: '#' + Math.floor(Math.random()*16777215).toString(16)
+                });
+                saveData();
+            }
+        }
+
+        function renderAlbums() {
+            const box = document.getElementById('custom-albums');
+            box.innerHTML = db.albums.map(a => `
+                <div class="collection-item ${viewState.filterType === a ? 'active' : ''}" 
+                     onclick="setFilter('${a}', this)">
+                    <span class="folder-icon">📂</span> ${a}
+                </div>
+            `).join('');
+        }
+
+        function renderStats() {
+            document.getElementById('count-moments').innerText = db.moments.length;
+            const likes = db.moments.reduce((acc, cur) => acc + (cur.likes || 0), 0);
+            document.getElementById('count-likes').innerText = likes;
             
-            const nightMode = localStorage.getItem('animalNightMode') === 'true';
-            if (nightMode) {
-                document.body.classList.add('night-mode');
+            // 计算记录天数
+            const dates = new Set(db.moments.map(m => new Date(m.time).toDateString()));
+            document.getElementById('count-days').innerText = dates.size;
+        }
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-view');
+            grid.innerHTML = '';
+            
+            const year = viewState.calDate.getFullYear();
+            const month = viewState.calDate.getMonth();
+            
+            document.getElementById('cal-title').innerText = `📅 ${year}年${month+1}月`;
+            
+            const firstDay = new Date(year, month, 1).getDay(); // 0 is Sun
+            const daysInMonth = new Date(year, month+1, 0).getDate();
+            const offset = firstDay === 0 ? 6 : firstDay - 1; // Start Mon
+            
+            for(let i=0; i<offset; i++) grid.innerHTML += '<div></div>';
+            
+            const activeDays = new Set(db.moments.map(m => {
+                const d = new Date(m.time);
+                if (d.getFullYear() === year && d.getMonth() === month) return d.getDate();
+            }));
+
+            const today = new Date();
+
+            for(let i=1; i<=daysInMonth; i++) {
+                let cls = 'cal-day';
+                if (activeDays.has(i)) cls += ' has-data';
+                if (i === today.getDate() && month === today.getMonth() && year === today.getFullYear()) cls += ' today';
+                grid.innerHTML += `<div class="${cls}">${i}</div>`;
             }
         }
 
-        function showThemeModal() {
-            document.getElementById('themeModal').classList.add('show');
+        function switchMonth(delta) {
+            viewState.calDate.setMonth(viewState.calDate.getMonth() + delta);
+            renderCalendar();
         }
 
-        function closeThemeModal() {
-            document.getElementById('themeModal').classList.remove('show');
-        }
+        function renderLastYear() {
+            const today = new Date();
+            const lastYearMoment = db.moments.find(m => {
+                const d = new Date(m.time);
+                return d.getDate() === today.getDate() && 
+                       d.getMonth() === today.getMonth() && 
+                       d.getFullYear() !== today.getFullYear();
+            });
 
-        function setTheme(start, end) {
-            document.documentElement.style.setProperty('--bg-gradient-start', start);
-            document.documentElement.style.setProperty('--bg-gradient-end', end);
-            localStorage.setItem('animalTheme', JSON.stringify({ start, end }));
-        }
-
-        function applyCustomTheme() {
-            const start = document.getElementById('customColorStart').value;
-            const end = document.getElementById('customColorEnd').value;
-            setTheme(start, end);
-            closeThemeModal();
-        }
-
-        function toggleNightMode() {
-            document.body.classList.toggle('night-mode');
-            localStorage.setItem('animalNightMode', document.body.classList.contains('night-mode'));
-        }
-
-        // ==================== 开发者模式 ====================
-        function showDevModal() {
-            document.getElementById('devModal').classList.add('show');
-        }
-
-        function closeDevModal() {
-            document.getElementById('devModal').classList.remove('show');
-            document.getElementById('devPassword').value = '';
-            devAuthed = false;
-        }
-
-        function checkDevAuth() {
-            const password = document.getElementById('devPassword').value;
-            if (password === '597') {
-                devAuthed = true;
-                return true;
-            }
-            alert('密码错误');
-            return false;
-        }
-
-        function devAddPoints() {
-            if (!checkDevAuth()) return;
-            gameData.totalPoints += 1000;
-            saveGameData();
-            updatePointsDisplay();
-            showToast('✅ 已增加1000积分');
-        }
-
-        function devCompleteHatch() {
-            if (!checkDevAuth()) return;
-            if (gameData.incubating) {
-                gameData.incubating.endTime = Date.now();
-                updateIncubatorDisplay();
-                showToast('✅ 孵化已完成');
+            const box = document.getElementById('last-year-content');
+            if (lastYearMoment) {
+                const d = new Date(lastYearMoment.time);
+                box.innerHTML = `
+                    <div style="font-weight:bold; margin-bottom:5px;">${d.getFullYear()}年的今天：</div>
+                    "${lastYearMoment.content.substring(0, 40)}..."
+                `;
             } else {
-                alert('没有正在孵化的蛋');
+                box.innerHTML = "历史上的今天暂无记录，创造一些新回忆吧！";
             }
         }
-
-        function devAddEgg(rarity) {
-            if (!checkDevAuth()) return;
-            gameData.eggs.push({
-                id: Date.now(),
-                rarity: rarity
-            });
-            saveGameData();
-            updateEggsDisplay();
-            updateEggSelector();
-            updateBackpack();
-            showToast(`✅ 已添加${RARITY_CONFIG[rarity].name}`);
-        }
-
-        function devReset() {
-            if (!checkDevAuth()) return;
-            if (!confirm('确定重置所有数据吗？')) return;
-            
-            gameData = {
-                totalPoints: 1000,
-                lastSignDate: null,
-                todayPoints: 0,
-                eggs: [],
-                incubating: null,
-                animals: [],
-                tombstones: [],
-                currentPet: null,
-                renameCounts: {},
-                items: {
-                    food_normal: 5,
-                    food_premium: 0,
-                    water_normal: 5,
-                    water_premium: 0,
-                    toy_ball: 2,
-                    toy_plush: 0,
-                    speed_potion: 0,
-                    medicine: 0,
-                    strength_potion: 0,
-                    agility_potion: 0,
-                    intelligence_potion: 0,
-                    charm_potion: 0,
-                    exp_boost: 0,
-                    happiness_candy: 0,
-                    energy_drink: 0,
-                    miracle_food: 0,
-                    golden_leaf: 0,
-                    lucky_clover: 0,
-                    rename_card: 0,
-                    revive_potion: 0
-                }
-            };
-            
-            saveGameData();
-            init();
-            closeDevModal();
-            showToast('✅ 数据已重置');
-        }
-
-        // ==================== 提示消息 ====================
-        function showToast(message) {
-            const toast = document.createElement('div');
-            toast.style.cssText = `
-                position: fixed;
-                top: 20px;
-                left: 50%;
-                transform: translateX(-50%);
-                background: #4CAF50;
-                color: white;
-                padding: 10px 20px;
-                border-radius: 20px;
-                z-index: 3000;
-                animation: fadeOut 2s forwards;
-            `;
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            
-            setTimeout(() => {
-                document.body.removeChild(toast);
-            }, 2000);
-        }
-
-        // ==================== 定时器 ====================
-        function startTimers() {
-            if (incubatorTimer) clearInterval(incubatorTimer);
-            incubatorTimer = setInterval(() => {
-                if (gameData.incubating) {
-                    updateIncubatorDisplay();
-                }
-            }, 1000);
-            
-            if (statsTimer) clearInterval(statsTimer);
-            statsTimer = setInterval(() => {
-                if (gameData.currentPet) {
-                    updateCurrentPet();
-                }
-            }, 60000);
-        }
-
-        // ==================== 数据存储 ====================
-        function saveGameData() {
-            localStorage.setItem('animalGame', JSON.stringify(gameData));
-        }
-
-        window.onload = init;
     </script>
 </body>
 </html>
