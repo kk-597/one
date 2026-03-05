@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            max-width: 1200px;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
-            background: #f5f5f5;
+            background: #f5f7fa;
         }
         
         /* 顶部导航 */
@@ -19,26 +19,38 @@
             align-items: center;
             margin-bottom: 20px;
             background: white;
-            padding: 15px 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 15px 25px;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
         .back-btn {
             background: #666;
-            padding: 8px 16px;
+            padding: 10px 20px;
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
             text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .back-btn:hover {
+            background: #555;
+            transform: translateY(-2px);
         }
         .new-moment-btn {
             background: #FF9800;
-            padding: 8px 16px;
+            padding: 10px 20px;
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .new-moment-btn:hover {
+            background: #F57C00;
+            transform: translateY(-2px);
         }
         
         /* 三栏布局 */
@@ -48,121 +60,281 @@
             margin-top: 20px;
         }
         
-        /* 左侧统计栏 */
-        .left-stats {
+        /* 左侧空白栏 */
+        .left-empty {
             flex: 1;
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            height: fit-content;
-            position: sticky;
-            top: 20px;
-        }
-        .stats-card {
-            margin-bottom: 20px;
-        }
-        .stats-number {
-            font-size: 28px;
-            font-weight: bold;
-            color: #FF9800;
-            margin: 5px 0;
-        }
-        .stats-label {
-            color: #666;
-            font-size: 14px;
-        }
-        .stats-divider {
-            height: 1px;
-            background: #eee;
-            margin: 15px 0;
-        }
-        .album-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-top: 10px;
-        }
-        .album-item {
-            background: #f5f5f5;
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .album-item:hover {
-            background: #FF9800;
-            color: white;
-        }
-        .album-item.selected {
-            background: #FF9800;
-            color: white;
-        }
-        .favorite-item {
-            padding: 8px;
-            background: #f5f5f5;
-            border-radius: 6px;
-            margin: 5px 0;
-            cursor: pointer;
+            background: transparent;
         }
         
         /* 中间动态区 */
         .middle-content {
-            flex: 2;
+            flex: 2.5;
         }
         
-        /* 搜索框 */
-        .search-box {
+        /* 右侧功能区 */
+        .right-sidebar {
+            flex: 1.5;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        /* 统计卡片 */
+        .stats-card {
             background: white;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .stats-row {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #FF9800;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+        .stat-divider {
+            width: 1px;
+            height: 40px;
+            background: #eee;
+        }
+        .date-display {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        .date-label {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        /* 日历 */
+        .calendar-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .calendar-header button {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .calendar-header button:hover {
+            background: #f0f0f0;
+        }
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 10px;
+        }
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .calendar-day.has-moment {
+            background: #FF9800;
+            color: white;
+            font-weight: bold;
+        }
+        .calendar-day.no-moment {
+            background: #f0f0f0;
+            color: #999;
+        }
+        .calendar-day.today {
+            border: 2px solid #FF9800;
+            font-weight: bold;
+        }
+        .calendar-day:hover {
+            transform: scale(1.1);
+        }
+        
+        /* 搜索卡片 */
+        .search-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .search-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
         }
         .search-input {
-            width: 100%;
+            flex: 1;
             padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+            border: 1px solid #eee;
+            border-radius: 12px;
             font-size: 14px;
-            box-sizing: border-box;
+            transition: all 0.2s;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: #FF9800;
+            box-shadow: 0 0 0 3px rgba(255,152,0,0.1);
+        }
+        .search-type-select {
+            padding: 12px;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
         }
         
-        /* 标签云 */
-        .tag-cloud {
+        /* 筛选卡片 */
+        .filter-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .filter-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .filter-options {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            margin: 15px 0;
-            padding: 10px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            gap: 10px;
+            margin-bottom: 15px;
         }
-        .tag-item {
-            background: #f0f0f0;
-            padding: 4px 12px;
-            border-radius: 20px;
+        .filter-chip {
+            padding: 8px 16px;
+            background: #f5f5f5;
+            border-radius: 30px;
             font-size: 13px;
             cursor: pointer;
             transition: all 0.2s;
         }
-        .tag-item.selected {
+        .filter-chip:hover {
+            background: #e0e0e0;
+        }
+        .filter-chip.selected {
             background: #FF9800;
             color: white;
+        }
+        
+        /* 身份卡片 */
+        .identity-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .identity-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 15px 0;
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 5px;
+        }
+        .identity-item {
+            text-align: center;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 16px;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+        .identity-item:hover {
+            background: #f5f5f5;
+        }
+        .identity-item.selected {
+            border-color: #FF9800;
+            background: #fff3e0;
+        }
+        .identity-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 0 auto 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            background-size: cover;
+            background-position: center;
+            transition: all 0.2s;
+        }
+        .identity-name {
+            font-weight: 500;
+            font-size: 13px;
+            word-break: break-word;
+        }
+        .add-identity-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #f5f7fa, #e4e8eb);
+            border: 2px dashed #ccc;
+            border-radius: 16px;
+            cursor: pointer;
+            color: #666;
+            text-align: center;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .add-identity-btn:hover {
+            background: #e0e0e0;
         }
         
         /* 动态卡片 */
         .moment-card {
             background: white;
-            border-radius: 12px;
+            border-radius: 20px;
             padding: 20px;
             margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+        }
+        .moment-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
         }
         
-        /* 动态头部 */
         .moment-header {
             display: flex;
             align-items: center;
@@ -170,7 +342,7 @@
             padding-bottom: 10px;
             border-bottom: 1px solid #eee;
         }
-        .avatar {
+        .moment-avatar {
             width: 50px;
             height: 50px;
             border-radius: 50%;
@@ -182,11 +354,6 @@
             margin-right: 15px;
             background-size: cover;
             background-position: center;
-            border: 3px solid transparent;
-            transition: border-color 0.2s;
-        }
-        .avatar.selected {
-            border-color: #FF9800;
         }
         .moment-info {
             flex: 1;
@@ -196,17 +363,11 @@
             font-size: 16px;
             margin-bottom: 3px;
         }
-        .moment-identity {
-            font-size: 12px;
-            color: #FF9800;
-            margin-bottom: 3px;
-        }
         .moment-time {
             color: #999;
             font-size: 12px;
         }
         
-        /* 动态标签 */
         .moment-tags {
             display: flex;
             gap: 8px;
@@ -215,16 +376,12 @@
         }
         .moment-tag {
             background: #f0f0f0;
-            padding: 2px 8px;
-            border-radius: 4px;
+            padding: 4px 12px;
+            border-radius: 20px;
             font-size: 12px;
             cursor: pointer;
         }
-        .moment-tag:hover {
-            background: #e0e0e0;
-        }
         
-        /* 动态内容 */
         .moment-content {
             font-size: 16px;
             line-height: 1.6;
@@ -232,7 +389,6 @@
             white-space: pre-wrap;
         }
         
-        /* 动态图片 */
         .moment-images {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -243,11 +399,10 @@
             width: 100%;
             height: 150px;
             object-fit: cover;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
         }
         
-        /* 点赞显示 */
         .likes-display {
             display: flex;
             flex-wrap: wrap;
@@ -255,7 +410,7 @@
             margin: 10px 0;
             padding: 10px;
             background: #f9f9f9;
-            border-radius: 8px;
+            border-radius: 12px;
         }
         .like-item {
             display: flex;
@@ -265,7 +420,7 @@
             background: white;
             border-radius: 20px;
             font-size: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         .like-avatar {
             width: 20px;
@@ -280,7 +435,6 @@
             background-position: center;
         }
         
-        /* 互动栏 */
         .moment-actions {
             display: flex;
             gap: 20px;
@@ -302,7 +456,6 @@
             color: #f44336;
         }
         
-        /* 评论区域 */
         .comments-section {
             margin-top: 15px;
             padding-top: 15px;
@@ -312,10 +465,9 @@
             display: flex;
             gap: 10px;
             margin-bottom: 10px;
-            font-size: 14px;
-            padding: 8px;
+            padding: 10px;
             background: #f9f9f9;
-            border-radius: 8px;
+            border-radius: 12px;
         }
         .comment-avatar {
             width: 30px;
@@ -352,109 +504,91 @@
         }
         .add-comment input {
             flex: 1;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 12px;
         }
         .add-comment button {
             background: #FF9800;
             color: white;
             border: none;
-            border-radius: 8px;
-            padding: 8px 16px;
+            border-radius: 12px;
+            padding: 10px 20px;
             cursor: pointer;
         }
         
-        /* 右侧身份栏 */
-        .right-identity {
-            flex: 1;
+        /* 身份编辑弹窗 */
+        .identity-edit-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            height: fit-content;
-            position: sticky;
-            top: 20px;
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            z-index: 2100;
+            display: none;
+            width: 350px;
         }
-        .right-identity h3 {
-            margin: 0 0 15px 0;
-            color: #333;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .identity-edit-modal.show {
+            display: block;
         }
-        .identity-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-bottom: 15px;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        .identity-card {
-            text-align: center;
-            cursor: pointer;
-            padding: 10px;
-            border-radius: 8px;
-            transition: all 0.2s;
-        }
-        .identity-card:hover {
-            background: #f5f5f5;
-        }
-        .identity-card.selected .identity-avatar {
-            border-color: #FF9800;
-        }
-        .identity-avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            margin: 0 auto 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-            background-size: cover;
-            background-position: center;
-            border: 3px solid transparent;
-            transition: border-color 0.2s;
-        }
-        .identity-name {
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 2px;
-        }
-        .identity-desc {
-            font-size: 11px;
-            color: #999;
-        }
-        .identity-actions {
-            display: flex;
-            gap: 5px;
-            justify-content: center;
-            margin-top: 5px;
-        }
-        .identity-actions button {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 12px;
-            padding: 2px 5px;
-            border-radius: 4px;
-        }
-        .identity-actions button:hover {
-            background: #f0f0f0;
-        }
-        .add-identity-btn {
+        .identity-edit-modal input {
             width: 100%;
             padding: 12px;
-            background: #f0f0f0;
-            border: 2px dashed #ccc;
-            border-radius: 8px;
+            margin: 10px 0;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            box-sizing: border-box;
+        }
+        .avatar-type-selector {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .avatar-type-btn {
+            flex: 1;
+            padding: 10px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 12px;
             cursor: pointer;
-            color: #666;
-            text-align: center;
-            margin-top: 10px;
+        }
+        .avatar-type-btn.active {
+            background: #FF9800;
+            color: white;
+        }
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin: 15px 0;
+        }
+        .emoji-option {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 22px;
+            background: #f5f5f5;
+        }
+        .emoji-option.selected {
+            background: #FF9800;
+            color: white;
+        }
+        .delete-identity-btn {
+            width: 100%;
+            padding: 12px;
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            margin-top: 15px;
+            cursor: pointer;
         }
         
         /* 全屏编辑器 */
@@ -466,7 +600,7 @@
             bottom: 0;
             background: white;
             z-index: 2000;
-            padding: 20px;
+            padding: 30px;
             display: flex;
             flex-direction: column;
             overflow-y: auto;
@@ -476,112 +610,17 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
-            padding-bottom: 10px;
+            padding-bottom: 15px;
             border-bottom: 2px solid #FF9800;
-        }
-        .editor-header h2 {
-            margin: 0;
-            color: #333;
-        }
-        .editor-close {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #666;
-        }
-        .editor-main {
-            display: flex;
-            gap: 20px;
-            flex: 1;
-        }
-        .editor-left {
-            flex: 2;
-            display: flex;
-            flex-direction: column;
-        }
-        .editor-right {
-            flex: 1;
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 12px;
-            overflow-y: auto;
-            max-height: calc(100vh - 150px);
         }
         .editor-content {
             flex: 1;
             padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 12px;
+            border: 1px solid #eee;
+            border-radius: 16px;
             font-size: 16px;
-            line-height: 1.6;
             resize: none;
             margin-bottom: 15px;
-            min-height: 200px;
-        }
-        
-        /* 身份编辑弹窗 */
-        .identity-edit-modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.2);
-            z-index: 2100;
-            display: none;
-            width: 350px;
-        }
-        .identity-edit-modal.show {
-            display: block;
-        }
-        .identity-edit-modal input {
-            width: 100%;
-            padding: 8px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-sizing: border-box;
-        }
-        .avatar-type-selector {
-            display: flex;
-            gap: 10px;
-            margin: 10px 0;
-        }
-        .avatar-type-btn {
-            flex: 1;
-            padding: 8px;
-            background: #f0f0f0;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-        .avatar-type-btn.active {
-            background: #FF9800;
-            color: white;
-        }
-        .emoji-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 5px;
-            margin: 10px 0;
-        }
-        .emoji-option {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 20px;
-            background: #f0f0f0;
-        }
-        .emoji-option.selected {
-            background: #FF9800;
-            color: white;
         }
         
         .version-tag {
@@ -606,57 +645,78 @@
     
     <!-- 三栏布局 -->
     <div class="main-layout">
-        <!-- 左侧统计栏 -->
-        <div class="left-stats">
-            <div class="stats-card">
-                <div class="stats-label">总动态数</div>
-                <div class="stats-number" id="totalMoments">0</div>
-            </div>
-            <div class="stats-card">
-                <div class="stats-label">总点赞数</div>
-                <div class="stats-number" id="totalLikes">0</div>
-            </div>
-            
-            <div class="stats-divider"></div>
-            
-            <div class="stats-card">
-                <div class="stats-label">📁 动态册</div>
-                <div class="album-grid" id="albumGrid"></div>
-            </div>
-            
-            <div class="stats-divider"></div>
-            
-            <div class="stats-card">
-                <div class="stats-label">⭐ 收藏夹</div>
-                <div id="favoritesList"></div>
-            </div>
-        </div>
+        <!-- 左侧空白 -->
+        <div class="left-empty"></div>
         
         <!-- 中间动态区 -->
         <div class="middle-content">
-            <!-- 搜索框 -->
-            <div class="search-box">
-                <input type="text" id="searchInput" class="search-input" placeholder="搜索内容或标签..." oninput="searchMoments()">
-            </div>
-            
-            <!-- 标签云 -->
-            <div class="tag-cloud" id="tagCloud"></div>
-            
-            <!-- 动态列表 -->
             <div id="momentsContainer"></div>
         </div>
         
-        <!-- 右侧身份栏 -->
-        <div class="right-identity">
-            <h3>
-                👤 我的身份
-                <span style="font-size: 12px; color: #999;" id="selectedIdentityName">当前: 我</span>
-            </h3>
+        <!-- 右侧功能区 -->
+        <div class="right-sidebar">
+            <!-- 统计卡片 -->
+            <div class="stats-card">
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-number" id="totalMoments">0</div>
+                        <div class="stat-label">总动态</div>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="totalLikes">0</div>
+                        <div class="stat-label">总点赞</div>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <div class="date-display" id="currentDay">15</div>
+                        <div class="date-label">今日日期</div>
+                    </div>
+                </div>
+            </div>
             
-            <div class="identity-grid" id="identityGrid"></div>
+            <!-- 日历卡片 -->
+            <div class="calendar-card">
+                <div class="calendar-header">
+                    <button onclick="changeMonth(-1)">←</button>
+                    <span id="currentMonthYear">2024年3月</span>
+                    <button onclick="changeMonth(1)">→</button>
+                </div>
+                <div class="calendar-weekdays">
+                    <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span>
+                </div>
+                <div class="calendar-days" id="calendarDays"></div>
+            </div>
             
-            <div class="add-identity-btn" onclick="addIdentity()">
-                + 添加新身份
+            <!-- 搜索卡片 -->
+            <div class="search-card">
+                <div class="search-input-group">
+                    <input type="text" id="searchInput" class="search-input" placeholder="搜索..." oninput="searchMoments()">
+                    <select id="searchType" class="search-type-select" onchange="searchMoments()">
+                        <option value="all">全部</option>
+                        <option value="content">动态</option>
+                        <option value="comment">评论</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- 筛选卡片 -->
+            <div class="filter-card">
+                <div class="filter-title">📁 动态册</div>
+                <div class="filter-options" id="albumFilters"></div>
+                
+                <div class="filter-title">🏷️ 标签</div>
+                <div class="filter-options" id="tagFilters"></div>
+                
+                <div class="filter-title">👤 身份</div>
+                <div class="filter-options" id="identityFilters"></div>
+            </div>
+            
+            <!-- 身份卡片 -->
+            <div class="identity-card">
+                <div class="filter-title">👥 我的身份</div>
+                <div class="identity-grid" id="identityGrid"></div>
+                <div class="add-identity-btn" onclick="addIdentity()">+ 添加新身份</div>
             </div>
         </div>
     </div>
@@ -665,38 +725,22 @@
     <div id="fullscreenEditor" class="fullscreen-editor" style="display: none;">
         <div class="editor-header">
             <h2>📱 发动态</h2>
-            <button class="editor-close" onclick="hideFullscreenEditor()">×</button>
+            <button class="editor-close" onclick="hideFullscreenEditor()" style="background:none; border:none; font-size:24px; cursor:pointer;">×</button>
+        </div>
+        <textarea id="momentContent" class="editor-content" placeholder="说点什么..."></textarea>
+        
+        <div style="margin-bottom: 15px;">
+            <button onclick="selectImages()" style="padding:10px 20px; background:#f5f5f5; border:none; border-radius:12px; cursor:pointer;">📷 选择图片</button>
+            <div id="imagePreview" style="display: grid; grid-template-columns: repeat(4,1fr); gap:5px; margin-top:10px;"></div>
         </div>
         
-        <div class="editor-main">
-            <div class="editor-left">
-                <textarea id="momentContent" class="editor-content" placeholder="说点什么..."></textarea>
-                
-                <div style="margin-bottom: 15px;">
-                    <button onclick="selectImages()">📷 选择图片</button>
-                    <div id="imagePreview" style="display: grid; grid-template-columns: repeat(4,1fr); gap:5px; margin-top:10px;"></div>
-                </div>
-            </div>
-            
-            <div class="editor-right">
-                <h3>选择身份</h3>
-                <div class="identity-grid" id="editorIdentityGrid" style="grid-template-columns: repeat(2,1fr);"></div>
-                
-                <h3 style="margin-top: 20px;">选择动态册</h3>
-                <div class="album-grid" id="editorAlbumGrid"></div>
-                
-                <h3 style="margin-top: 20px;">添加标签</h3>
-                <div class="tag-input-area">
-                    <div class="tag-list" id="tagList"></div>
-                    <div style="display: flex; gap: 5px; margin-top: 10px;">
-                        <input type="text" id="newTag" placeholder="新标签" style="flex:1; padding:8px; border:1px solid #ddd; border-radius:4px;">
-                        <button onclick="addTag()" style="background:#FF9800; color:white; border:none; border-radius:4px; padding:8px 16px;">添加</button>
-                    </div>
-                </div>
-                
-                <button onclick="saveMoment()" style="width:100%; padding:12px; background:#FF9800; color:white; border:none; border-radius:8px; font-size:16px; margin-top:20px;">发布动态</button>
-            </div>
+        <div style="margin-bottom: 15px;">
+            <input type="text" id="newTag" placeholder="添加标签" style="padding:10px; border:1px solid #eee; border-radius:12px; margin-right:10px;">
+            <button onclick="addTag()" style="padding:10px 20px; background:#FF9800; color:white; border:none; border-radius:12px;">添加</button>
         </div>
+        <div id="tagList" style="margin-bottom: 15px;"></div>
+        
+        <button onclick="saveMoment()" style="width:100%; padding:15px; background:#FF9800; color:white; border:none; border-radius:16px; font-size:16px;">发布动态</button>
     </div>
     
     <!-- 身份编辑弹窗 -->
@@ -728,25 +772,29 @@
             <div id="avatarPreview" style="width:60px; height:60px; border-radius:50%; margin:10px auto; background-size:cover; background-position:center;"></div>
         </div>
         
-        <div style="text-align: right; margin-top: 20px;">
-            <button onclick="saveIdentityEdit()" style="background:#4CAF50; color:white; padding:8px 16px; border:none; border-radius:4px; margin-right:5px;">保存</button>
-            <button onclick="closeIdentityEdit()" style="background:#999; color:white; padding:8px 16px; border:none; border-radius:4px;">取消</button>
+        <button class="delete-identity-btn" onclick="deleteCurrentIdentity()">🗑️ 删除此身份</button>
+        
+        <div style="text-align: right; margin-top: 15px;">
+            <button onclick="saveIdentityEdit()" style="background:#4CAF50; color:white; padding:10px 20px; border:none; border-radius:12px; margin-right:5px;">保存</button>
+            <button onclick="closeIdentityEdit()" style="background:#999; color:white; padding:10px 20px; border:none; border-radius:12px;">取消</button>
         </div>
     </div>
     
-    <div class="version-tag">v5.0 - 2024.3.4 三栏布局版</div>
+    <div class="version-tag">v6.0 - 2024.3.5 修复身份删除bug</div>
     
     <script>
         // 数据存储
         let moments = JSON.parse(localStorage.getItem('moments') || '[]');
         let identities = JSON.parse(localStorage.getItem('identities') || '[{"id":"default","name":"我","avatar":"😊","avatarType":"emoji","color":"#FF9800","isDefault":true}]');
-        let albums = JSON.parse(localStorage.getItem('albums') || '["默认","日常","工作"]');
         
         let selectedImages = [];
         let currentTags = [];
         let currentIdentity = 'default';
-        let currentAlbum = '默认';
-        let selectedTags = [];
+        let selectedAlbum = null;
+        let selectedTag = null;
+        let selectedIdentityFilter = null;
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
         let editingIdentityId = null;
         let currentAvatarType = 'emoji';
         let selectedAvatar = '😊';
@@ -754,102 +802,150 @@
         
         // 初始化
         function init() {
-            loadIdentities();
-            loadAlbums();
+            // 修复身份数据：确保所有身份都有正确的id和isDefault属性
+            identities = identities.map((id, index) => {
+                if (typeof id === 'string' || !id.id) {
+                    // 修复旧数据
+                    return {
+                        id: 'id_' + Date.now() + index,
+                        name: id.name || id,
+                        avatar: id.avatar || '😊',
+                        avatarType: id.avatarType || 'emoji',
+                        color: id.color || '#FF9800',
+                        desc: id.desc || '',
+                        isDefault: index === 0 ? true : false
+                    };
+                }
+                return id;
+            });
+            
+            // 确保有默认身份
+            if (!identities.some(i => i.isDefault)) {
+                identities[0].isDefault = true;
+            }
+            
+            localStorage.setItem('identities', JSON.stringify(identities));
+            
             loadStats();
-            loadTagCloud();
+            loadCalendar();
+            loadFilters();
+            loadIdentities();
             filterMoments();
         }
         
-        // ==================== 统计功能 ====================
-        
+        // ==================== 统计 ====================
         function loadStats() {
             document.getElementById('totalMoments').textContent = moments.length;
-            
             const totalLikes = moments.reduce((sum, m) => sum + (m.likes?.length || 0), 0);
             document.getElementById('totalLikes').textContent = totalLikes;
+            document.getElementById('currentDay').textContent = new Date().getDate();
+        }
+        
+        // ==================== 日历 ====================
+        function loadCalendar() {
+            const year = currentYear;
+            const month = currentMonth;
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const startDay = firstDay.getDay() || 7; // 周一为1，周日为7
             
-            // 加载相册
-            const albumGrid = document.getElementById('albumGrid');
-            albumGrid.innerHTML = albums.map(album => `
-                <div class="album-item ${currentAlbum === album ? 'selected' : ''}" onclick="selectAlbum('${album}')">
-                    ${album}
-                </div>
-            `).join('');
+            document.getElementById('currentMonthYear').textContent = `${year}年${month + 1}月`;
             
-            // 加载收藏夹（这里简单显示收藏的动态数）
-            const favoritesCount = moments.filter(m => m.favorited).length;
-            document.getElementById('favoritesList').innerHTML = `
-                <div class="favorite-item" onclick="filterFavorites()">
-                    ⭐ 收藏动态 (${favoritesCount})
-                </div>
-            `;
+            // 获取有动态的日期
+            const daysWithMoments = moments.map(m => {
+                const date = new Date(m.time);
+                if (date.getMonth() === month && date.getFullYear() === year) {
+                    return date.getDate();
+                }
+                return null;
+            }).filter(d => d !== null);
+            
+            let html = '';
+            for (let i = 1; i < startDay; i++) {
+                html += '<div></div>';
+            }
+            
+            for (let d = 1; d <= lastDay.getDate(); d++) {
+                const hasMoment = daysWithMoments.includes(d);
+                const isToday = d === new Date().getDate() && month === new Date().getMonth() && year === new Date().getFullYear();
+                html += `<div class="calendar-day ${hasMoment ? 'has-moment' : 'no-moment'} ${isToday ? 'today' : ''}" onclick="filterByDate(${d})">${d}</div>`;
+            }
+            
+            document.getElementById('calendarDays').innerHTML = html;
+        }
+        
+        function changeMonth(delta) {
+            currentMonth += delta;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            } else if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            loadCalendar();
+        }
+        
+        function filterByDate(day) {
+            const date = new Date(currentYear, currentMonth, day);
+            // 实现按日期筛选
+        }
+        
+        // ==================== 筛选 ====================
+        function loadFilters() {
+            // 动态册筛选
+            const albums = [...new Set(moments.map(m => m.album).filter(Boolean))];
+            document.getElementById('albumFilters').innerHTML = 
+                '<span class="filter-chip" onclick="selectAlbum(null)">全部</span>' +
+                albums.map(a => `<span class="filter-chip ${selectedAlbum === a ? 'selected' : ''}" onclick="selectAlbum('${a}')">${a}</span>`).join('');
+            
+            // 标签筛选
+            const tags = [...new Set(moments.flatMap(m => m.tags || []))];
+            document.getElementById('tagFilters').innerHTML = 
+                '<span class="filter-chip" onclick="selectTag(null)">全部</span>' +
+                tags.map(t => `<span class="filter-chip ${selectedTag === t ? 'selected' : ''}" onclick="selectTag('${t}')">${t}</span>`).join('');
+            
+            // 身份筛选
+            document.getElementById('identityFilters').innerHTML = 
+                '<span class="filter-chip" onclick="selectIdentityFilter(null)">全部</span>' +
+                identities.map(i => `<span class="filter-chip ${selectedIdentityFilter === i.id ? 'selected' : ''}" onclick="selectIdentityFilter('${i.id}')">${i.name}</span>`).join('');
         }
         
         function selectAlbum(album) {
-            currentAlbum = album;
+            selectedAlbum = album;
+            loadFilters();
             filterMoments();
-            loadStats();
         }
         
-        function filterFavorites() {
-            // 切换收藏筛选
-            document.getElementById('searchInput').value = '';
-            selectedTags = [];
-            showOnlyFavorites = !showOnlyFavorites;
+        function selectTag(tag) {
+            selectedTag = tag;
+            loadFilters();
+            filterMoments();
+        }
+        
+        function selectIdentityFilter(id) {
+            selectedIdentityFilter = id;
+            loadFilters();
             filterMoments();
         }
         
         // ==================== 身份管理 ====================
-        
         function loadIdentities() {
-            const grids = ['identityGrid', 'editorIdentityGrid'];
-            
-            grids.forEach(gridId => {
-                const container = document.getElementById(gridId);
-                if (!container) return;
-                
-                container.innerHTML = identities.map(identity => `
-                    <div class="identity-card ${currentIdentity === identity.id ? 'selected' : ''}" onclick="selectIdentity('${identity.id}')">
-                        <div class="identity-avatar" style="background: ${identity.color}; ${identity.avatarType === 'image' ? `background-image: url('${identity.avatar}'); background-size: cover;` : ''}">
-                            ${identity.avatarType !== 'image' ? identity.avatar : ''}
-                        </div>
-                        <div class="identity-name">${identity.name}</div>
-                        <div class="identity-desc">${identity.desc || ''}</div>
-                        <div class="identity-actions" onclick="event.stopPropagation()">
-                            <button onclick="editIdentity('${identity.id}')">✏️</button>
-                            ${!identity.isDefault ? `<button onclick="deleteIdentity('${identity.id}')">🗑️</button>` : ''}
-                        </div>
+            const container = document.getElementById('identityGrid');
+            container.innerHTML = identities.map(identity => `
+                <div class="identity-item ${currentIdentity === identity.id ? 'selected' : ''}" 
+                     onclick="selectIdentity('${identity.id}')"
+                     ondblclick="editIdentity('${identity.id}')">
+                    <div class="identity-avatar" style="background: ${identity.color}; ${identity.avatarType === 'image' ? `background-image: url('${identity.avatar}'); background-size: cover;` : ''}">
+                        ${identity.avatarType !== 'image' ? identity.avatar : ''}
                     </div>
-                `).join('');
-            });
-            
-            // 更新当前选中身份显示
-            const selectedIdentity = identities.find(i => i.id === currentIdentity);
-            if (selectedIdentity) {
-                document.getElementById('selectedIdentityName').textContent = `当前: ${selectedIdentity.name}`;
-            }
+                    <div class="identity-name">${identity.name}</div>
+                </div>
+            `).join('');
         }
         
         function selectIdentity(id) {
             currentIdentity = id;
-            loadIdentities();
-        }
-        
-        function addIdentity() {
-            const colors = ['#FF9800', '#4CAF50', '#2196F3', '#9C27B0', '#f44336', '#009688'];
-            const newIdentity = {
-                id: 'id_' + Date.now(),
-                name: '新身份',
-                avatar: '😊',
-                avatarType: 'emoji',
-                color: colors[Math.floor(Math.random() * colors.length)],
-                desc: '',
-                isDefault: false
-            };
-            
-            identities.push(newIdentity);
-            localStorage.setItem('identities', JSON.stringify(identities));
             loadIdentities();
         }
         
@@ -876,6 +972,66 @@
             }
             
             document.getElementById('identityEditModal').classList.add('show');
+        }
+        
+        function addIdentity() {
+            const colors = ['#FF9800', '#4CAF50', '#2196F3', '#9C27B0', '#f44336', '#009688'];
+            const newIdentity = {
+                id: 'id_' + Date.now(),
+                name: '新身份',
+                avatar: '😊',
+                avatarType: 'emoji',
+                color: colors[Math.floor(Math.random() * colors.length)],
+                desc: '',
+                isDefault: false
+            };
+            
+            identities.push(newIdentity);
+            localStorage.setItem('identities', JSON.stringify(identities));
+            loadIdentities();
+            loadFilters();
+        }
+        
+        function deleteCurrentIdentity() {
+            const identity = identities.find(i => i.id === editingIdentityId);
+            if (identity.isDefault) {
+                alert('默认身份不能删除');
+                return;
+            }
+            
+            if (!confirm(`确定删除身份"${identity.name}"吗？`)) return;
+            
+            // 删除身份
+            identities = identities.filter(i => i.id !== editingIdentityId);
+            
+            // 更新所有动态中的身份引用
+            moments.forEach(m => {
+                if (m.identity && m.identity.id === editingIdentityId) {
+                    m.identity = identities.find(i => i.isDefault);
+                }
+                if (m.likes) {
+                    m.likes = m.likes.filter(like => like.id !== editingIdentityId);
+                }
+                if (m.comments) {
+                    m.comments.forEach(comment => {
+                        if (comment.identity && comment.identity.id === editingIdentityId) {
+                            comment.identity = identities.find(i => i.isDefault);
+                        }
+                    });
+                }
+            });
+            
+            localStorage.setItem('identities', JSON.stringify(identities));
+            localStorage.setItem('moments', JSON.stringify(moments));
+            
+            if (currentIdentity === editingIdentityId) {
+                currentIdentity = identities.find(i => i.isDefault).id;
+            }
+            
+            closeIdentityEdit();
+            loadIdentities();
+            loadFilters();
+            filterMoments();
         }
         
         function showAvatarType(type) {
@@ -921,8 +1077,6 @@
             }
             
             localStorage.setItem('identities', JSON.stringify(identities));
-            closeIdentityEdit();
-            loadIdentities();
             
             // 更新动态中的身份信息
             moments.forEach(m => {
@@ -942,7 +1096,10 @@
                     });
                 }
             });
+            
             localStorage.setItem('moments', JSON.stringify(moments));
+            closeIdentityEdit();
+            loadIdentities();
             filterMoments();
         }
         
@@ -951,211 +1108,58 @@
             editingIdentityId = null;
         }
         
-        function deleteIdentity(id) {
-            if (!confirm('确定删除这个身份吗？')) return;
-            
-            identities = identities.filter(i => i.id !== id);
-            
-            if (currentIdentity === id) {
-                currentIdentity = 'default';
-            }
-            
-            localStorage.setItem('identities', JSON.stringify(identities));
-            loadIdentities();
-        }
-        
-        // ==================== 标签云 ====================
-        
-        function loadTagCloud() {
-            const tagCount = {};
-            moments.forEach(m => {
-                (m.tags || []).forEach(t => {
-                    tagCount[t] = (tagCount[t] || 0) + 1;
-                });
-            });
-            
-            const container = document.getElementById('tagCloud');
-            container.innerHTML = Object.entries(tagCount)
-                .sort((a,b) => b[1] - a[1])
-                .map(([tag, count]) => `
-                    <span class="tag-item ${selectedTags.includes(tag) ? 'selected' : ''}" onclick="toggleTag('${tag}')">
-                        ${tag} (${count})
-                    </span>
-                `).join('');
-        }
-        
-        function toggleTag(tag) {
-            if (selectedTags.includes(tag)) {
-                selectedTags = selectedTags.filter(t => t !== tag);
-            } else {
-                selectedTags.push(tag);
-            }
-            loadTagCloud();
-            filterMoments();
-        }
-        
-        // ==================== 编辑器功能 ====================
-        
-        function showFullscreenEditor() {
-            document.getElementById('fullscreenEditor').style.display = 'flex';
-            document.getElementById('momentContent').value = '';
-            document.getElementById('imagePreview').innerHTML = '';
-            selectedImages = [];
-            currentTags = [];
-            updateTagList();
-            loadIdentities();
-            loadEditorAlbums();
-        }
-        
-        function loadEditorAlbums() {
-            const container = document.getElementById('editorAlbumGrid');
-            container.innerHTML = albums.map(album => `
-                <div class="album-item ${currentAlbum === album ? 'selected' : ''}" onclick="selectEditorAlbum('${album}')">
-                    ${album}
-                </div>
-            `).join('');
-        }
-        
-        function selectEditorAlbum(album) {
-            currentAlbum = album;
-            loadEditorAlbums();
-        }
-        
-        function hideFullscreenEditor() {
-            document.getElementById('fullscreenEditor').style.display = 'none';
-        }
-        
-        function selectImages() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.multiple = true;
-            
-            input.onchange = function(e) {
-                const files = e.target.files;
-                
-                for (let i = 0; i < files.length; i++) {
-                    const file = files[i];
-                    const reader = new FileReader();
-                    
-                    reader.onload = function(event) {
-                        selectedImages.push(event.target.result);
-                        
-                        const preview = document.getElementById('imagePreview');
-                        preview.innerHTML += `<img src="${event.target.result}" style="width:100%; height:80px; object-fit:cover; border-radius:4px;">`;
-                    };
-                    
-                    reader.readAsDataURL(file);
-                }
-            };
-            
-            input.click();
-        }
-        
-        function addTag() {
-            const tag = document.getElementById('newTag').value.trim();
-            if (!tag || currentTags.includes(tag)) return;
-            
-            currentTags.push(tag);
-            updateTagList();
-            document.getElementById('newTag').value = '';
-        }
-        
-        function removeTag(tag) {
-            currentTags = currentTags.filter(t => t !== tag);
-            updateTagList();
-        }
-        
-        function updateTagList() {
-            const container = document.getElementById('tagList');
-            if (!container) return;
-            container.innerHTML = currentTags.map(tag => `
-                <span class="tag" style="display:inline-block; background:#f0f0f0; padding:4px 10px; border-radius:20px; margin:0 5px 5px 0;">
-                    ${tag}
-                    <span style="cursor:pointer; margin-left:5px;" onclick="removeTag('${tag}')">×</span>
-                </span>
-            `).join('');
-        }
-        
-        function saveMoment() {
-            const content = document.getElementById('momentContent').value.trim();
-            if (!content) {
-                alert('请输入内容');
-                return;
-            }
-            
-            const identity = identities.find(i => i.id === currentIdentity) || identities[0];
-            
-            const moment = {
-                id: Date.now(),
-                content: content,
-                identity: identity,
-                album: currentAlbum,
-                tags: currentTags,
-                images: selectedImages,
-                time: new Date().toLocaleString(),
-                likes: [],
-                comments: [],
-                favorited: false
-            };
-            
-            moments.unshift(moment);
-            localStorage.setItem('moments', JSON.stringify(moments));
-            
-            hideFullscreenEditor();
-            filterMoments();
-            loadTagCloud();
-            loadStats();
-        }
-        
         // ==================== 搜索和筛选 ====================
-        
-        let showOnlyFavorites = false;
-        
         function searchMoments() {
             filterMoments();
         }
         
         function filterMoments() {
             const searchText = document.getElementById('searchInput').value.toLowerCase();
+            const searchType = document.getElementById('searchType').value;
             
             let filtered = [...moments];
             
-            // 相册筛选
-            if (currentAlbum !== '全部') {
-                filtered = filtered.filter(m => m.album === currentAlbum);
-            }
-            
-            // 收藏筛选
-            if (showOnlyFavorites) {
-                filtered = filtered.filter(m => m.favorited);
+            // 动态册筛选
+            if (selectedAlbum) {
+                filtered = filtered.filter(m => m.album === selectedAlbum);
             }
             
             // 标签筛选
-            if (selectedTags.length > 0) {
-                filtered = filtered.filter(m => 
-                    selectedTags.some(tag => (m.tags || []).includes(tag))
-                );
+            if (selectedTag) {
+                filtered = filtered.filter(m => (m.tags || []).includes(selectedTag));
             }
             
-            // 文本搜索
+            // 身份筛选
+            if (selectedIdentityFilter) {
+                filtered = filtered.filter(m => m.identity && m.identity.id === selectedIdentityFilter);
+            }
+            
+            // 搜索
             if (searchText) {
-                filtered = filtered.filter(m => 
-                    m.content.toLowerCase().includes(searchText) ||
-                    (m.tags || []).some(t => t.toLowerCase().includes(searchText))
-                );
+                if (searchType === 'all') {
+                    filtered = filtered.filter(m => 
+                        m.content.toLowerCase().includes(searchText) ||
+                        (m.tags || []).some(t => t.toLowerCase().includes(searchText)) ||
+                        (m.comments || []).some(c => c.content.toLowerCase().includes(searchText))
+                    );
+                } else if (searchType === 'content') {
+                    filtered = filtered.filter(m => m.content.toLowerCase().includes(searchText));
+                } else if (searchType === 'comment') {
+                    filtered = filtered.filter(m => 
+                        (m.comments || []).some(c => c.content.toLowerCase().includes(searchText))
+                    );
+                }
             }
             
             displayMoments(filtered);
         }
         
         // ==================== 动态显示 ====================
-        
         function displayMoments(momentsToShow) {
             const container = document.getElementById('momentsContainer');
             
             if (momentsToShow.length === 0) {
-                container.innerHTML = '<p style="color: #999; text-align: center; padding: 40px;">暂无动态</p>';
+                container.innerHTML = '<div style="text-align: center; padding: 60px; color: #999;">暂无动态</div>';
                 return;
             }
             
@@ -1174,20 +1178,18 @@
                 return `
                     <div class="moment-card">
                         <div class="moment-header">
-                            <div class="avatar ${moment.identity?.id === currentIdentity ? 'selected' : ''}" 
-                                 style="background: ${moment.identity?.color || '#FF9800'}; ${moment.identity?.avatarType === 'image' ? `background-image: url('${moment.identity.avatar}'); background-size: cover;` : ''}">
+                            <div class="moment-avatar" style="background: ${moment.identity?.color || '#FF9800'}; ${moment.identity?.avatarType === 'image' ? `background-image: url('${moment.identity.avatar}'); background-size: cover;` : ''}">
                                 ${moment.identity?.avatarType !== 'image' ? moment.identity?.avatar || '📱' : ''}
                             </div>
                             <div class="moment-info">
                                 <div class="moment-author">${moment.identity?.name || '我'}</div>
-                                <div class="moment-identity">${moment.identity?.desc || ''}</div>
                                 <div class="moment-time">${moment.time}</div>
                             </div>
                         </div>
                         
                         <div class="moment-tags">
                             ${(moment.tags || []).map(tag => 
-                                `<span class="moment-tag" onclick="toggleTag('${tag}')">#${tag}</span>`
+                                `<span class="moment-tag" onclick="selectTag('${tag}')">#${tag}</span>`
                             ).join('')}
                         </div>
                         
@@ -1205,11 +1207,6 @@
                             <button class="action-btn ${(moment.likes || []).some(l => l.id === currentIdentity) ? 'liked' : ''}" onclick="toggleLike(${originalIndex})">
                                 ❤️ ${(moment.likes || []).length}
                             </button>
-                            
-                            <button class="action-btn ${moment.favorited ? 'favorited' : ''}" onclick="toggleFavorite(${originalIndex})">
-                                ⭐ 收藏
-                            </button>
-                            
                             <span class="action-btn">💬 ${moment.comments?.length || 0}</span>
                         </div>
                         
@@ -1256,13 +1253,6 @@
             loadStats();
         }
         
-        function toggleFavorite(index) {
-            moments[index].favorited = !moments[index].favorited;
-            localStorage.setItem('moments', JSON.stringify(moments));
-            filterMoments();
-            loadStats();
-        }
-        
         function addComment(index, momentId) {
             const input = document.getElementById(`comment-${momentId}`);
             const content = input.value.trim();
@@ -1282,6 +1272,100 @@
             
             input.value = '';
             filterMoments();
+        }
+        
+        // ==================== 编辑器功能 ====================
+        function showFullscreenEditor() {
+            document.getElementById('fullscreenEditor').style.display = 'flex';
+            document.getElementById('momentContent').value = '';
+            document.getElementById('imagePreview').innerHTML = '';
+            selectedImages = [];
+            currentTags = [];
+            updateTagList();
+        }
+        
+        function hideFullscreenEditor() {
+            document.getElementById('fullscreenEditor').style.display = 'none';
+        }
+        
+        function selectImages() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.multiple = true;
+            
+            input.onchange = function(e) {
+                const files = e.target.files;
+                
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(event) {
+                        selectedImages.push(event.target.result);
+                        
+                        const preview = document.getElementById('imagePreview');
+                        preview.innerHTML += `<img src="${event.target.result}" style="width:100%; height:80px; object-fit:cover; border-radius:8px;">`;
+                    };
+                    
+                    reader.readAsDataURL(file);
+                }
+            };
+            
+            input.click();
+        }
+        
+        function addTag() {
+            const tag = document.getElementById('newTag').value.trim();
+            if (!tag || currentTags.includes(tag)) return;
+            
+            currentTags.push(tag);
+            updateTagList();
+            document.getElementById('newTag').value = '';
+        }
+        
+        function removeTag(tag) {
+            currentTags = currentTags.filter(t => t !== tag);
+            updateTagList();
+        }
+        
+        function updateTagList() {
+            const container = document.getElementById('tagList');
+            container.innerHTML = currentTags.map(tag => 
+                `<span style="display:inline-block; background:#f0f0f0; padding:5px 12px; border-radius:20px; margin:0 5px 5px 0;">
+                    ${tag} <span style="cursor:pointer; margin-left:5px;" onclick="removeTag('${tag}')">×</span>
+                </span>`
+            ).join('');
+        }
+        
+        function saveMoment() {
+            const content = document.getElementById('momentContent').value.trim();
+            if (!content) {
+                alert('请输入内容');
+                return;
+            }
+            
+            const identity = identities.find(i => i.id === currentIdentity) || identities[0];
+            
+            const moment = {
+                id: Date.now(),
+                content: content,
+                identity: identity,
+                tags: currentTags,
+                images: selectedImages,
+                time: new Date().toLocaleString(),
+                likes: [],
+                comments: []
+            };
+            
+            moments.unshift(moment);
+            localStorage.setItem('moments', JSON.stringify(moments));
+            
+            hideFullscreenEditor();
+            filterMoments();
+            loadStats();
+            loadCalendar();
+            loadFilters();
         }
         
         // 初始化
