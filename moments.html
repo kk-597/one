@@ -28,33 +28,30 @@
             min-height: 100vh;
         }
 
-        /* --- 顶部导航 --- */
-        .nav-bar {
-            background: var(--card-bg);
-            padding: 15px 30px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            max-width: 1400px;
-            margin: 0 auto 25px auto;
+        /* --- 顶部导航 (精简版) --- */
+        .top-nav {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; max-width: 1400px; margin: 0 auto 20px auto;
         }
+        .back-home-btn {
+            background: white; padding: 10px 20px; border-radius: 50px; text-decoration: none;
+            color: var(--text-main); font-weight: bold; box-shadow: var(--shadow); display: flex; align-items: center; gap: 8px;
+            transition: 0.2s; border: 2px solid transparent;
+        }
+        .back-home-btn:hover { border-color: var(--primary); transform: translateX(-5px); }
 
-        .brand { font-size: 22px; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 10px; }
-        .nav-btn {
-            border: none; padding: 10px 20px; border-radius: 50px; font-weight: 600; cursor: pointer; transition: 0.2s;
-            display: flex; align-items: center; gap: 6px;
+        .header-actions { display: flex; gap: 10px; }
+        .action-pill {
+            background: white; padding: 10px 20px; border-radius: 50px; border: none;
+            cursor: pointer; font-weight: 600; box-shadow: var(--shadow); transition: 0.2s;
         }
-        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3); }
-        .btn-ghost { background: #f1f2f6; color: var(--text-sub); }
-        .btn-ghost:hover { background: #dfe4ea; }
+        .action-pill.primary { background: var(--primary); color: white; }
+        .action-pill:hover { transform: translateY(-2px); }
 
         /* --- 布局 --- */
         .layout-grid {
             display: grid;
-            grid-template-columns: 300px 1fr 320px; /* 左中右 */
+            grid-template-columns: 320px 1fr 320px; /* 左侧加宽以容纳日历 */
             gap: 25px;
             max-width: 1400px;
             margin: 0 auto;
@@ -62,28 +59,37 @@
         }
 
         .card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            padding: 20px;
-            box-shadow: var(--shadow);
-            margin-bottom: 20px;
+            background: var(--card-bg); border-radius: var(--radius);
+            padding: 20px; box-shadow: var(--shadow); margin-bottom: 20px;
         }
         .card-header { font-weight: 700; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #f5f6fa; display: flex; justify-content: space-between; align-items: center; }
 
-        /* --- 左侧：统计与筛选 --- */
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: center; }
-        .stat-num { font-size: 20px; font-weight: 800; color: var(--primary); }
-        .stat-label { font-size: 12px; color: var(--text-sub); }
-        
+        /* --- 左侧：统计与日历 --- */
+        .stats-row { display: flex; justify-content: space-between; align-items: center; text-align: center; margin-bottom: 10px; }
+        .stat-box { flex: 1; }
+        .stat-num { font-size: 24px; font-weight: 800; color: var(--primary); line-height: 1; }
+        .stat-label { font-size: 12px; color: var(--text-sub); margin-top: 5px; }
+        .date-display { font-size: 16px; font-weight: bold; color: var(--text-main); background: #f1f2f6; padding: 5px 10px; border-radius: 10px; }
+
+        /* 日历样式 */
+        .calendar-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-weight: bold; font-size: 14px; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
+        .cal-day { 
+            aspect-ratio: 1; display: flex; align-items: center; justify-content: center; 
+            font-size: 12px; border-radius: 50%; color: #ccc; cursor: default;
+        }
+        .cal-day.active { background: #f1f2f6; color: var(--text-main); cursor: pointer; }
+        .cal-day.has-moment { background: var(--primary); color: white; font-weight: bold; box-shadow: 0 2px 5px rgba(108, 92, 231, 0.4); }
+        .cal-day.today { border: 2px solid var(--primary); }
+
+        /* 筛选器 */
         .filter-group { margin-bottom: 15px; }
         .filter-label { font-size: 12px; font-weight: bold; color: var(--text-sub); margin-bottom: 5px; display: block; }
         .tag-cloud { display: flex; flex-wrap: wrap; gap: 5px; }
         .filter-tag { padding: 4px 10px; background: #f1f2f6; border-radius: 12px; font-size: 12px; cursor: pointer; border: 1px solid transparent; }
         .filter-tag.active { background: var(--primary-light); color: white; border-color: var(--primary); }
         
-        select.filter-select {
-            width: 100%; padding: 8px; border-radius: 12px; border: 1px solid #dfe6e9; background: white;
-        }
+        select.filter-select { width: 100%; padding: 8px; border-radius: 12px; border: 1px solid #dfe6e9; background: white; }
 
         /* --- 中间：动态流 --- */
         .moment-item { animation: fadeIn 0.4s ease; }
@@ -103,6 +109,9 @@
         .m-imgs { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; margin-bottom: 12px; }
         .m-imgs img { width: 100%; height: 100px; object-fit: cover; border-radius: 12px; cursor: zoom-in; }
 
+        .m-likes-area { background: #f9f9f9; padding: 8px 12px; border-radius: 10px; margin-bottom: 10px; font-size: 13px; color: var(--primary); display: flex; align-items: center; gap: 5px; }
+        .like-icon { font-size: 14px; margin-right: 5px; }
+
         .m-actions { border-top: 1px solid #f5f6fa; padding-top: 10px; display: flex; gap: 15px; }
         .action-btn { background: none; border: none; cursor: pointer; color: var(--text-sub); display: flex; align-items: center; gap: 5px; font-size: 13px; transition: 0.2s; }
         .action-btn:hover { color: var(--primary); }
@@ -120,14 +129,11 @@
         .comment-input { flex: 1; border: 1px solid #eee; padding: 8px; border-radius: 20px; font-size: 12px; }
 
         /* --- 右侧：功能区 --- */
-        
-        /* 身份切换 */
         .identity-card { cursor: pointer; transition: 0.2s; border: 2px solid transparent; padding: 10px; border-radius: 15px; display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
         .identity-card:hover { background: #f5f6fa; }
         .identity-card.active { border-color: var(--primary); background: #f0edff; }
         .id-avatar-sm { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; display: flex; align-items: center; justify-content: center; background: #eee; font-size: 20px; }
 
-        /* 收藏夹入口 */
         .fav-folder-entry { 
             padding: 15px; background: linear-gradient(135deg, #ffeaa7, #fab1a0); 
             border-radius: 16px; cursor: pointer; color: #634200; font-weight: bold;
@@ -136,7 +142,6 @@
         }
         .fav-folder-entry:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(253, 203, 110, 0.4); }
 
-        /* 动态册管理 */
         .album-item { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee; font-size: 14px; }
         .album-del { color: var(--danger); cursor: pointer; font-size: 12px; }
 
@@ -162,8 +167,11 @@
             background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
             z-index: 3000; display: none; justify-content: center; align-items: center;
         }
-        .modal-content { background: white; padding: 25px; border-radius: 20px; width: 90%; max-width: 450px; animation: popIn 0.3s; }
+        .modal-content { background: white; padding: 25px; border-radius: 20px; width: 90%; max-width: 450px; position: relative; animation: popIn 0.3s; }
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        .modal-close-icon { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: #aaa; z-index: 10; }
+        .modal-close-icon:hover { color: #333; }
 
         .form-group { margin-bottom: 15px; }
         .form-label { display: block; margin-bottom: 5px; font-size: 12px; font-weight: bold; color: #888; }
@@ -173,6 +181,14 @@
         .search-group { display: flex; gap: 5px; margin-bottom: 10px; }
         .search-input { flex: 1; padding: 8px; border-radius: 10px; border: 1px solid #ddd; }
         .search-select { width: 80px; border-radius: 10px; border: 1px solid #ddd; }
+
+        /* Emoji和颜色选择器 */
+        .grid-selector { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-top: 5px; }
+        .emoji-opt { font-size: 24px; cursor: pointer; padding: 5px; border-radius: 8px; text-align: center; background: #f5f6fa; border: 2px solid transparent; }
+        .emoji-opt.selected { border-color: var(--primary); background: #e0dfff; }
+        
+        .color-opt { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
+        .color-opt.selected { border-color: #333; transform: scale(1.1); }
 
         /* 响应式 */
         @media (max-width: 900px) {
@@ -185,39 +201,52 @@
 <body>
 
     <!-- 顶部导航 -->
-    <nav class="nav-bar">
-        <div class="brand">
-            <span style="font-size: 24px;">🪐</span> 我的动态时空
+    <div class="top-nav">
+        <a href="index.html" class="back-home-btn">⬅ 返回首页</a>
+        
+        <div class="header-actions">
+            <button class="action-pill" onclick="showResetModal()">⚠️ 重置数据</button>
+            <button class="action-pill primary" onclick="openEditor()">✨ 发布动态</button>
         </div>
-        <div style="display: flex; gap: 10px;">
-            <a href="index.html" style="text-decoration:none;"><button class="nav-btn btn-ghost">🏠 返回首页</button></a>
-            <button class="nav-btn btn-ghost" onclick="resetData()">⚠️ 重置数据</button>
-            <button class="nav-btn btn-primary" onclick="openEditor()">✨ 发布动态</button>
-        </div>
-    </nav>
+    </div>
 
     <!-- 主布局 -->
     <div class="layout-grid">
         
-        <!-- 左侧：筛选与统计 -->
+        <!-- 左侧 -->
         <aside>
+            <!-- 第一行：总动态、点赞、日期 -->
             <div class="card">
-                <div class="card-header">📅 今日概览</div>
-                <div style="text-align: center; font-size: 24px; font-weight: bold; color: var(--text-main); margin-bottom: 15px;" id="date-display">
-                    --
-                </div>
-                <div class="stat-grid">
-                    <div>
+                <div class="stats-row">
+                    <div class="stat-box">
                         <div class="stat-num" id="stat-total">0</div>
                         <div class="stat-label">总动态</div>
                     </div>
-                    <div>
+                    <div class="stat-box">
                         <div class="stat-num" id="stat-favs">0</div>
                         <div class="stat-label">总收藏</div>
                     </div>
                 </div>
+                <div style="text-align:center; margin-top:15px;">
+                    <span class="date-display" id="date-display">2026/01/01</span>
+                </div>
             </div>
 
+            <!-- 第二行：月历 -->
+            <div class="card">
+                <div class="calendar-header">
+                    <span id="cal-month-year">2026年3月</span>
+                    <!-- 简单起见，仅展示当月 -->
+                </div>
+                <div style="display:grid; grid-template-columns:repeat(7,1fr); text-align:center; font-size:10px; color:#999; margin-bottom:5px;">
+                    <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+                </div>
+                <div class="calendar-grid" id="calendar-grid">
+                    <!-- JS 生成 -->
+                </div>
+            </div>
+
+            <!-- 第三行：搜索与筛选 -->
             <div class="card">
                 <div class="card-header">🔍 搜索</div>
                 <div class="search-group">
@@ -273,7 +302,7 @@
             <div class="card">
                 <div class="card-header">
                     <span>🎭 当前身份</span>
-                    <button class="nav-btn btn-ghost" style="padding: 4px 8px; font-size:12px;" onclick="openIdentityManager()">⚙️ 管理</button>
+                    <button class="action-pill" style="padding: 4px 10px; font-size:12px;" onclick="openIdentityManager()">⚙️ 管理</button>
                 </div>
                 <div id="identity-list-container">
                     <!-- 身份列表 -->
@@ -292,7 +321,7 @@
             <div class="card">
                 <div class="card-header">
                     <span>📚 动态册</span>
-                    <button class="nav-btn btn-ghost" style="padding: 4px 8px; font-size:12px;" onclick="addAlbum()">+ 新建</button>
+                    <button class="action-pill" style="padding: 4px 10px; font-size:12px;" onclick="addAlbum()">+ 新建</button>
                 </div>
                 <div id="album-list-container">
                     <!-- 动态册列表 -->
@@ -304,18 +333,17 @@
     <!-- 全屏编辑器 -->
     <div id="editor-screen" class="editor-fullscreen">
         <div class="editor-header">
+            <!-- 退出键在左上角 -->
+            <button class="back-home-btn" style="border:1px solid #eee; box-shadow:none;" onclick="closeEditor()">⬅ 退出编辑</button>
             <h2 style="margin:0;">📝 发布新动态</h2>
-            <div style="display:flex; gap:10px;">
-                <button class="nav-btn btn-ghost" onclick="closeEditor()">取消</button>
-                <button class="nav-btn btn-primary" onclick="publishMoment()">🚀 发布</button>
-            </div>
+            <button class="action-pill primary" onclick="publishMoment()">🚀 发布</button>
         </div>
         <div class="editor-body">
             <div class="editor-main">
                 <textarea id="edit-content" class="editor-text" placeholder="记录此刻的想法..."></textarea>
                 <div class="preview-area" id="edit-previews"></div>
                 <div style="margin-top:auto; padding-top:20px;">
-                    <button class="nav-btn btn-ghost" onclick="document.getElementById('edit-file').click()">📷 添加图片</button>
+                    <button class="action-pill" onclick="document.getElementById('edit-file').click()">📷 添加图片</button>
                     <input type="file" id="edit-file" hidden multiple accept="image/*" onchange="handleFiles(this)">
                 </div>
             </div>
@@ -359,12 +387,10 @@
     <!-- 收藏夹管理弹窗 -->
     <div id="fav-modal" class="modal-overlay">
         <div class="modal-content">
-            <div class="card-header">
-                📂 收藏夹管理
-                <span onclick="document.getElementById('fav-modal').style.display='none'" style="cursor:pointer">✕</span>
-            </div>
+            <div class="modal-close-icon" onclick="document.getElementById('fav-modal').style.display='none'">×</div>
+            <h3>📂 收藏夹管理</h3>
             <div id="fav-folder-list" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px;"></div>
-            <button class="nav-btn btn-ghost" style="width:100%" onclick="createNewFavFolder()">+ 新建收藏夹</button>
+            <button class="action-pill" style="width:100%" onclick="createNewFavFolder()">+ 新建收藏夹</button>
         </div>
     </div>
 
@@ -373,57 +399,77 @@
         <div class="modal-content">
             <h3 style="margin-top:0">⭐ 收藏到...</h3>
             <div id="save-to-list" style="display:flex; flex-direction:column; gap:8px; margin-bottom:15px;"></div>
-            <button class="nav-btn btn-ghost" onclick="document.getElementById('save-to-modal').style.display='none'">取消</button>
+            <button class="action-pill" onclick="document.getElementById('save-to-modal').style.display='none'">取消</button>
         </div>
     </div>
 
     <!-- 身份管理弹窗 -->
     <div id="identity-modal" class="modal-overlay">
         <div class="modal-content">
+            <div class="modal-close-icon" onclick="document.getElementById('identity-modal').style.display='none'">×</div>
             <h3 style="margin-top:0">⚙️ 管理身份</h3>
-            <div id="manage-id-list" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px;"></div>
+            <div id="manage-id-list" style="max-height: 200px; overflow-y: auto; margin-bottom: 15px;"></div>
+            
             <div style="border-top: 1px solid #eee; padding-top: 15px;">
                 <h4 style="margin:0 0 10px 0">新建身份</h4>
                 <input type="text" id="new-id-name" class="form-input" placeholder="昵称" style="margin-bottom:5px;">
                 <input type="text" id="new-id-bio" class="form-input" placeholder="一句话简介" style="margin-bottom:5px;">
+                
                 <div style="display:flex; gap:10px; margin-bottom:10px;">
                     <select id="new-id-type" class="form-input" onchange="toggleAvatarInput()">
                         <option value="emoji">Emoji头像</option>
                         <option value="img">图片头像</option>
                     </select>
-                    <input type="text" id="new-id-emoji" class="form-input" placeholder="输入Emoji (如 🦁)" value="👤">
+                    <!-- 图片上传区 -->
                     <input type="file" id="new-id-file" class="form-input" style="display:none;" accept="image/*">
                 </div>
-                <button class="nav-btn btn-primary" style="width:100%" onclick="createNewIdentity()">创建</button>
+
+                <!-- Emoji选择区 -->
+                <div id="emoji-select-area">
+                    <div style="font-size:12px; font-weight:bold; color:#888;">选择Emoji</div>
+                    <div class="grid-selector" id="emoji-grid">
+                        <!-- JS 生成 -->
+                    </div>
+                    <div style="font-size:12px; font-weight:bold; color:#888; margin-top:5px;">选择背景色</div>
+                    <div class="grid-selector" id="color-grid">
+                        <!-- JS 生成 -->
+                    </div>
+                </div>
+
+                <button class="action-pill primary" style="width:100%; margin-top:10px;" onclick="createNewIdentity()">创建</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 重置密码弹窗 -->
+    <div id="reset-modal" class="modal-overlay">
+        <div class="modal-content" style="text-align:center;">
+             <div class="modal-close-icon" onclick="document.getElementById('reset-modal').style.display='none'">×</div>
+            <h3>⚠️ 管理员权限验证</h3>
+            <p style="color:#666; font-size:13px;">请输入管理员密码以重置所有数据</p>
+            <input type="password" id="admin-pwd" class="form-input" placeholder="输入密码" style="text-align:center; font-size:20px; letter-spacing:5px;">
+            <div style="margin-top:20px; display:flex; gap:10px;">
+                <button class="action-pill" style="flex:1" onclick="document.getElementById('reset-modal').style.display='none'">取消</button>
+                <button class="action-pill primary" style="flex:1; background:var(--danger);" onclick="checkResetPassword()">确认重置</button>
             </div>
         </div>
     </div>
 
     <script>
-        // === 数据结构定义 ===
-        const DB_KEY = 'moments_db_v4';
+        // === 数据结构 ===
+        const DB_KEY = 'moments_db_v5';
         
         let db = {
             currentIdentityId: 'default',
             identities: [
-                { id: 'default', name: '我 (默认)', avatar: '👤', type: 'emoji', bio: '原本的我', isDefault: true }
+                { id: 'default', name: '我 (默认)', avatar: '👤', type: 'emoji', color:'#eee', bio: '原本的我', isDefault: true }
             ],
-            // 收藏夹 (全局，不分身份)
             favoriteFolders: [
                 { id: 'fav_default', name: '默认收藏夹', isDefault: true, locked: true },
-                { id: 'fav_all', name: '全部收藏', isDefault: true, locked: true } // 这是一个虚拟文件夹逻辑，实际存储时不单独存
+                { id: 'fav_all', name: '全部收藏', isDefault: true, locked: true } 
             ],
             albums: ['默认动态册'],
             moments: [] 
-            /* Moment结构: 
-               { 
-                 id, content, images[], time, identityId, 
-                 mood, weather, location, tags[], album,
-                 likes: ['id1', 'id2'], // 存点赞的身份ID
-                 comments: [{ identityId, content, time }],
-                 savedTo: ['fav_default'] // 存所在的收藏夹ID
-               }
-            */
         };
 
         let tempImages = [];
@@ -433,13 +479,24 @@
             mood: '',
             weather: '',
             tag: '',
-            currentFolderId: null // 当前查看的收藏夹ID，null代表看全部动态
+            currentFolderId: null 
         };
+
+        // Emoji & Color 预设
+        const EMOJI_LIST = ['😊','😎','🦁','🐱','🐶','🦊','🐼','🐸','🐷','🦄','👽','🤖'];
+        const COLOR_LIST = ['#ff7675','#fdcb6e','#ffeaa7','#55efc4','#81ecec','#74b9ff','#a29bfe','#dfe6e9'];
+        let selectedEmoji = EMOJI_LIST[0];
+        let selectedColor = COLOR_LIST[0];
 
         // === 初始化 ===
         window.onload = () => {
             loadData();
-            document.getElementById('date-display').innerText = new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+            // 左上角日期更新
+            const now = new Date();
+            const dateStr = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 ${['周日','周一','周二','周三','周四','周五','周六'][now.getDay()]}`;
+            document.getElementById('date-display').innerText = dateStr;
+            document.getElementById('cal-month-year').innerText = `${now.getFullYear()}年${now.getMonth()+1}月`;
+            
             renderAll();
         };
 
@@ -451,12 +508,22 @@
         function saveData() {
             localStorage.setItem(DB_KEY, JSON.stringify(db));
             renderStats();
+            renderCalendar(); // 数据变动更新日历
         }
 
-        function resetData() {
-            if(confirm('确定重置所有数据吗？')) {
+        function showResetModal() {
+            document.getElementById('reset-modal').style.display = 'flex';
+            document.getElementById('admin-pwd').value = '';
+        }
+
+        function checkResetPassword() {
+            const pwd = document.getElementById('admin-pwd').value;
+            if(pwd === '597') {
                 localStorage.removeItem(DB_KEY);
+                alert('数据已重置');
                 location.reload();
+            } else {
+                alert('密码错误');
             }
         }
 
@@ -466,6 +533,42 @@
             renderFeed();
             renderStats();
             renderTagsCloud();
+            renderCalendar();
+        }
+
+        // === 月历功能 ===
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            grid.innerHTML = '';
+            
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const firstDay = new Date(year, month, 1).getDay(); // 0 is Sunday
+            
+            // 获取本月有动态的日子
+            const activeDays = new Set(db.moments.map(m => {
+                const d = new Date(m.time);
+                if(d.getFullYear() === year && d.getMonth() === month) return d.getDate();
+                return -1;
+            }));
+
+            // 填充前面的空白
+            for(let i=0; i<firstDay; i++) {
+                grid.innerHTML += `<div></div>`;
+            }
+
+            for(let d=1; d<=daysInMonth; d++) {
+                const isToday = d === now.getDate();
+                const hasMoment = activeDays.has(d);
+                grid.innerHTML += `
+                    <div class="cal-day ${isToday?'today':''} ${hasMoment?'has-moment':''}">
+                        ${d}
+                    </div>
+                `;
+            }
         }
 
         // === 身份管理 ===
@@ -484,21 +587,22 @@
 
         function renderAvatar(identity, className) {
             if (identity.type === 'img') {
-                return `<img src="${identity.avatar}" class="${className}">`;
+                return `<img src="${identity.avatar}" class="${className}" style="border:2px solid ${identity.color||'#eee'}">`;
             }
-            return `<div class="${className}">${identity.avatar}</div>`;
+            return `<div class="${className}" style="background:${identity.color||'#eee'}">${identity.avatar}</div>`;
         }
 
         function switchIdentity(id) {
             db.currentIdentityId = id;
             renderIdentitySwitcher();
-            // 切换身份后，点赞状态可能会变，所以重绘Feed
             renderFeed(); 
         }
 
         function openIdentityManager() {
             document.getElementById('identity-modal').style.display = 'flex';
             renderManageIdList();
+            renderEmojiGrid();
+            renderColorGrid();
         }
 
         function renderManageIdList() {
@@ -514,14 +618,34 @@
             `).join('');
         }
 
+        function renderEmojiGrid() {
+            const grid = document.getElementById('emoji-grid');
+            grid.innerHTML = EMOJI_LIST.map(e => `
+                <div class="emoji-opt ${selectedEmoji === e ? 'selected' : ''}" onclick="selectEmoji('${e}')">${e}</div>
+            `).join('');
+        }
+
+        function renderColorGrid() {
+            const grid = document.getElementById('color-grid');
+            grid.innerHTML = COLOR_LIST.map(c => `
+                <div class="color-opt ${selectedColor === c ? 'selected' : ''}" style="background:${c}" onclick="selectColor('${c}')"></div>
+            `).join('');
+        }
+
+        function selectEmoji(e) { selectedEmoji = e; renderEmojiGrid(); }
+        function selectColor(c) { selectedColor = c; renderColorGrid(); }
+
         function toggleAvatarInput() {
             const type = document.getElementById('new-id-type').value;
+            const emojiArea = document.getElementById('emoji-select-area');
+            const fileInput = document.getElementById('new-id-file');
+            
             if(type === 'emoji') {
-                document.getElementById('new-id-emoji').style.display = 'block';
-                document.getElementById('new-id-file').style.display = 'none';
+                emojiArea.style.display = 'block';
+                fileInput.style.display = 'none';
             } else {
-                document.getElementById('new-id-emoji').style.display = 'none';
-                document.getElementById('new-id-file').style.display = 'block';
+                emojiArea.style.display = 'none';
+                fileInput.style.display = 'block';
             }
         }
 
@@ -534,11 +658,11 @@
 
             const newId = {
                 id: 'id_' + Date.now(),
-                name, bio, type, isDefault: false
+                name, bio, type, color: selectedColor, isDefault: false
             };
 
             if(type === 'emoji') {
-                newId.avatar = document.getElementById('new-id-emoji').value || '🙂';
+                newId.avatar = selectedEmoji;
                 finishCreateId(newId);
             } else {
                 const file = document.getElementById('new-id-file').files[0];
@@ -550,9 +674,7 @@
                     };
                     reader.readAsDataURL(file);
                 } else {
-                    newId.type = 'emoji'; // fallback
-                    newId.avatar = '👤';
-                    finishCreateId(newId);
+                    alert('请选择一张图片');
                 }
             }
         }
@@ -562,18 +684,36 @@
             saveData();
             renderIdentitySwitcher();
             renderManageIdList();
-            // 清空表单
             document.getElementById('new-id-name').value = '';
             document.getElementById('new-id-bio').value = '';
         }
 
         function deleteIdentity(id) {
-            if(confirm('确定删除该身份吗？该身份产生的点赞和评论将保留，但不再关联用户。')) {
+            if(confirm('确定删除该身份吗？该身份产生的点赞和动态将归属为默认身份。')) {
+                // 1. 动态归属转移
+                db.moments.forEach(m => {
+                    if(m.identityId === id) m.identityId = 'default';
+                    // 2. 评论归属转移
+                    if(m.comments) {
+                        m.comments.forEach(c => {
+                            if(c.identityId === id) c.identityId = 'default';
+                        });
+                    }
+                    // 3. 点赞归属转移 (如果有重复点赞，简单处理为替换)
+                    if(m.likes) {
+                        m.likes = m.likes.map(lid => lid === id ? 'default' : lid);
+                        // 去重
+                        m.likes = [...new Set(m.likes)];
+                    }
+                });
+
                 db.identities = db.identities.filter(i => i.id !== id);
                 if(db.currentIdentityId === id) db.currentIdentityId = 'default';
+                
                 saveData();
                 renderIdentitySwitcher();
                 renderManageIdList();
+                renderFeed();
             }
         }
 
@@ -618,7 +758,6 @@
         function renderFavFolderList() {
             const list = document.getElementById('fav-folder-list');
             
-            // 渲染固定项
             let html = `
                 <div class="identity-card" onclick="viewFavFolder(null)">
                     <div class="id-avatar-sm">📑</div>
@@ -627,7 +766,7 @@
             `;
 
             db.favoriteFolders.forEach(f => {
-                if(f.id === 'fav_all') return; // 跳过虚拟文件夹
+                if(f.id === 'fav_all') return; 
                 html += `
                     <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:5px;">
                         <div class="identity-card" style="flex:1; margin-bottom:0;" onclick="viewFavFolder('${f.id}')">
@@ -658,7 +797,6 @@
         function deleteFavFolder(id) {
             if(confirm('删除收藏夹？其中的动态不会被删除，只是移出该收藏夹。')) {
                 db.favoriteFolders = db.favoriteFolders.filter(f => f.id !== id);
-                // 移除引用
                 db.moments.forEach(m => {
                     if(m.savedTo) {
                         m.savedTo = m.savedTo.filter(fid => fid !== id);
@@ -671,12 +809,12 @@
 
         function viewFavFolder(folderId) {
             viewState.currentFolderId = folderId;
-            viewState.search = ''; // 清空搜索以免混淆
+            viewState.search = ''; 
             document.getElementById('fav-modal').style.display = 'none';
             renderFeed();
         }
 
-        // === 动态发布 (全屏编辑器) ===
+        // === 动态发布 ===
         function openEditor() {
             document.getElementById('editor-screen').classList.add('show');
             tempImages = [];
@@ -685,7 +823,6 @@
             document.getElementById('edit-tags').value = '';
             document.getElementById('edit-location').value = '';
             
-            // 填充下拉
             const idSelect = document.getElementById('edit-identity');
             idSelect.innerHTML = db.identities.map(i => `<option value="${i.id}">${i.name}</option>`).join('');
             idSelect.value = db.currentIdentityId;
@@ -737,7 +874,7 @@
             db.moments.unshift(moment);
             saveData();
             closeEditor();
-            viewState.currentFolderId = null; // 重置视图看最新
+            viewState.currentFolderId = null; 
             renderFeed();
         }
 
@@ -747,7 +884,7 @@
             viewState.searchType = document.getElementById('search-type').value;
             viewState.mood = document.getElementById('filter-mood').value;
             viewState.weather = document.getElementById('filter-weather').value;
-            viewState.currentFolderId = null; // 搜索时退出收藏夹视图
+            viewState.currentFolderId = null; 
             renderFeed();
         }
 
@@ -767,23 +904,18 @@
             ).join('');
         }
 
-        // === 渲染动态流 (核心) ===
+        // === 渲染动态流 ===
         function renderFeed() {
             const container = document.getElementById('moments-container');
             
-            // 1. 基础筛选
             let list = db.moments.filter(m => {
-                // 收藏夹筛选
                 if (viewState.currentFolderId) {
                     if (!m.savedTo || !m.savedTo.includes(viewState.currentFolderId)) return false;
                 }
-                
-                // 属性筛选
                 if (viewState.mood && m.mood !== viewState.mood) return false;
                 if (viewState.weather && m.weather !== viewState.weather) return false;
                 if (viewState.tag && (!m.tags || !m.tags.includes(viewState.tag))) return false;
 
-                // 搜索
                 if (viewState.search) {
                     const contentMatch = m.content.toLowerCase().includes(viewState.search);
                     const commentMatch = m.comments.some(c => c.content.toLowerCase().includes(viewState.search));
@@ -792,7 +924,6 @@
                     if (viewState.searchType === 'comment' && !commentMatch) return false;
                     if (viewState.searchType === 'all' && !contentMatch && !commentMatch) return false;
                 }
-                
                 return true;
             });
 
@@ -813,6 +944,16 @@
                 const dateStr = new Date(m.time).toLocaleString();
                 const isLiked = m.likes.includes(db.currentIdentityId);
                 const isSaved = m.savedTo && m.savedTo.length > 0;
+                
+                // 微信风格点赞昵称列表
+                let likesHtml = '';
+                if(m.likes && m.likes.length > 0) {
+                    const likeNames = m.likes.map(lid => {
+                        const u = db.identities.find(i => i.id === lid);
+                        return u ? u.name : '未知';
+                    }).join(', ');
+                    likesHtml = `<div class="m-likes-area"><span class="like-icon">❤️</span> ${likeNames}</div>`;
+                }
 
                 const card = document.createElement('div');
                 card.className = 'card moment-item';
@@ -834,12 +975,15 @@
                     <div style="display:flex; gap:10px; margin-bottom:10px;">
                         ${m.tags.map(t=>`<span style="font-size:12px; color:var(--primary)">#${t}</span>`).join('')}
                     </div>
+                    
+                    ${likesHtml}
+
                     <div class="m-actions">
                         <button class="action-btn ${isLiked ? 'active' : ''}" onclick="toggleLike(${m.id})">
-                            ${isLiked ? '❤️' : '🤍'} ${m.likes.length}
+                            ${isLiked ? '❤️' : '🤍'} 点赞
                         </button>
                         <button class="action-btn" onclick="toggleCommentSection(${m.id})">
-                            💬 ${m.comments.length}
+                            💬 评论 (${m.comments.length})
                         </button>
                         <button class="action-btn ${isSaved ? 'fav-active' : ''}" onclick="openSaveModal(${m.id})">
                             ${isSaved ? '⭐ 已藏' : '☆ 收藏'}
@@ -847,14 +991,13 @@
                         <button class="action-btn" onclick="deleteMoment(${m.id})" style="margin-left:auto;">🗑️</button>
                     </div>
                     
-                    <!-- 评论区 -->
                     <div id="comment-box-${m.id}" class="comment-section">
                         <div id="comment-list-${m.id}">
                             ${renderComments(m.comments)}
                         </div>
                         <div class="comment-input-box">
                             <input type="text" id="input-${m.id}" class="comment-input" placeholder="使用当前身份评论...">
-                            <button class="nav-btn btn-primary" style="padding:5px 12px; font-size:12px;" onclick="postComment(${m.id})">发送</button>
+                            <button class="action-pill primary" style="padding:5px 12px; font-size:12px;" onclick="postComment(${m.id})">发送</button>
                         </div>
                     </div>
                 `;
@@ -874,7 +1017,7 @@
                 m.likes.push(uid);
             }
             saveData();
-            renderFeed(); // 刷新显示红心
+            renderFeed(); 
         }
 
         function toggleCommentSection(mid) {
@@ -915,11 +1058,9 @@
             
             input.value = '';
             saveData();
-            // 只局部刷新评论区
             document.getElementById(`comment-list-${mid}`).innerHTML = renderComments(m.comments);
         }
 
-        // === 收藏互动 ===
         let tempSaveMomentId = null;
         function openSaveModal(mid) {
             tempSaveMomentId = mid;
@@ -951,9 +1092,9 @@
                 m.savedTo.push(fid);
             }
             saveData();
-            openSaveModal(tempSaveMomentId); // 刷新弹窗状态
+            openSaveModal(tempSaveMomentId); 
             renderStats();
-            renderFeed(); // 刷新列表星星状态
+            renderFeed(); 
         }
 
         function deleteMoment(mid) {
@@ -962,6 +1103,7 @@
                 saveData();
                 renderFeed();
                 renderStats();
+                renderCalendar();
             }
         }
 
