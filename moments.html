@@ -3,719 +3,951 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的超级便签</title>
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked@4.0.2/marked.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <title>我的动态时空 Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-start: #667eea;
-            --bg-end: #764ba2;
-            --card-bg: rgba(255,255,255,0.15);
-            --text: white;
-            --border: rgba(255,255,255,0.2);
-            --hover: rgba(255,255,255,0.25);
-            --accent: #FFD700;
-            --editor-bg: #ffffff;
-            --editor-text: #333333;
+            --primary: #6C5CE7;
+            --primary-light: #A29BFE;
+            --bg: #dfe6e9;
+            --card-bg: #ffffff;
+            --text-main: #2d3436;
+            --text-sub: #636e72;
+            --danger: #ff7675;
+            --radius: 20px;
+            --shadow: 0 8px 30px rgba(0,0,0,0.08);
         }
 
-        body.night-mode {
-            --bg-start: #1a1a2e;
-            --bg-end: #16213e;
-            --card-bg: rgba(0,0,0,0.4);
-            --text: #e0e0e0;
-            --border: rgba(255,255,255,0.1);
-            --hover: rgba(255,255,255,0.1);
-            --editor-bg: #1e1e1e;
-            --editor-text: #d4d4d4;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
-        
+        * { box-sizing: border-box; outline: none; }
         body {
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
-            min-height: 100vh;
-            color: var(--text);
-            padding: 20px;
-            overflow: hidden; /* 防止双滚动条 */
+            font-family: 'Nunito', 'Noto Sans SC', sans-serif;
+            background: var(--bg);
+            margin: 0; padding: 20px; color: var(--text-main); min-height: 100vh;
         }
 
         /* 顶部导航 */
-        .top-bar {
+        .top-nav {
             display: flex; justify-content: space-between; align-items: center;
-            background: var(--card-bg); backdrop-filter: blur(10px);
-            padding: 12px 25px; border-radius: 16px; border: 1px solid var(--border);
-            margin-bottom: 20px;
+            margin-bottom: 20px; max-width: 1400px; margin: 0 auto 20px auto;
         }
-        .nav-btn {
-            background: rgba(255,255,255,0.2); border: 1px solid transparent;
-            color: var(--text); padding: 8px 16px; border-radius: 12px; cursor: pointer;
-            transition: 0.2s; font-size: 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;
+        .back-home-btn {
+            background: white; padding: 10px 20px; border-radius: 50px; text-decoration: none;
+            color: var(--text-main); font-weight: bold; box-shadow: var(--shadow);
+            display: flex; align-items: center; gap: 8px; transition: 0.2s;
         }
-        .nav-btn:hover { background: var(--hover); border-color: var(--accent); }
-        .nav-right { display: flex; gap: 10px; }
+        .back-home-btn:hover { transform: translateX(-5px); }
 
-        /* 主布局 */
-        .main-layout { display: flex; gap: 20px; height: calc(100vh - 100px); }
-        
-        /* 左侧边栏 */
-        .sidebar {
-            width: 260px; background: var(--card-bg); backdrop-filter: blur(10px);
-            border-radius: 20px; border: 1px solid var(--border); padding: 15px;
-            display: flex; flex-direction: column;
+        .action-pill {
+            background: white; padding: 10px 20px; border-radius: 50px; border: none;
+            cursor: pointer; font-weight: 600; box-shadow: var(--shadow); transition: 0.2s;
         }
-        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .folder-list { flex: 1; overflow-y: auto; list-style: none; }
-        .folder-item {
-            padding: 10px; border-radius: 10px; cursor: pointer; display: flex; justify-content: space-between;
-            align-items: center; margin-bottom: 5px; transition: 0.2s;
-        }
-        .folder-item:hover { background: var(--hover); }
-        .folder-item.active { background: var(--accent); color: #333; font-weight: bold; }
-        .folder-count { font-size: 12px; opacity: 0.7; background: rgba(0,0,0,0.1); padding: 2px 6px; border-radius: 10px; }
+        .action-pill.primary { background: var(--primary); color: white; }
+        .action-pill:hover { transform: translateY(-2px); }
+        .action-pill:disabled { opacity: 0.6; cursor: not-allowed; }
 
-        /* 右侧内容 */
-        .content-area {
-            flex: 1; background: var(--card-bg); backdrop-filter: blur(10px);
-            border-radius: 20px; border: 1px solid var(--border); padding: 20px;
-            display: flex; flex-direction: column; overflow: hidden;
+        /* 布局 */
+        .layout-grid {
+            display: grid; grid-template-columns: 320px 1fr 320px; gap: 25px;
+            max-width: 1400px; margin: 0 auto; align-items: start;
         }
-        .notes-toolbar { display: flex; justify-content: space-between; margin-bottom: 15px; }
-        .notes-grid {
-            flex: 1; overflow-y: auto; display: grid; gap: 15px;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            align-content: start; padding-bottom: 20px;
+
+        .card {
+            background: var(--card-bg); border-radius: var(--radius);
+            padding: 20px; box-shadow: var(--shadow); margin-bottom: 20px;
         }
+        .card-header { font-weight: 700; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #f5f6fa; display: flex; justify-content: space-between; align-items: center; }
+
+        /* 左侧 */
+        .stats-row { display: flex; justify-content: space-between; text-align: center; margin-bottom: 10px; }
+        .stat-num { font-size: 24px; font-weight: 800; color: var(--primary); }
+        .date-display { font-size: 14px; background: #f1f2f6; padding: 5px 10px; border-radius: 10px; display: block; text-align: center; margin-top: 10px;}
+
+        /* 日历 */
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
+        .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 12px; border-radius: 50%; color: #ccc; }
+        .cal-day.has-moment { background: var(--primary); color: white; font-weight: bold; }
+        .cal-day.today { border: 2px solid var(--primary); color: var(--primary); }
+
+        /* 筛选器 */
+        .filter-group { margin-bottom: 15px; }
+        .filter-label { font-size: 12px; font-weight: bold; color: var(--text-sub); margin-bottom: 5px; display: block; }
+        select.filter-select { width: 100%; padding: 8px; border-radius: 12px; border: 1px solid #dfe6e9; background: white; }
+        .tag-cloud { display: flex; flex-wrap: wrap; gap: 5px; }
+        .filter-tag { padding: 4px 10px; background: #f1f2f6; border-radius: 12px; font-size: 12px; cursor: pointer; }
+        .filter-tag.active { background: var(--primary-light); color: white; }
+
+        /* 中间：动态 */
+        .moment-item { animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .m-header { display: flex; gap: 12px; margin-bottom: 12px; }
+        .m-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; display: flex; align-items: center; justify-content: center; font-size: 24px; background: #f1f2f6; border: 2px solid transparent; }
+        .m-info h4 { margin: 0; font-size: 15px; }
+        .m-badges { display: flex; gap: 5px; margin-top: 5px; flex-wrap: wrap; }
+        .m-badge { font-size: 10px; padding: 2px 6px; background: #f1f2f6; border-radius: 4px; color: var(--text-sub); }
+        .m-content { font-size: 15px; line-height: 1.6; margin-bottom: 12px; white-space: pre-wrap; }
+        .m-imgs { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; margin-bottom: 12px; }
+        .m-imgs img { width: 100%; height: 100px; object-fit: cover; border-radius: 12px; cursor: zoom-in; }
+        .m-likes-area { background: #f9f9f9; padding: 8px 12px; border-radius: 10px; margin-bottom: 10px; font-size: 13px; color: var(--primary); display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+        .m-actions { border-top: 1px solid #f5f6fa; padding-top: 10px; display: flex; gap: 15px; }
+        .action-btn { background: none; border: none; cursor: pointer; color: var(--text-sub); display: flex; align-items: center; gap: 5px; font-size: 13px; transition: 0.2s; }
+        .action-btn.active { color: var(--danger); }
+        .action-btn.fav-active { color: #f1c40f; }
+
+        /* 评论区 */
+        .comment-section { background: #f9f9f9; padding: 10px; border-radius: 12px; margin-top: 10px; display: none; }
+        .comment-section.show { display: block; }
+        .comment-item { display: flex; gap: 8px; margin-bottom: 8px; font-size: 13px; }
+        .c-avatar { width: 24px; height: 24px; border-radius: 50%; background: #ddd; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+        .comment-input-box { display: flex; gap: 5px; margin-top: 10px; }
+        .comment-input { flex: 1; border: 1px solid #eee; padding: 8px; border-radius: 20px; font-size: 12px; }
+
+        /* 右侧 */
+        .identity-card { cursor: pointer; padding: 10px; border-radius: 15px; display: flex; align-items: center; gap: 10px; margin-bottom: 8px; border: 2px solid transparent; transition: 0.2s; }
+        .identity-card:hover { background: #f5f6fa; }
+        .identity-card.active { border-color: var(--primary); background: #f0edff; }
+        .id-avatar-sm { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; display: flex; align-items: center; justify-content: center; background: #eee; font-size: 20px; }
         
-        /* 便签卡片 */
-        .note-card {
-            background: rgba(255,255,255,0.1); border: 1px solid var(--border);
-            border-radius: 12px; padding: 15px; cursor: pointer; transition: 0.2s;
-            position: relative; height: 180px; display: flex; flex-direction: column;
-        }
-        .note-card:hover { transform: translateY(-3px); border-color: var(--accent); background: rgba(255,255,255,0.2); }
-        .note-title { font-weight: bold; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .note-preview { font-size: 12px; color: rgba(255,255,255,0.7); flex: 1; overflow: hidden; line-height: 1.5; }
-        .note-meta { font-size: 10px; opacity: 0.6; margin-top: 10px; display: flex; justify-content: space-between; }
-        .note-badge { position: absolute; top: 10px; right: 10px; font-size: 12px; }
-        .drag-handle { cursor: move; padding: 5px; opacity: 0; position: absolute; top: 5px; right: 5px; }
-        .note-card:hover .drag-handle { opacity: 1; }
+        .fav-folder-entry { padding: 15px; background: linear-gradient(135deg, #ffeaa7, #fab1a0); border-radius: 16px; cursor: pointer; color: #634200; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .album-item { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee; font-size: 14px; }
 
         /* 全屏编辑器 */
-        .editor-modal {
+        .editor-fullscreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--editor-bg); color: var(--editor-text); z-index: 2000;
-            display: none; flex-direction: column; animation: slideUp 0.3s;
+            background: white; z-index: 2000; display: none; flex-direction: column;
         }
-        .editor-modal.show { display: flex; }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .editor-fullscreen.show { display: flex; }
+        .editor-header { padding: 15px 30px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .editor-body { flex: 1; display: flex; padding: 30px; gap: 40px; max-width: 1200px; margin: 0 auto; width: 100%; overflow-y: auto; }
+        .editor-main { flex: 2; display: flex; flex-direction: column; }
+        .editor-side { flex: 1; background: #f9f9f9; padding: 25px; border-radius: 20px; display: flex; flex-direction: column; gap: 20px; height: fit-content; }
+        .editor-text { flex: 1; border: none; font-size: 18px; resize: none; margin-bottom: 20px; min-height: 200px; font-family: inherit; }
+        .preview-area { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; }
+        .preview-img { height: 90px; border-radius: 10px; }
 
-        .editor-top {
-            padding: 10px 20px; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center;
-            background: var(--editor-bg);
-        }
-        .editor-toolbar-row {
-            padding: 8px 20px; background: #f5f5f5; border-bottom: 1px solid #ddd;
-            display: flex; gap: 5px; flex-wrap: wrap; align-items: center;
-        }
-        .night-mode .editor-toolbar-row { background: #2d2d2d; border-color: #444; }
-        
-        .toolbar-btn {
-            border: 1px solid transparent; background: none; padding: 6px; border-radius: 6px;
-            cursor: pointer; font-size: 16px; color: var(--editor-text);
-        }
-        .toolbar-btn:hover { background: rgba(0,0,0,0.1); }
-        
-        .editor-container {
-            flex: 1; position: relative; overflow: hidden; display: flex; justify-content: center;
-            /* 背景处理 */
-            background-size: cover; background-position: center; background-repeat: no-repeat;
-        }
-        #editor-content {
-            width: 100%; max-width: 850px; height: 100%; padding: 40px;
-            overflow-y: auto; outline: none; font-size: 16px; line-height: 1.8;
-            background: transparent; /* 为了显示底层背景 */
-        }
-        
-        /* 阅读模式 */
-        .reading-mode .editor-top, .reading-mode .editor-toolbar-row { display: none; }
-        .reading-mode #editor-content { max-width: 900px; padding: 60px; font-size: 18px; }
-        .exit-read-btn {
-            position: fixed; bottom: 20px; right: 20px; padding: 10px 20px;
-            background: rgba(0,0,0,0.5); color: white; border-radius: 20px; cursor: pointer; display: none; z-index: 2100;
-        }
-        .reading-mode .exit-read-btn { display: block; }
-
-        /* Checkbox 样式 */
-        .todo-item { display: flex; align-items: center; gap: 8px; margin: 5px 0; }
-        .todo-item input { width: 16px; height: 16px; cursor: pointer; }
-        .todo-item.done span { text-decoration: line-through; color: #888; }
-
-        /* 模态框 */
+        /* 弹窗通用 */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); z-index: 3000; display: none;
-            justify-content: center; align-items: center;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
+            z-index: 3000; display: none; justify-content: center; align-items: center;
         }
-        .modal-box {
-            background: white; width: 400px; padding: 25px; border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: popIn 0.3s;
-            color: #333;
-        }
+        .modal-content { background: white; padding: 25px; border-radius: 20px; width: 90%; max-width: 450px; position: relative; animation: popIn 0.3s; max-height: 90vh; overflow-y: auto; }
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .close-btn { position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 20px; color: #999; }
+        .form-input { width: 100%; padding: 10px; border: 1px solid #eee; border-radius: 10px; margin-bottom: 10px; }
+        .form-label { font-size: 12px; font-weight: bold; color: #888; margin-bottom: 5px; display: block; }
+
+        /* Emoji 选择器 */
+        .color-picker-row { display: flex; gap: 5px; align-items: center; overflow-x: auto; padding: 5px 0; }
+        .color-circle { width: 24px; height: 24px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; flex-shrink: 0;}
+        .color-circle.selected { transform: scale(1.2); border-color: #333; }
         
-        .modal-header { font-weight: bold; font-size: 18px; margin-bottom: 15px; display: flex; justify-content: space-between; }
-        .modal-body input, .modal-body select { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; }
-        .modal-footer { text-align: right; margin-top: 15px; display: flex; gap: 10px; justify-content: flex-end; }
-        .btn-primary { background: #667eea; color: white; border: none; padding: 8px 20px; border-radius: 8px; cursor: pointer; }
-        .btn-cancel { background: #eee; color: #333; border: none; padding: 8px 20px; border-radius: 8px; cursor: pointer; }
+        .manage-list-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; background: #f9f9f9; margin-bottom: 5px; border-radius: 8px; }
 
-        /* 调整条 */
-        .range-wrap { display: flex; align-items: center; gap: 10px; margin: 10px 0; }
-        .range-wrap input { flex: 1; }
-
+        @media (max-width: 900px) { .layout-grid { grid-template-columns: 1fr; } .editor-body { flex-direction: column; padding: 15px; } }
     </style>
 </head>
 <body>
 
     <!-- 顶栏 -->
-    <div class="top-bar">
-        <div class="nav-right">
-            <a href="index.html" class="nav-btn">⬅ 返回首页</a>
-        </div>
-        <div class="nav-right">
-            <button class="nav-btn" onclick="openThemeSettings()">🎨 主题</button>
-            <button class="nav-btn" onclick="toggleNightMode()">🌙 夜间模式</button>
-            <button class="nav-btn" onclick="openSettings()">⚙️ 设置</button>
+    <div class="top-nav">
+        <a href="index.html" class="back-home-btn">⬅ 返回首页</a>
+        <div style="display: flex; gap: 10px;">
+            <button class="action-pill" onclick="openOptionsModal()">⚙️ 选项配置</button>
+            <button class="action-pill" onclick="showResetModal()">⚠️ 重置数据</button>
+            <button class="action-pill primary" onclick="openEditor()">✨ 发布动态</button>
         </div>
     </div>
 
-    <!-- 主界面 -->
-    <div class="main-layout">
-        <!-- 侧边栏：分组 -->
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <h3>📁 分组</h3>
-                <button class="nav-btn" style="padding:4px 8px;" onclick="addFolder()">+</button>
+    <div class="layout-grid">
+        <!-- 左侧 -->
+        <aside>
+            <div class="card">
+                <div class="stats-row">
+                    <div>
+                        <div class="stat-num" id="stat-total">0</div>
+                        <div style="font-size:12px; color:#888;">动态</div>
+                    </div>
+                    <div>
+                        <div class="stat-num" id="stat-likes">0</div>
+                        <div style="font-size:12px; color:#888;">获赞</div>
+                    </div>
+                </div>
+                <span class="date-display" id="date-display">--</span>
             </div>
-            <ul class="folder-list" id="folder-list">
-                <!-- JS生成 -->
-            </ul>
-            <div style="margin-top:auto; padding-top:10px; border-top:1px solid var(--border);">
-                <button class="nav-btn" style="width:100%" onclick="openRecycleBin()">🗑️ 回收箱</button>
-            </div>
-        </div>
 
-        <!-- 内容区 -->
-        <div class="content-area">
-            <div class="notes-toolbar">
-                <h2 id="current-folder-title">全部便签</h2>
-                <div style="display:flex; gap:10px;">
-                    <button class="nav-btn" style="background:var(--accent); color:#333; font-weight:bold;" onclick="createNote('text')">➕ 新建便签</button>
-                    <button class="nav-btn" style="background:#4CAF50; color:white;" onclick="createNote('markdown')">📝 新建Markdown</button>
+            <div class="card">
+                <div class="card-header"><span id="cal-title">月历</span></div>
+                <div style="display:grid; grid-template-columns:repeat(7,1fr); text-align:center; font-size:10px; color:#999; margin-bottom:5px;">
+                    <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+                </div>
+                <div class="calendar-grid" id="calendar-grid"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">🔍 搜索 & 筛选</div>
+                <div class="filter-group">
+                    <div style="display:flex; gap:5px; margin-bottom:10px;">
+                        <select id="search-type" class="filter-select" style="width:80px;">
+                            <option value="all">全部</option>
+                            <option value="content">内容</option>
+                            <option value="comment">评论</option>
+                        </select>
+                        <input type="text" id="search-input" class="form-input" style="margin:0;" placeholder="搜索..." oninput="renderFeed()">
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <span class="filter-label">心情</span>
+                    <select id="filter-mood" class="filter-select" onchange="renderFeed()"></select>
+                </div>
+                <div class="filter-group">
+                    <span class="filter-label">天气</span>
+                    <select id="filter-weather" class="filter-select" onchange="renderFeed()"></select>
+                </div>
+                <div class="filter-group">
+                    <span class="filter-label">标签</span>
+                    <div class="tag-cloud" id="filter-tags"></div>
                 </div>
             </div>
-            <div class="notes-grid" id="notes-grid">
-                <!-- JS生成 -->
+        </aside>
+
+        <!-- 中间 -->
+        <main id="moments-container"></main>
+
+        <!-- 右侧 -->
+        <aside>
+            <div class="card">
+                <div class="card-header">
+                    <span>🎭 身份管理</span>
+                    <button class="action-pill" style="padding:4px 8px; font-size:12px;" onclick="createNewIdentity()">+ 新建</button>
+                </div>
+                <div id="identity-list-container"></div>
             </div>
-        </div>
+
+            <div class="card">
+                <div class="card-header">⭐ 我的收藏</div>
+                <div class="fav-folder-entry" onclick="openFavModal()">📂 打开收藏夹</div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span>📚 动态册</span>
+                    <button class="action-pill" style="padding:4px 8px; font-size:12px;" onclick="addAlbum()">+ 新建</button>
+                </div>
+                <div id="album-list-container"></div>
+            </div>
+        </aside>
     </div>
 
     <!-- 全屏编辑器 -->
-    <div id="editor-modal" class="editor-modal">
-        <div class="editor-top">
-            <div style="display:flex; gap:10px; align-items:center;">
-                <button class="nav-btn" style="color:var(--editor-text); border:1px solid #ddd;" onclick="closeEditor()">⬅ 退出</button>
-                <input type="text" id="note-title" placeholder="无标题" style="border:none; background:transparent; font-size:18px; font-weight:bold; color:var(--editor-text); width:300px;">
+    <div id="editor-screen" class="editor-fullscreen">
+        <div class="editor-header">
+            <button class="back-home-btn" style="border:1px solid #eee; box-shadow:none;" onclick="closeEditor()">⬅ 退出编辑</button>
+            <h2 style="margin:0;">📝 发布新动态</h2>
+            <button class="action-pill primary" id="publish-btn" onclick="publishMoment()">🚀 发布</button>
+        </div>
+        <div class="editor-body">
+            <div class="editor-main">
+                <textarea id="edit-content" class="editor-text" placeholder="记录此刻的想法..."></textarea>
+                <div class="preview-area" id="edit-previews"></div>
+                <div style="margin-top:auto;">
+                    <button class="action-pill" onclick="document.getElementById('edit-file').click()">📷 图片</button>
+                    <input type="file" id="edit-file" hidden multiple accept="image/*" onchange="handleFiles(this)">
+                </div>
             </div>
-            <div style="display:flex; gap:10px;">
-                <button class="nav-btn" style="background:#2196F3; color:white;" onclick="enterReadMode()">📖 阅读模式</button>
-                <button class="nav-btn" style="background:#9C27B0; color:white;" onclick="openBgSettings()">🖼️ 背景设置</button>
-                <button class="nav-btn" style="background:#4CAF50; color:white;" onclick="saveNote()">💾 保存</button>
-                <button class="nav-btn" style="background:#FF9800; color:white;" onclick="openExportModal()">📤 导出</button>
+            <div class="editor-side">
+                <div class="form-group">
+                    <label class="form-label">发布身份</label>
+                    <select id="edit-identity" class="form-input"></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">状态 & 天气</label>
+                    <div style="display:flex; gap:10px;">
+                        <select id="edit-mood" class="form-input"></select>
+                        <select id="edit-weather" class="form-input"></select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">动态册</label>
+                    <select id="edit-album" class="form-input"></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">标签</label>
+                    <input type="text" id="edit-tags" class="form-input" placeholder="#标签1 #标签2">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">地点</label>
+                    <input type="text" id="edit-location" class="form-input" placeholder="📍 地点">
+                </div>
             </div>
         </div>
+    </div>
 
-        <!-- 工具栏 -->
-        <div class="editor-toolbar-row" id="toolbar-row">
-            <button class="toolbar-btn" onclick="execCmd('bold')" title="加粗"><b>B</b></button>
-            <button class="toolbar-btn" onclick="execCmd('italic')" title="斜体"><i>I</i></button>
-            <button class="toolbar-btn" onclick="execCmd('underline')" title="下划线"><u>U</u></button>
-            <button class="toolbar-btn" onclick="execCmd('strikeThrough')" title="删除线"><s>S</s></button>
-            <div style="width:1px; height:20px; background:#ccc; margin:0 5px;"></div>
+    <!-- 弹窗：身份编辑/新建 -->
+    <div id="identity-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="close-btn" onclick="document.getElementById('identity-modal').style.display='none'">×</div>
+            <h3 id="id-modal-title">🎭 编辑身份</h3>
+            <input type="hidden" id="id-edit-id">
             
-            <button class="toolbar-btn" onclick="insertImage()" title="插入图片">🖼️</button>
-            <input type="file" id="img-upload" hidden accept="image/*">
+            <label class="form-label">昵称</label>
+            <input type="text" id="id-name" class="form-input">
             
-            <button class="toolbar-btn" onclick="insertCheckbox()" title="代办事项">☑️</button>
-            <button class="toolbar-btn" onclick="insertTime()" title="插入时间">🕒</button>
-            <button class="toolbar-btn" onclick="insertLocation()" title="插入地点">📍</button>
-            <button class="toolbar-btn" onclick="openNameHelper()" title="取名助手">🎲</button>
+            <label class="form-label">简介</label>
+            <input type="text" id="id-bio" class="form-input">
             
-            <div style="width:1px; height:20px; background:#ccc; margin:0 5px;"></div>
-            <button class="toolbar-btn" onclick="convertChinese(0)" title="转简体">简</button>
-            <button class="toolbar-btn" onclick="convertChinese(1)" title="转繁体">繁</button>
-            
-            <div style="width:1px; height:20px; background:#ccc; margin:0 5px;"></div>
-            <span style="font-size:12px; color:#666;">行距:</span>
-            <select onchange="changeLineHeight(this.value)" style="padding:2px; border-radius:4px;">
-                <option value="1.5">1.5</option>
-                <option value="1.0">1.0</option>
-                <option value="2.0">2.0</option>
-                <option value="3.0">3.0</option>
+            <label class="form-label">头像类型</label>
+            <select id="id-type" class="form-input" onchange="toggleAvatarInput()">
+                <option value="emoji">Emoji</option>
+                <option value="img">图片上传</option>
             </select>
-        </div>
 
-        <div class="editor-container" id="editor-container">
-            <div id="editor-content" contenteditable="true"></div>
-        </div>
-        
-        <div class="exit-read-btn" onclick="exitReadMode()">退出全屏阅读</div>
-    </div>
-
-    <!-- 背景设置弹窗 -->
-    <div id="bg-modal" class="modal-overlay">
-        <div class="modal-box">
-            <div class="modal-header">便签背景设置 <span onclick="closeModal('bg-modal')" style="cursor:pointer">×</span></div>
-            <div class="modal-body">
-                <p>纯色背景</p>
-                <input type="color" id="bg-color-picker" onchange="setSolidBg(this.value)">
-                
-                <p style="margin-top:15px;">图片背景</p>
-                <input type="file" id="bg-img-upload" accept="image/*" onchange="uploadBgImg(this)">
-                
-                <div class="range-wrap">
-                    <span>透明度</span>
-                    <input type="range" min="0" max="1" step="0.1" value="1" oninput="setBgOpacity(this.value)">
+            <div id="emoji-input-area">
+                <div style="display:flex; gap:5px;">
+                    <input type="text" id="id-emoji" class="form-input" value="😊" style="font-size:20px; width:60px; text-align:center;">
+                    <button class="action-pill" onclick="randomEmoji()">🎲 随机</button>
                 </div>
+                <label class="form-label">头像背景色</label>
+                <div class="color-picker-row" id="color-picker-row">
+                    <!-- JS 生成色块 -->
+                </div>
+                <input type="color" id="id-color-input" class="form-input" style="height:40px; padding:2px;">
             </div>
-            <div class="modal-footer">
-                <button class="btn-cancel" onclick="clearBg()">清除背景</button>
-                <button class="btn-primary" onclick="closeModal('bg-modal')">完成</button>
+
+            <div id="img-input-area" style="display:none;">
+                <input type="file" id="id-file" class="form-input" accept="image/*">
             </div>
+
+            <button class="action-pill primary" style="width:100%; margin-top:15px;" onclick="saveIdentity()">保存</button>
         </div>
     </div>
 
-    <!-- 取名助手弹窗 -->
-    <div id="name-modal" class="modal-overlay">
-        <div class="modal-box">
-            <div class="modal-header">取名助手 <span onclick="closeModal('name-modal')" style="cursor:pointer">×</span></div>
-            <div class="modal-body">
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                    <select id="name-len"><option value="2">二字</option><option value="3">三字</option></select>
-                    <select id="name-gender"><option value="unisex">中性</option><option value="male">男性</option><option value="female">女性</option></select>
-                    <select id="name-style"><option value="modern">现代</option><option value="ancient">古风</option><option value="retro">年代感</option></select>
+    <!-- 弹窗：选项配置 (心情/天气) -->
+    <div id="options-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="close-btn" onclick="document.getElementById('options-modal').style.display='none'">×</div>
+            <h3>⚙️ 选项配置</h3>
+            
+            <div style="margin-bottom:20px;">
+                <h4 style="margin:0 0 5px 0;">😊 心情列表</h4>
+                <div id="manage-moods" style="max-height:150px; overflow-y:auto;"></div>
+                <div style="display:flex; gap:5px; margin-top:5px;">
+                    <input type="text" id="new-mood" class="form-input" placeholder="新心情 (如: 😴 困)" style="margin:0;">
+                    <button class="action-pill" onclick="addOption('mood')">添加</button>
                 </div>
-                <div id="name-result" style="margin-top:15px; padding:15px; background:#f5f5f5; text-align:center; font-size:24px; font-weight:bold; letter-spacing:5px; border-radius:8px;">???</div>
             </div>
-            <div class="modal-footer">
-                <button class="btn-cancel" onclick="generateName()">生成</button>
-                <button class="btn-primary" onclick="insertName()">插入</button>
+
+            <div>
+                <h4 style="margin:0 0 5px 0;">🌤️ 天气列表</h4>
+                <div id="manage-weathers" style="max-height:150px; overflow-y:auto;"></div>
+                <div style="display:flex; gap:5px; margin-top:5px;">
+                    <input type="text" id="new-weather" class="form-input" placeholder="新天气 (如: 🌪️ 龙卷风)" style="margin:0;">
+                    <button class="action-pill" onclick="addOption('weather')">添加</button>
+                </div>
             </div>
+        </div>
+    </div>
+
+    <!-- 弹窗：收藏 -->
+    <div id="fav-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="close-btn" onclick="document.getElementById('fav-modal').style.display='none'">×</div>
+            <h3>📂 收藏夹</h3>
+            <div id="fav-list" style="margin-bottom:15px;"></div>
+            <button class="action-pill" style="width:100%" onclick="addFavFolder()">+ 新建收藏夹</button>
+        </div>
+    </div>
+
+    <!-- 弹窗：保存到 -->
+    <div id="save-to-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>⭐ 选择收藏夹</h3>
+            <div id="save-to-list" style="display:flex; flex-direction:column; gap:5px;"></div>
+            <button class="action-pill" style="width:100%; margin-top:15px;" onclick="document.getElementById('save-to-modal').style.display='none'">关闭</button>
+        </div>
+    </div>
+
+    <!-- 弹窗：重置 -->
+    <div id="reset-modal" class="modal-overlay">
+        <div class="modal-content" style="text-align:center;">
+            <div class="close-btn" onclick="document.getElementById('reset-modal').style.display='none'">×</div>
+            <h3>⚠️ 管理员验证</h3>
+            <p>输入密码 597 重置所有数据</p>
+            <input type="password" id="reset-pwd" class="form-input" style="text-align:center; font-size:20px; letter-spacing:5px;">
+            <button class="action-pill primary" style="background:var(--danger); width:100%;" onclick="confirmReset()">确认重置</button>
         </div>
     </div>
 
     <script>
-        // ================= 数据管理 =================
-        const DB_KEY = 'super_notes_v2';
-        let data = {
-            folders: [
-                { id: 'default', name: '默认便签' },
-                { id: 'trash', name: '回收箱', locked: true }
+        // ================= 数据核心 =================
+        const DB_KEY = 'moments_db_pro_v6';
+        const DEFAULT_MOODS = ['😊 开心', '😐 平淡', '😔 难过', '😡 生气', '😴 疲惫'];
+        const DEFAULT_WEATHERS = ['☀️ 晴朗', '☁️ 多云', '🌧️ 下雨', '❄️ 下雪', '⛈️ 雷阵雨'];
+        const COLORS = ['#FF7675', '#FAB1A0', '#FFEAA7', '#55EFC4', '#74B9FF', '#A29BFE', '#DFE6E9', '#B2BEC3'];
+
+        let db = {
+            currentId: 'default',
+            identities: [
+                { id: 'default', name: '我 (默认)', avatar: '👤', type: 'emoji', color: '#DFE6E9', bio: '原本的我', isDefault: true }
             ],
-            notes: [], // { id, title, content, type: 'text'|'markdown', folderId, bg: {color, img, opacity}, time }
-            settings: { dateFormat: 'YYYY/MM/DD' }
+            moments: [],
+            favFolders: [
+                { id: 'fav_default', name: '默认收藏夹', locked: true },
+                { id: 'fav_all', name: '全部收藏', locked: true }
+            ],
+            albums: ['默认动态册'],
+            config: { moods: [...DEFAULT_MOODS], weathers: [...DEFAULT_WEATHERS] }
         };
 
-        let currentFolderId = 'default';
-        let currentNoteId = null;
-        let isMarkdown = false;
+        let tempImages = [];
+        let isPublishing = false; // 防止重复提交
+        let tempSaveMomentId = null;
+        let viewState = { folder: null, search: '', mood: '', weather: '' };
 
-        // 初始化
-        window.onload = function() {
-            try {
-                const saved = localStorage.getItem(DB_KEY);
-                if (saved) data = JSON.parse(saved);
-                
-                // 修复旧数据结构
-                if (!data.folders.find(f => f.id === 'default')) data.folders.unshift({ id: 'default', name: '默认便签' });
-                
-                renderFolders();
-                renderNotes();
-                
-                // 拖拽初始化
-                new Sortable(document.getElementById('notes-grid'), {
-                    animation: 150,
-                    handle: '.note-card', // 整个卡片可拖
-                    onEnd: function (evt) {
-                        // 简单处理：仅UI效果，实际需更新数组顺序
-                        const itemEl = evt.item;
-                        // 真正复杂的排序逻辑略过，保持基本拖拽体验
-                    }
-                });
-            } catch(e) {
-                console.error('初始化失败', e);
+        // ================= 初始化 =================
+        window.onload = () => {
+            loadData();
+            updateDate();
+            renderAll();
+        };
+
+        function loadData() {
+            const saved = localStorage.getItem(DB_KEY);
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                db = { ...db, ...parsed };
+                // 确保配置存在
+                if (!db.config) db.config = { moods: [...DEFAULT_MOODS], weathers: [...DEFAULT_WEATHERS] };
             }
-        };
+        }
 
         function saveData() {
-            localStorage.setItem(DB_KEY, JSON.stringify(data));
+            localStorage.setItem(DB_KEY, JSON.stringify(db));
+            updateStats();
+            renderCalendar();
         }
 
-        // ================= 渲染逻辑 =================
-        function renderFolders() {
-            const list = document.getElementById('folder-list');
-            list.innerHTML = data.folders.filter(f => f.id !== 'trash').map(f => `
-                <li class="folder-item ${currentFolderId === f.id ? 'active' : ''}" onclick="switchFolder('${f.id}')">
-                    <span>📁 ${f.name}</span>
-                    <span class="folder-count">${data.notes.filter(n => n.folderId === f.id && !n.deleted).length}</span>
-                </li>
+        function updateDate() {
+            const now = new Date();
+            const str = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 星期${['日','一','二','三','四','五','六'][now.getDay()]}`;
+            document.getElementById('date-display').innerText = str;
+            document.getElementById('cal-title').innerText = `${now.getFullYear()}年${now.getMonth()+1}月`;
+        }
+
+        // ================= 渲染系统 =================
+        function renderAll() {
+            renderIdentityList();
+            renderFeed();
+            renderAlbums();
+            updateStats();
+            renderCalendar();
+            renderTagCloud();
+        }
+
+        // --- 身份管理 ---
+        function renderIdentityList() {
+            const list = document.getElementById('identity-list-container');
+            list.innerHTML = db.identities.map(id => `
+                <div class="identity-card ${db.currentId === id.id ? 'active' : ''}">
+                    <div style="display:flex; align-items:center; gap:10px; flex:1;" onclick="switchId('${id.id}')">
+                        ${getAvatarHtml(id, 'id-avatar-sm')}
+                        <div>
+                            <div style="font-weight:bold; font-size:14px;">${id.name}</div>
+                            <div style="font-size:11px; color:#888;">${id.bio||''}</div>
+                        </div>
+                    </div>
+                    <button onclick="openEditIdentity('${id.id}')" style="border:none; background:none; cursor:pointer;">✏️</button>
+                </div>
             `).join('');
-            
-            document.getElementById('current-folder-title').innerText = data.folders.find(f=>f.id===currentFolderId)?.name || '便签';
         }
 
-        function renderNotes() {
-            const grid = document.getElementById('notes-grid');
-            let notesToShow = [];
+        function getAvatarHtml(id, cls) {
+            if (id.type === 'img') return `<img src="${id.avatar}" class="${cls}" style="border:2px solid ${id.color}">`;
+            return `<div class="${cls}" style="background:${id.color}">${id.avatar}</div>`;
+        }
+
+        function switchId(id) {
+            db.currentId = id;
+            saveData();
+            renderIdentityList();
+            renderFeed(); // 刷新点赞状态
+        }
+
+        // --- 编辑身份 ---
+        function openEditIdentity(id) { // 如果id为空则是新建
+            const isNew = !id;
+            const data = isNew ? { name:'', bio:'', type:'emoji', avatar:'😊', color:'#DFE6E9' } : db.identities.find(i => i.id === id);
             
-            if (currentFolderId === 'trash') {
-                notesToShow = data.notes.filter(n => n.deleted);
+            document.getElementById('id-modal-title').innerText = isNew ? '🎭 新建身份' : '🎭 编辑身份';
+            document.getElementById('id-edit-id').value = isNew ? '' : id;
+            document.getElementById('id-name').value = data.name;
+            document.getElementById('id-bio').value = data.bio || '';
+            document.getElementById('id-type').value = data.type;
+            document.getElementById('id-emoji').value = data.type === 'emoji' ? data.avatar : '😊';
+            document.getElementById('id-color-input').value = data.color;
+            
+            renderColorRow(data.color);
+            toggleAvatarInput();
+            document.getElementById('identity-modal').style.display = 'flex';
+        }
+
+        function createNewIdentity() { openEditIdentity(null); }
+
+        function renderColorRow(selected) {
+            const row = document.getElementById('color-picker-row');
+            row.innerHTML = COLORS.map(c => `
+                <div class="color-circle ${c===selected?'selected':''}" style="background:${c}" onclick="pickColor('${c}')"></div>
+            `).join('');
+        }
+
+        function pickColor(c) {
+            document.getElementById('id-color-input').value = c;
+            renderColorRow(c);
+        }
+
+        function toggleAvatarInput() {
+            const type = document.getElementById('id-type').value;
+            document.getElementById('emoji-input-area').style.display = type === 'emoji' ? 'block' : 'none';
+            document.getElementById('img-input-area').style.display = type === 'img' ? 'block' : 'none';
+        }
+
+        function randomEmoji() {
+            const emojis = ['😀','😎','🥳','🥶','🤡','💩','👻','👽','🤖','🐱','🐶','🦄'];
+            document.getElementById('id-emoji').value = emojis[Math.floor(Math.random()*emojis.length)];
+        }
+
+        function saveIdentity() {
+            const id = document.getElementById('id-edit-id').value;
+            const name = document.getElementById('id-name').value;
+            if(!name) return alert('请输入昵称');
+
+            const type = document.getElementById('id-type').value;
+            let avatar = document.getElementById('id-emoji').value;
+            const color = document.getElementById('id-color-input').value;
+            const bio = document.getElementById('id-bio').value;
+
+            const finalize = (finalAvatar) => {
+                if(id) { // 编辑
+                    const idx = db.identities.findIndex(i => i.id === id);
+                    if(idx > -1) {
+                        db.identities[idx] = { ...db.identities[idx], name, bio, type, avatar: finalAvatar, color };
+                    }
+                } else { // 新建
+                    db.identities.push({
+                        id: 'id_'+Date.now(), name, bio, type, avatar: finalAvatar, color, isDefault: false
+                    });
+                }
+                saveData();
+                renderIdentityList();
+                document.getElementById('identity-modal').style.display = 'none';
+            };
+
+            if(type === 'img') {
+                const file = document.getElementById('id-file').files[0];
+                if(file) {
+                    const r = new FileReader();
+                    r.onload = e => finalize(e.target.result);
+                    r.readAsDataURL(file);
+                } else {
+                    // 如果是编辑且没选新图，保持旧图
+                    const existing = db.identities.find(i => i.id === id);
+                    finalize(existing && existing.type === 'img' ? existing.avatar : '');
+                }
             } else {
-                notesToShow = data.notes.filter(n => n.folderId === currentFolderId && !n.deleted);
+                finalize(avatar);
+            }
+        }
+
+        // --- 动态流 ---
+        function renderFeed() {
+            const container = document.getElementById('moments-container');
+            const search = document.getElementById('search-input').value.toLowerCase();
+            const sType = document.getElementById('search-type').value;
+            const fMood = document.getElementById('filter-mood').value;
+            const fWeather = document.getElementById('filter-weather').value;
+
+            let list = db.moments.filter(m => {
+                if(viewState.folder) {
+                    if(!m.savedTo || !m.savedTo.includes(viewState.folder)) return false;
+                }
+                if(fMood && m.mood !== fMood) return false;
+                if(fWeather && m.weather !== fWeather) return false;
+                if(search) {
+                    const inContent = m.content.toLowerCase().includes(search);
+                    const inComment = m.comments.some(c => c.text.toLowerCase().includes(search));
+                    if(sType === 'content' && !inContent) return false;
+                    if(sType === 'comment' && !inComment) return false;
+                    if(sType === 'all' && !inContent && !inComment) return false;
+                }
+                return true;
+            });
+
+            if(viewState.folder) {
+                const fname = db.favFolders.find(f => f.id === viewState.folder)?.name || '收藏夹';
+                container.innerHTML = `<h3 style="margin-top:0;">📂 ${fname} <button onclick="viewState.folder=null;renderFeed()" style="font-size:12px;margin-left:10px;">❌ 退出</button></h3>`;
+            } else {
+                container.innerHTML = '';
             }
 
-            if (notesToShow.length === 0) {
-                grid.innerHTML = '<div style="text-align:center; grid-column:1/-1; color:rgba(255,255,255,0.5); margin-top:50px;">空空如也 🍃</div>';
+            if(list.length === 0) {
+                container.innerHTML += `<div style="text-align:center;color:#aaa;padding:40px;">📭 暂无动态</div>`;
                 return;
             }
 
-            grid.innerHTML = notesToShow.map(n => {
-                // 提取纯文本做预览
-                let previewText = n.content.replace(/<[^>]+>/g, '').substring(0, 50);
-                if(n.type === 'markdown') previewText = '[Markdown] ' + previewText;
-                
-                return `
-                    <div class="note-card" onclick="openNote('${n.id}')" data-id="${n.id}">
-                        <div class="note-badge">${n.type === 'markdown' ? '📝' : '📄'}</div>
-                        <div class="note-title">${n.title || '无标题'}</div>
-                        <div class="note-preview">${previewText}</div>
-                        <div class="note-meta">
-                            <span>${new Date(n.time).toLocaleDateString()}</span>
-                            ${currentFolderId === 'trash' ? 
-                                `<span onclick="event.stopPropagation(); restoreNote('${n.id}')">♻️ 恢复</span>` : 
-                                `<span onclick="event.stopPropagation(); deleteNote('${n.id}')">🗑️</span>`
-                            }
+            list.forEach(m => {
+                const author = db.identities.find(i => i.id === m.identityId) || db.identities[0];
+                const date = new Date(m.time).toLocaleString();
+                const isLiked = m.likes.includes(db.currentId);
+                const isSaved = m.savedTo && m.savedTo.length > 0;
+
+                // 点赞列表
+                let likeHtml = '';
+                if(m.likes.length > 0) {
+                    const names = m.likes.map(lid => {
+                        const u = db.identities.find(i => i.id === lid) || db.identities[0];
+                        return u.name;
+                    }).join(', ');
+                    likeHtml = `<div class="m-likes-area">❤️ ${names}</div>`;
+                }
+
+                // 评论列表
+                let commentsHtml = m.comments.map(c => {
+                    const u = db.identities.find(i => i.id === c.uid) || db.identities[0];
+                    return `
+                        <div class="comment-item">
+                            ${getAvatarHtml(u, 'c-avatar')}
+                            <div style="background:white; padding:5px 10px; border-radius:8px; flex:1;">
+                                <span style="font-weight:bold; font-size:12px;">${u.name}</span>
+                                <div style="font-size:13px;">${c.text}</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                const div = document.createElement('div');
+                div.className = 'card moment-item';
+                div.innerHTML = `
+                    <div class="m-header">
+                        ${getAvatarHtml(author, 'm-avatar')}
+                        <div class="m-info">
+                            <h4>${author.name}</h4>
+                            <span>${date} ${m.location ? '· '+m.location : ''}</span>
+                            <div class="m-badges">
+                                <span class="m-badge">${m.mood}</span>
+                                <span class="m-badge">${m.weather}</span>
+                                <span class="m-badge" style="background:#e3f2fd; color:#2196f3">${m.album}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="m-content">${m.content}</div>
+                    ${m.images.length ? `<div class="m-imgs">${m.images.map(s => `<img src="${s}" onclick="window.open('${s}')">`).join('')}</div>` : ''}
+                    
+                    ${likeHtml}
+
+                    <div class="m-actions">
+                        <button class="action-btn ${isLiked?'active':''}" onclick="toggleLike(${m.id})">
+                            ${isLiked?'❤️':'🤍'} 点赞
+                        </button>
+                        <button class="action-btn" onclick="toggleComments(${m.id})">
+                            💬 评论 (${m.comments.length})
+                        </button>
+                        <button class="action-btn ${isSaved?'fav-active':''}" onclick="openSaveModal(${m.id})">
+                            ${isSaved?'⭐':'☆'} 收藏
+                        </button>
+                        <button class="action-btn" onclick="deleteMoment(${m.id})" style="margin-left:auto;">🗑️</button>
+                    </div>
+
+                    <div id="comment-sec-${m.id}" class="comment-section">
+                        <div id="c-list-${m.id}">${commentsHtml}</div>
+                        <div class="comment-input-box">
+                            <input id="c-in-${m.id}" type="text" class="comment-input" placeholder="评论...">
+                            <button class="action-pill primary" style="padding:5px 15px;" onclick="postComment(${m.id})">发送</button>
                         </div>
                     </div>
                 `;
-            }).join('');
+                container.appendChild(div);
+            });
         }
 
-        function switchFolder(id) {
-            currentFolderId = id;
-            renderFolders();
-            renderNotes();
-        }
-
-        function openRecycleBin() {
-            currentFolderId = 'trash';
-            document.getElementById('current-folder-title').innerText = '回收箱';
-            // 更新侧边栏高亮状态
-            document.querySelectorAll('.folder-item').forEach(el => el.classList.remove('active'));
-            renderNotes();
-        }
-
-        // ================= 编辑器逻辑 =================
-        function createNote(type) {
-            const newNote = {
-                id: Date.now().toString(),
-                title: '',
-                content: '',
-                type: type,
-                folderId: currentFolderId === 'trash' ? 'default' : currentFolderId,
-                time: Date.now(),
-                deleted: false,
-                bg: { color: '', img: '', opacity: 1 }
-            };
-            data.notes.unshift(newNote);
-            saveData();
-            openNote(newNote.id);
-        }
-
-        function openNote(id) {
-            const note = data.notes.find(n => n.id === id);
-            if (!note) return;
-            currentNoteId = id;
-            isMarkdown = note.type === 'markdown';
-
-            document.getElementById('note-title').value = note.title;
-            const editor = document.getElementById('editor-content');
+        // --- 发布相关 ---
+        function openEditor() {
+            document.getElementById('editor-screen').classList.add('show');
+            tempImages = [];
+            document.getElementById('edit-content').value = '';
+            document.getElementById('edit-previews').innerHTML = '';
+            document.getElementById('edit-tags').value = '';
+            document.getElementById('edit-location').value = '';
             
-            // 恢复内容
-            if (isMarkdown) {
-                editor.innerText = note.content; // Markdown显示源码
-                // 隐藏富文本工具栏，显示Markdown提示
-                document.getElementById('toolbar-row').style.display = 'none'; 
-            } else {
-                editor.innerHTML = note.content;
-                document.getElementById('toolbar-row').style.display = 'flex';
-            }
-
-            // 恢复背景
-            applyBackground(note.bg);
-
-            document.getElementById('editor-modal').classList.add('show');
+            // 填充下拉
+            fillSelect('edit-identity', db.identities.map(i => `<option value="${i.id}">${i.name}</option>`), db.currentId);
+            fillSelect('edit-mood', db.config.moods.map(m => `<option value="${m}">${m}</option>`));
+            fillSelect('edit-weather', db.config.weathers.map(w => `<option value="${w}">${w}</option>`));
+            fillSelect('edit-album', db.albums.map(a => `<option value="${a}">${a}</option>`));
         }
 
         function closeEditor() {
-            saveNote();
-            document.getElementById('editor-modal').classList.remove('show');
-            exitReadMode(); // 确保退出阅读模式
-            renderNotes();
-            renderFolders();
+            document.getElementById('editor-screen').classList.remove('show');
         }
 
-        function saveNote() {
-            const note = data.notes.find(n => n.id === currentNoteId);
-            if (!note) return;
+        function handleFiles(input) {
+            Array.from(input.files).forEach(f => {
+                const r = new FileReader();
+                r.onload = e => {
+                    tempImages.push(e.target.result);
+                    document.getElementById('edit-previews').innerHTML += `<img src="${e.target.result}" class="preview-img">`;
+                };
+                r.readAsDataURL(f);
+            });
+        }
 
-            note.title = document.getElementById('note-title').value;
-            note.content = isMarkdown ? 
-                document.getElementById('editor-content').innerText : 
-                document.getElementById('editor-content').innerHTML;
-            note.time = Date.now();
-            
+        function publishMoment() {
+            if(isPublishing) return;
+            const content = document.getElementById('edit-content').value;
+            if(!content && tempImages.length === 0) return alert('写点什么吧');
+
+            isPublishing = true;
+            document.getElementById('publish-btn').disabled = true;
+            document.getElementById('publish-btn').innerText = '发布中...';
+
+            const m = {
+                id: Date.now(),
+                content,
+                images: [...tempImages],
+                time: Date.now(),
+                identityId: document.getElementById('edit-identity').value,
+                mood: document.getElementById('edit-mood').value,
+                weather: document.getElementById('edit-weather').value,
+                album: document.getElementById('edit-album').value,
+                location: document.getElementById('edit-location').value,
+                tags: document.getElementById('edit-tags').value.split(' ').filter(t=>t),
+                likes: [],
+                comments: [],
+                savedTo: [] // 修复Bug：新建时清空收藏夹
+            };
+
+            db.moments.unshift(m);
             saveData();
-        }
-
-        // --- 编辑器功能 ---
-        function execCmd(cmd, val=null) {
-            document.execCommand(cmd, false, val);
-            document.getElementById('editor-content').focus();
-        }
-
-        function insertImage() {
-            document.getElementById('img-upload').click();
-        }
-
-        document.getElementById('img-upload').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if(file) {
-                const reader = new FileReader();
-                reader.onload = function(evt) {
-                    // 行内插入图片核心逻辑
-                    const img = `<img src="${evt.target.result}" style="max-width:100%; vertical-align:middle; border-radius:8px;">`;
-                    if (isMarkdown) {
-                        insertTextAtCursor(`![image](${evt.target.result})`);
-                    } else {
-                        execCmd('insertHTML', img);
-                    }
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        function insertCheckbox() {
-            const checkboxHtml = `<div class="todo-item"><input type="checkbox" onclick="this.parentElement.classList.toggle('done')"> <span>待办事项</span></div>`;
-            execCmd('insertHTML', checkboxHtml);
-        }
-
-        function changeLineHeight(val) {
-            document.getElementById('editor-content').style.lineHeight = val;
-        }
-
-        // 简繁转换 (内置字典)
-        const SIMP = "万与丑专业丛东丝丢两严丧个丬丰临丽举么义乌乐乔习乡书买乱争于亏云亘亚产亩亲亵亸亿什仅仆仇币仍佛仔仪们";
-        const TRAD = "萬與醜專業叢東絲丟兩嚴喪個爿豐臨麗舉麼義烏樂喬習鄉書買亂爭於虧雲亙亞產畝親褻嚲億什僅僕仇幣仍佛仔儀們";
-        
-        function convertChinese(type) {
-            // type 0: 转简, 1: 转繁
-            const editor = document.getElementById('editor-content');
-            let txt = editor.innerHTML;
-            let result = '';
-            for (let i = 0; i < txt.length; i++) {
-                const c = txt[i];
-                if (type === 0) { // 繁转简
-                    const idx = TRAD.indexOf(c);
-                    result += (idx > -1) ? SIMP[idx] : c;
-                } else { // 简转繁
-                    const idx = SIMP.indexOf(c);
-                    result += (idx > -1) ? TRAD[idx] : c;
-                }
-            }
-            editor.innerHTML = result;
-        }
-
-        // --- 背景系统 ---
-        function openBgSettings() { document.getElementById('bg-modal').style.display = 'flex'; }
-        
-        function setSolidBg(color) {
-            updateBg({ color: color, img: '', opacity: 1 });
-        }
-        
-        function uploadBgImg(input) {
-            const file = input.files[0];
-            if(file) {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    updateBg({ img: e.target.result, color: '', opacity: 1 });
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function setBgOpacity(val) {
-            const note = data.notes.find(n => n.id === currentNoteId);
-            if(note && note.bg) {
-                note.bg.opacity = val;
-                applyBackground(note.bg);
-            }
-        }
-
-        function clearBg() {
-            updateBg({ color: '', img: '', opacity: 1 });
-        }
-
-        function updateBg(bgObj) {
-            const note = data.notes.find(n => n.id === currentNoteId);
-            if(note) {
-                note.bg = { ...note.bg, ...bgObj };
-                applyBackground(note.bg);
-            }
-        }
-
-        function applyBackground(bg) {
-            if(!bg) return;
-            const container = document.getElementById('editor-container');
-            const editor = document.getElementById('editor-content');
             
-            container.style.backgroundColor = bg.color || '#ffffff';
-            container.style.backgroundImage = bg.img ? `url(${bg.img})` : 'none';
-            
-            // 为了实现透明度，我们调整内容的背景色，而不是容器的opacity
-            // 这里为了简单，我们假定背景图是在底层，文字层是透明的
-            // 如果要实现背景图变淡，可以通过 overlay 实现，这里简化处理
-            if(bg.img) {
-                // 使用伪元素或遮罩比较复杂，这里用rgba叠加层模拟变淡
-                // 实际上 css background-image 不支持 opacity 属性
-                // 我们直接设置 content 的背景色透明度
-                editor.style.backgroundColor = `rgba(255,255,255, ${1 - bg.opacity})`;
+            setTimeout(() => {
+                isPublishing = false;
+                document.getElementById('publish-btn').disabled = false;
+                document.getElementById('publish-btn').innerText = '🚀 发布';
+                closeEditor();
+                viewState.folder = null; // 重置视图
+                renderAll();
+            }, 500);
+        }
+
+        // --- 选项配置 (心情/天气) ---
+        function openOptionsModal() {
+            document.getElementById('options-modal').style.display = 'flex';
+            renderOptionsList('manage-moods', db.config.moods, 'mood');
+            renderOptionsList('manage-weathers', db.config.weathers, 'weather');
+        }
+
+        function renderOptionsList(elId, arr, type) {
+            const el = document.getElementById(elId);
+            el.innerHTML = arr.map((item, idx) => `
+                <div class="manage-list-item">
+                    <span>${item}</span>
+                    <button style="color:red;border:none;background:none;cursor:pointer;" onclick="delOption('${type}', ${idx})">🗑️</button>
+                </div>
+            `).join('');
+        }
+
+        function addOption(type) {
+            const val = document.getElementById(type === 'mood' ? 'new-mood' : 'new-weather').value;
+            if(!val) return;
+            if(type === 'mood') db.config.moods.push(val);
+            else db.config.weathers.push(val);
+            saveData();
+            openOptionsModal(); // 刷新
+            document.getElementById(type === 'mood' ? 'new-mood' : 'new-weather').value = '';
+        }
+
+        function delOption(type, idx) {
+            if(type === 'mood') {
+                if(db.config.moods.length <= 1) return alert('至少保留一个');
+                db.config.moods.splice(idx, 1);
             } else {
-                editor.style.backgroundColor = 'transparent';
+                if(db.config.weathers.length <= 1) return alert('至少保留一个');
+                db.config.weathers.splice(idx, 1);
+            }
+            saveData();
+            openOptionsModal();
+        }
+
+        // --- 互动 ---
+        function toggleLike(mid) {
+            const m = db.moments.find(i => i.id === mid);
+            const uid = db.currentId;
+            if(m.likes.includes(uid)) m.likes = m.likes.filter(id => id !== uid);
+            else m.likes.push(uid);
+            saveData();
+            renderFeed();
+        }
+
+        function toggleComments(mid) {
+            const el = document.getElementById(`comment-sec-${mid}`);
+            el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function postComment(mid) {
+            const txt = document.getElementById(`c-in-${mid}`).value;
+            if(!txt) return;
+            const m = db.moments.find(i => i.id === mid);
+            m.comments.push({ uid: db.currentId, text: txt, time: Date.now() });
+            saveData();
+            renderFeed(); // 简单起见全刷
+        }
+
+        function openSaveModal(mid) {
+            tempSaveMomentId = mid;
+            const m = db.moments.find(i => i.id === mid);
+            const list = document.getElementById('save-to-list');
+            list.innerHTML = db.favFolders.filter(f => f.id !== 'fav_all').map(f => {
+                const isSaved = m.savedTo && m.savedTo.includes(f.id);
+                return `
+                    <div style="padding:10px; background:#f5f5f5; border-radius:10px; cursor:pointer; display:flex; justify-content:space-between;" onclick="toggleSave('${f.id}')">
+                        <span>${f.name}</span>
+                        <span>${isSaved ? '✅' : '⬜'}</span>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('save-to-modal').style.display = 'flex';
+        }
+
+        function toggleSave(fid) {
+            const m = db.moments.find(i => i.id === tempSaveMomentId);
+            if(!m.savedTo) m.savedTo = [];
+            if(m.savedTo.includes(fid)) m.savedTo = m.savedTo.filter(i => i !== fid);
+            else m.savedTo.push(fid);
+            saveData();
+            openSaveModal(tempSaveMomentId); // 刷新UI
+            renderFeed(); // 刷新外部星星
+            updateStats();
+        }
+
+        function deleteMoment(mid) {
+            if(confirm('删除此动态？')) {
+                db.moments = db.moments.filter(m => m.id !== mid);
+                saveData();
+                renderAll();
             }
         }
 
-        // --- 快捷插入 ---
-        function insertTime() {
+        // --- 辅助 ---
+        function fillSelect(id, options, selected) {
+            const el = document.getElementById(id);
+            el.innerHTML = options.join('');
+            if(selected) el.value = selected;
+            // 刷新筛选器下拉
+            if(id === 'edit-mood') document.getElementById('filter-mood').innerHTML = '<option value="">全部</option>' + options.join('');
+            if(id === 'edit-weather') document.getElementById('filter-weather').innerHTML = '<option value="">全部</option>' + options.join('');
+        }
+
+        function updateStats() {
+            document.getElementById('stat-total').innerText = db.moments.length;
+            const favs = db.moments.reduce((acc, m) => acc + (m.savedTo ? m.savedTo.length : 0), 0);
+            document.getElementById('stat-likes').innerText = favs;
+        }
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            grid.innerHTML = '';
             const now = new Date();
-            // 这里可以做一个设置，简单起见用标准格式
-            const timeStr = now.toLocaleString();
-            insertTextAtCursor(timeStr);
-        }
+            const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+            const startDay = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
+            
+            const activeDays = new Set(db.moments.map(m => {
+                const d = new Date(m.time);
+                return (d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) ? d.getDate() : -1;
+            }));
 
-        function insertLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(pos => {
-                    // 模拟位置，实际需要调用地图API转地址
-                    insertTextAtCursor(`📍 [${pos.coords.latitude.toFixed(2)}, ${pos.coords.longitude.toFixed(2)}]`);
-                }, () => alert('无法获取位置'));
+            for(let i=0; i<startDay; i++) grid.innerHTML += '<div></div>';
+            for(let i=1; i<=daysInMonth; i++) {
+                grid.innerHTML += `<div class="cal-day ${i===now.getDate()?'today':''} ${activeDays.has(i)?'has-moment':''}">${i}</div>`;
             }
         }
 
-        function insertTextAtCursor(text) {
-            if (isMarkdown) {
-                const el = document.getElementById('editor-content');
-                // ContentEditable 插入文本比较麻烦，简化为追加
-                el.innerText += text;
-            } else {
-                execCmd('insertText', text);
+        function renderTagCloud() {
+            const tags = new Set();
+            db.moments.forEach(m => m.tags.forEach(t => tags.add(t)));
+            document.getElementById('filter-tags').innerHTML = Array.from(tags).map(t => 
+                `<span class="filter-tag" onclick="document.getElementById('search-input').value='${t}';renderFeed()">${t}</span>`
+            ).join('');
+        }
+
+        function renderAlbums() {
+            const c = document.getElementById('album-list-container');
+            c.innerHTML = db.albums.map(a => `
+                <div class="album-item">
+                    <span>${a}</span>
+                    ${a!=='默认动态册' ? `<button onclick="delAlbum('${a}')" style="color:red;border:none;background:none;cursor:pointer;">🗑️</button>` : ''}
+                </div>
+            `).join('');
+        }
+        function addAlbum() {
+            const n = prompt('新动态册名:');
+            if(n && !db.albums.includes(n)) { db.albums.push(n); saveData(); renderAlbums(); }
+        }
+        function delAlbum(n) {
+            if(confirm(`删除 "${n}"? 动态将移至默认册。`)) {
+                db.albums = db.albums.filter(a => a !== n);
+                db.moments.forEach(m => { if(m.album === n) m.album = '默认动态册'; });
+                saveData(); renderAlbums(); renderFeed();
             }
         }
 
-        // --- 取名助手 ---
-        function openNameHelper() { document.getElementById('name-modal').style.display = 'flex'; }
-        
-        function generateName() {
-            const len = document.getElementById('name-len').value;
-            const gender = document.getElementById('name-gender').value;
-            
-            const surnames = "赵钱孙李周吴郑王冯陈褚卫蒋沈韩杨朱秦尤许何吕施张孔曹严华金魏陶姜";
-            const male = "伟刚勇毅俊峰强军平保东文辉力明永健世广志义兴良海山仁波宁贵福生龙元全国胜学祥才发武新利清飞彬富顺信子杰涛昌成康星光天达安岩中茂进林有坚和彪博诚先敬震振壮会思群豪心邦承乐绍功松善厚庆磊民友裕河哲江超浩亮政谦亨奇固之轮翰朗伯宏言若鸣朋斌梁栋维启克伦翔旭鹏泽晨辰士以建家致树炎德行时泰盛雄琛钧冠策腾楠榕风航弘";
-            const female = "秀娟英华慧巧婷玉萍红娥玲芬芳燕彩春菊兰凤洁梅琳素云莲真环雪荣爱妹霞香月莺媛艳瑞凡佳嘉琼勤珍贞莉桂娣叶璧璐娅琦晶妍茜秋珊莎锦黛青倩婷姣婉娴瑾颖露瑶怡婵雁蓓纨仪荷丹蓉眉君琴蕊薇菁梦岚苑婕馨瑗琰韵融园艺咏卿聪澜纯毓悦昭冰爽琬茗羽希宁欣飘育滢馥筠柔竹霭凝晓欢霄枫芸菲寒伊亚宜可姬舒影荔枝思丽";
-            
-            let surname = surnames[Math.floor(Math.random() * surnames.length)];
-            let name = "";
-            let chars = gender === 'male' ? male : (gender === 'female' ? female : male + female);
-            
-            for(let i=0; i<len-1; i++) {
-                name += chars[Math.floor(Math.random() * chars.length)];
+        // --- 重置 ---
+        function showResetModal() {
+            document.getElementById('reset-modal').style.display = 'flex';
+            document.getElementById('reset-pwd').value = '';
+        }
+        function confirmReset() {
+            if(document.getElementById('reset-pwd').value === '597') {
+                localStorage.removeItem(DB_KEY);
+                alert('重置成功');
+                location.reload();
+            } else alert('密码错误');
+        }
+
+        // --- 收藏夹管理 ---
+        function openFavModal() {
+            document.getElementById('fav-modal').style.display = 'flex';
+            renderFavList();
+        }
+        function renderFavList() {
+            const l = document.getElementById('fav-list');
+            l.innerHTML = `
+                <div class="identity-card" onclick="viewFav(null)">📁 查看全部收藏内容</div>
+            ` + db.favFolders.filter(f => f.id !== 'fav_all').map(f => `
+                <div class="album-item">
+                    <span onclick="viewFav('${f.id}')" style="cursor:pointer;flex:1;">⭐ ${f.name}</span>
+                    ${!f.locked ? `<button onclick="delFavFolder('${f.id}')" style="color:red;border:none;background:none;">✕</button>` : ''}
+                </div>
+            `).join('');
+        }
+        function addFavFolder() {
+            const n = prompt('收藏夹名称:');
+            if(n) {
+                db.favFolders.push({ id: 'fav_'+Date.now(), name: n });
+                saveData(); renderFavList();
             }
-            
-            document.getElementById('name-result').innerText = surname + name;
         }
-
-        function insertName() {
-            const n = document.getElementById('name-result').innerText;
-            if(n && n !== '???') insertTextAtCursor(n);
-            closeModal('name-modal');
-        }
-
-        // --- 导出与阅读 ---
-        function enterReadMode() {
-            document.getElementById('editor-modal').classList.add('reading-mode');
-        }
-        function exitReadMode() {
-            document.getElementById('editor-modal').classList.remove('reading-mode');
-        }
-
-        function openExportModal() {
-            if(confirm('是否导出为包含背景的长图片？')) {
-                const el = document.getElementById('editor-container');
-                html2canvas(el, {
-                    backgroundColor: null, // 保留透明度
-                    useCORS: true
-                }).then(canvas => {
-                    const link = document.createElement('a');
-                    link.download = 'note_export.png';
-                    link.href = canvas.toDataURL();
-                    link.click();
+        function delFavFolder(id) {
+            if(confirm('删除收藏夹？')) {
+                db.favFolders = db.favFolders.filter(f => f.id !== id);
+                db.moments.forEach(m => {
+                    if(m.savedTo) m.savedTo = m.savedTo.filter(i => i !== id);
                 });
+                saveData(); renderFavList();
             }
         }
-
-        // --- 基础 ---
-        function deleteNote(id) {
-            const note = data.notes.find(n => n.id === id);
-            if(note) {
-                note.deleted = true;
-                saveData();
-                renderNotes();
-            }
-        }
-        function restoreNote(id) {
-            const note = data.notes.find(n => n.id === id);
-            if(note) {
-                note.deleted = false;
-                saveData();
-                openRecycleBin(); // 刷新视图
-            }
-        }
-        function addFolder() {
-            const name = prompt("输入分组名称:");
-            if(name) {
-                data.folders.push({ id: 'f_'+Date.now(), name });
-                saveData();
-                renderFolders();
-            }
-        }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        
-        // 主题切换
-        function toggleNightMode() {
-            document.body.classList.toggle('night-mode');
+        function viewFav(id) {
+            viewState.folder = id;
+            document.getElementById('fav-modal').style.display = 'none';
+            renderFeed();
         }
 
     </script>
