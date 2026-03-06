@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的神秘花园</title>
+    <title>神秘花园 Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* 浅色模式 (默认) */
-            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --bg-color: #e0c3fc;
+            --bg-gradient: linear-gradient(135deg, var(--bg-color) 0%, #ffffff 100%);
             --card-bg: rgba(255, 255, 255, 0.9);
             --text-main: #2c3e50;
             --text-sub: #7f8c8d;
@@ -19,211 +19,131 @@
         }
 
         [data-theme="dark"] {
-            /* 深色模式 */
-            --bg-gradient: linear-gradient(135deg, #2c3e50 0%, #000000 100%);
+            --bg-gradient: linear-gradient(135deg, #2c3e50 0%, #1a1a1a 100%);
             --card-bg: rgba(30, 30, 30, 0.9);
             --text-main: #ecf0f1;
             --text-sub: #bdc3c7;
             --primary: #2ecc71;
             --accent: #f39c12;
             --border: rgba(255, 255, 255, 0.1);
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
         }
 
         /* 稀有度颜色 */
-        .rarity-1 { color: #7f8c8d; border-color: #7f8c8d; } /* 白色 */
-        .rarity-2 { color: #2ecc71; border-color: #2ecc71; } /* 绿色 */
-        .rarity-3 { color: #3498db; border-color: #3498db; } /* 蓝色 */
-        .rarity-4 { color: #9b59b6; border-color: #9b59b6; } /* 紫色 */
-        .rarity-5 { color: #f1c40f; border-color: #f1c40f; text-shadow: 0 0 5px #f1c40f; } /* 金色 */
+        .rarity-1 { color: #7f8c8d; border-color: #7f8c8d; } 
+        .rarity-2 { color: #2ecc71; border-color: #2ecc71; } 
+        .rarity-3 { color: #3498db; border-color: #3498db; } 
+        .rarity-4 { color: #9b59b6; border-color: #9b59b6; } 
+        .rarity-5 { color: #f1c40f; border-color: #f1c40f; text-shadow: 0 0 5px #f1c40f; }
+        .rarity-S { color: #ff7675; border-color: #ff7675; animation: pulse 2s infinite; }
+
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
         * { box-sizing: border-box; transition: all 0.3s ease; }
         body {
             font-family: 'Nunito', 'Noto Sans SC', sans-serif;
             background: var(--bg-gradient);
-            margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-            color: var(--text-main);
-            overflow: hidden; /* 防止双滚动条 */
+            margin: 0; padding: 15px; min-height: 100vh;
+            color: var(--text-main); overflow-y: auto;
         }
 
         /* 顶部导航 */
         .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--card-bg);
-            padding: 10px 20px;
-            border-radius: 20px;
-            box-shadow: var(--shadow);
-            margin-bottom: 20px;
-            backdrop-filter: blur(10px);
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--card-bg); padding: 10px 20px; border-radius: 20px;
+            box-shadow: var(--shadow); margin-bottom: 20px; backdrop-filter: blur(10px);
         }
-
-        .nav-right { display: flex; gap: 10px; }
-        .icon-btn {
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 50%;
-        }
+        .nav-left { display: flex; align-items: center; gap: 15px; }
+        .back-btn { text-decoration: none; font-size: 16px; background: #f1f2f6; padding: 5px 12px; border-radius: 20px; color: #333; }
+        .nav-right { display: flex; gap: 8px; align-items: center; }
+        .icon-btn { background: none; border: none; font-size: 20px; cursor: pointer; padding: 8px; border-radius: 50%; }
         .icon-btn:hover { background: rgba(0,0,0,0.1); }
+        
+        /* 颜色选择器 */
+        .color-picker-group { display: flex; gap: 5px; align-items: center; background: rgba(0,0,0,0.05); padding: 5px; border-radius: 20px; }
+        .color-dot { width: 20px; height: 20px; border-radius: 50%; cursor: pointer; border: 1px solid rgba(0,0,0,0.1); }
+        #custom-color-input { width: 24px; height: 24px; padding: 0; border: none; border-radius: 50%; overflow: hidden; cursor: pointer; }
 
         /* 三栏布局 */
         .main-layout {
-            display: grid;
-            grid-template-columns: 280px 1fr 280px;
-            gap: 20px;
+            display: grid; grid-template-columns: 280px 1fr 300px; gap: 20px;
             height: calc(100vh - 100px);
         }
 
         .panel {
-            background: var(--card-bg);
-            border-radius: 24px;
-            padding: 20px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
+            background: var(--card-bg); border-radius: 24px; padding: 20px;
+            box-shadow: var(--shadow); border: 1px solid var(--border);
+            display: flex; flex-direction: column; overflow-y: auto;
         }
 
-        h2 { margin: 0 0 15px 0; font-size: 18px; border-bottom: 2px solid var(--border); padding-bottom: 10px; }
+        h2 { margin: 0 0 15px 0; font-size: 18px; border-bottom: 2px solid var(--border); padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
 
-        /* 左侧：挖土区 */
-        .dig-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-top: 10px;
-        }
-        .soil-pile {
-            aspect-ratio: 1;
-            background: #8D6E63;
-            border-radius: 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            position: relative;
-            overflow: hidden;
-        }
-        .soil-pile:hover { transform: scale(1.05); background: #795548; }
-        .soil-pile.dug { background: #5D4037; cursor: default; }
+        /* 左侧 */
+        .level-bar-container { background: #eee; height: 8px; border-radius: 4px; overflow: hidden; margin-bottom: 15px; }
+        .level-bar-fill { height: 100%; background: linear-gradient(90deg, #00b09b, #96c93d); width: 0%; }
         
-        /* 中间：种植区 */
-        .garden-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            padding: 10px;
-        }
+        .dig-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
+        .soil-pile { aspect-ratio: 1; background: #8D6E63; border-radius: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 32px; position: relative; }
+        .soil-pile:hover { transform: translateY(-2px); background: #795548; }
+        .soil-pile.dug { background: #5D4037; cursor: default; opacity: 0.6; }
+
+        /* 中间：种植 */
+        .garden-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; padding: 5px; }
         .plot {
-            aspect-ratio: 1;
-            background: rgba(139, 69, 19, 0.1);
-            border: 2px dashed var(--text-sub);
-            border-radius: 20px;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
+            aspect-ratio: 1; background: rgba(139, 69, 19, 0.05); border: 2px dashed var(--text-sub);
+            border-radius: 20px; position: relative; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; cursor: pointer; text-align: center;
         }
-        .plot.occupied { border-style: solid; background: rgba(255,255,255,0.5); }
-        .plant-emoji { font-size: 48px; margin-bottom: 5px; }
-        .plant-status { font-size: 12px; font-weight: bold; }
-        .progress-bar {
-            width: 80%;
-            height: 6px;
-            background: #eee;
-            border-radius: 3px;
-            margin-top: 5px;
-            overflow: hidden;
-        }
-        .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.5s; }
+        .plot.occupied { border-style: solid; background: rgba(255,255,255,0.4); }
+        .plant-emoji { font-size: 42px; margin-bottom: 2px; transition: transform 0.3s; }
+        .plot:hover .plant-emoji { transform: scale(1.1); }
+        .plant-timer { font-size: 11px; font-family: monospace; background: rgba(0,0,0,0.1); padding: 2px 6px; border-radius: 10px; margin-top: 4px; }
         
-        /* 操作菜单（悬浮在植物上） */
-        .plot-actions {
-            position: absolute;
-            bottom: 5px;
-            display: flex;
-            gap: 5px;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-        .plot:hover .plot-actions { opacity: 1; }
-        .action-mini-btn {
-            font-size: 12px;
-            padding: 4px 8px;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            color: white;
-        }
+        /* 阶段标识 */
+        .stage-tag { position: absolute; top: 5px; left: 5px; font-size: 10px; padding: 2px 6px; background: var(--primary); color: white; border-radius: 8px; opacity: 0.8; }
 
-        /* 右侧：树林图鉴 */
-        .forest-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .forest-item {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            background: rgba(0,0,0,0.05);
-            border-radius: 12px;
-            border-left: 4px solid transparent;
-        }
+        /* 右侧：展览馆 */
+        .tab-group { display: flex; margin-bottom: 15px; border-bottom: 1px solid var(--border); }
+        .tab-btn { flex: 1; padding: 10px; border: none; background: none; cursor: pointer; font-weight: bold; color: var(--text-sub); border-bottom: 3px solid transparent; }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
         
-        /* 弹窗通用 */
-        .modal {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
+        .exhibition-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .exhibit-slot { 
+            aspect-ratio: 1; background: rgba(0,0,0,0.03); border-radius: 16px; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border: 1px solid var(--border); cursor: pointer;
         }
-        .modal-content {
-            background: white;
-            padding: 25px;
-            border-radius: 24px;
-            width: 90%;
-            max-width: 400px;
-            max-height: 80vh;
-            overflow-y: auto;
-            animation: popIn 0.3s;
+        .exhibit-slot.locked { background: repeating-linear-gradient(45deg, #eee, #eee 10px, #e0e0e0 10px, #e0e0e0 20px); cursor: not-allowed; }
+
+        /* 纪念品金框动画 */
+        .souvenir-popup {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
+            background: linear-gradient(135deg, #fff 0%, #fff8e1 100%);
+            padding: 30px; border-radius: 30px; text-align: center;
+            border: 4px solid #f1c40f; box-shadow: 0 0 50px rgba(241, 196, 15, 0.5);
+            z-index: 2000; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 300px;
         }
-        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .souvenir-popup.show { transform: translate(-50%, -50%) scale(1); }
+        .souvenir-halo { font-size: 60px; filter: drop-shadow(0 0 20px gold); animation: spin 10s linear infinite; display: inline-block; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* 种子选择列表 */
-        .seed-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .seed-item {
-            text-align: center;
-            padding: 10px;
-            border: 1px solid #eee;
-            border-radius: 12px;
-            cursor: pointer;
-        }
-        .seed-item:hover { background: #f0f0f0; }
+        /* 模态框 & 列表 */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: white; padding: 25px; border-radius: 24px; width: 90%; max-width: 500px; max-height: 85vh; overflow-y: auto; display: flex; flex-direction: column; }
+        
+        .shop-tabs, .bag-tabs { display: flex; gap: 10px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
+        .filter-chip { padding: 6px 12px; background: #f1f2f6; border-radius: 20px; font-size: 13px; cursor: pointer; white-space: nowrap; }
+        .filter-chip.active { background: var(--primary); color: white; }
 
-        /* 开发者面板 */
-        .dev-row { display: flex; justify-content: space-between; margin-bottom: 10px; align-items: center; }
-        .dev-input { width: 60px; padding: 5px; border-radius: 8px; border: 1px solid #ccc; }
+        .item-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .game-item { border: 1px solid #eee; padding: 10px; border-radius: 12px; text-align: center; cursor: pointer; position: relative; }
+        .game-item:hover { background: #f9f9f9; border-color: var(--primary); }
+        .badge-count { position: absolute; top: -5px; right: -5px; background: red; color: white; border-radius: 10px; font-size: 10px; padding: 2px 6px; }
 
-        /* 响应式 */
         @media (max-width: 900px) {
             .main-layout { grid-template-columns: 1fr; height: auto; display: block; }
-            .panel { margin-bottom: 20px; height: auto; min-height: 300px; }
-            body { overflow-y: auto; }
+            .panel { margin-bottom: 20px; min-height: 350px; }
+            body { padding: 10px; }
         }
     </style>
 </head>
@@ -231,670 +151,780 @@
 
     <!-- 顶部导航 -->
     <div class="top-bar">
-        <div style="display:flex; align-items:center; gap:10px;">
-            <a href="index.html" style="text-decoration:none; font-size:20px;">🏠</a>
-            <h1 style="margin:0; font-size:20px;">我的神秘花园</h1>
+        <div class="nav-left">
+            <a href="index.html" class="back-btn">⬅ 返回首页</a>
+            <h1 style="margin:0; font-size:18px;">🌿 神秘花园 Pro</h1>
         </div>
         <div class="nav-right">
-            <span id="coin-display" style="padding:8px; font-weight:bold; color:var(--accent);">💰 0</span>
-            <button class="icon-btn" onclick="openModal('inventoryModal')" title="背包">🎒</button>
-            <button class="icon-btn" onclick="openModal('shopModal')" title="商城">🛒</button>
-            <button class="icon-btn" onclick="toggleTheme()" title="切换主题">🌗</button>
-            <button class="icon-btn" onclick="openDevAuth()" title="开发者模式">🛠️</button>
+            <div class="color-picker-group">
+                <div class="color-dot" style="background:#e0c3fc" onclick="setTheme('#e0c3fc')"></div>
+                <div class="color-dot" style="background:#8ec5fc" onclick="setTheme('#8ec5fc')"></div>
+                <div class="color-dot" style="background:#ff9ff3" onclick="setTheme('#ff9ff3')"></div>
+                <div class="color-dot" style="background:#55efc4" onclick="setTheme('#55efc4')"></div>
+                <input type="color" id="custom-color-input" onchange="setTheme(this.value)" title="自定义背景色">
+            </div>
+            <button class="icon-btn" onclick="toggleDarkMode()" title="黑夜模式">🌗</button>
+            <span id="coin-display" style="font-weight:bold; color:var(--accent); font-size:14px;">💰 0</span>
+            <span id="level-display" style="font-weight:bold; color:var(--primary); font-size:14px; margin-left:5px;">Lv.1</span>
+            <button class="icon-btn" onclick="openModal('inventoryModal')">🎒</button>
+            <button class="icon-btn" onclick="openModal('shopModal')">🛒</button>
+            <button class="icon-btn" onclick="openDevAuth()">🛠️</button>
         </div>
     </div>
 
     <!-- 主布局 -->
     <div class="main-layout">
         
-        <!-- 左侧：挖土 -->
+        <!-- 左侧：等级 & 挖土 -->
         <div class="panel">
-            <h2>⛏️ 挖宝 (<span id="dig-chances">5</span>/5)</h2>
-            <p style="font-size:12px; color:var(--text-sub);">每天刷新，五选一挖出神秘种子！</p>
+            <h2>
+                <span>📊 等级 <span id="lvl-num">1</span></span>
+                <button onclick="dailyCheckIn()" id="check-in-btn" style="font-size:12px; padding:4px 8px; background:var(--accent); color:white; border:none; border-radius:12px; cursor:pointer;">📅 签到</button>
+            </h2>
+            <div class="level-bar-container">
+                <div id="xp-bar" class="level-bar-fill"></div>
+            </div>
+            <div style="font-size:12px; text-align:right; margin-bottom:15px; color:var(--text-sub);">XP: <span id="xp-val">0</span>/<span id="xp-max">100</span></div>
+
+            <h2 style="margin-top:10px;">⛏️ 寻宝 (<span id="dig-count">5</span>)</h2>
             <div id="soil-container" class="dig-grid">
-                <!-- JS生成土堆 -->
+                <!-- JS生成 -->
             </div>
-            <div id="dig-msg" style="margin-top:20px; text-align:center; min-height:20px; font-size:14px;"></div>
+            <div id="dig-msg" style="margin-top:10px; text-align:center; height:20px; font-size:12px; color:var(--text-main);"></div>
         </div>
 
-        <!-- 中间：种植 -->
+        <!-- 中间：种植区 -->
         <div class="panel">
-            <h2>🌱 种植区</h2>
+            <h2>🌱 皇家种植园 <small style="font-size:12px; font-weight:normal; color:#888;">树木与花卉</small></h2>
             <div id="garden-container" class="garden-grid">
-                <!-- JS生成土地 -->
+                <!-- JS生成 -->
             </div>
         </div>
 
-        <!-- 右侧：树林 -->
+        <!-- 右侧：展览馆 -->
         <div class="panel">
-            <h2>🌳 皇家树林</h2>
-            <p style="font-size:12px; color:var(--text-sub);">展示你培育出的珍稀植物</p>
-            <div id="forest-container" class="forest-list">
-                <!-- JS生成展示 -->
+            <div class="tab-group">
+                <button class="tab-btn active" onclick="switchRightTab('exhibit')">🏆 展览区</button>
+                <button class="tab-btn" onclick="switchRightTab('gallery')">📖 图鉴</button>
+            </div>
+            
+            <!-- 展览区内容 -->
+            <div id="tab-exhibit" style="display:block;">
+                <p style="font-size:12px; color:var(--text-sub); margin-bottom:10px;">展示你的得意收藏 (升级解锁更多位置)</p>
+                <div id="exhibition-grid" class="exhibition-grid">
+                    <!-- JS生成 -->
+                </div>
+            </div>
+
+            <!-- 图鉴内容 -->
+            <div id="tab-gallery" style="display:none;">
+                <div id="gallery-list" class="item-list" style="grid-template-columns: repeat(4, 1fr);">
+                    <!-- JS生成 -->
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- 模态框：背包 -->
+    <!-- 获得纪念品弹窗 -->
+    <div id="souvenirPopup" class="souvenir-popup">
+        <h3>✨ 获得稀有纪念品 ✨</h3>
+        <div class="souvenir-halo" id="pop-emoji">🏆</div>
+        <h2 id="pop-name" style="color:var(--accent); margin:10px 0;">神秘奖杯</h2>
+        <p id="pop-desc" style="font-size:12px; color:#666;">这是一个非常珍贵的物品。</p>
+        <button onclick="closeSouvenirPopup()" style="margin-top:15px; padding:8px 20px; background:var(--primary); color:white; border:none; border-radius:20px; cursor:pointer;">收入囊中</button>
+    </div>
+
+    <!-- 背包模态框 -->
     <div id="inventoryModal" class="modal">
         <div class="modal-content">
             <h3>🎒 我的背包</h3>
-            <div id="inventory-list" style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px;"></div>
-            <button onclick="closeModal('inventoryModal')" style="width:100%; margin-top:20px; padding:10px;">关闭</button>
+            <div class="bag-tabs">
+                <span class="filter-chip active" onclick="filterBag('all', this)">全部</span>
+                <span class="filter-chip" onclick="filterBag('seed', this)">🌱 种子</span>
+                <span class="filter-chip" onclick="filterBag('fruit', this)">🍎 果实</span>
+                <span class="filter-chip" onclick="filterBag('tool', this)">🔧 道具</span>
+                <span class="filter-chip" onclick="filterBag('souvenir', this)">🏆 纪念品</span>
+            </div>
+            <div id="inventory-list" class="item-list"></div>
+            <button onclick="closeModal('inventoryModal')" style="width:100%; margin-top:20px; padding:10px; border:none; background:#eee; border-radius:10px;">关闭</button>
         </div>
     </div>
 
-    <!-- 模态框：商城 -->
+    <!-- 商城模态框 -->
     <div id="shopModal" class="modal">
         <div class="modal-content">
-            <h3>🛒 农资商城</h3>
-            <div class="dev-row">
-                <span>💧 强力营养液 (减少30%时间)</span>
-                <button onclick="buyItem('fertilizer', 50)">50💰</button>
+            <h3>🛒 农资百货</h3>
+            <div class="shop-tabs">
+                <span class="filter-chip active" onclick="filterShop('seed', this)">种子</span>
+                <span class="filter-chip" onclick="filterShop('tool', this)">道具</span>
+                <span class="filter-chip" onclick="filterShop('chance', this)">机会/玩法</span>
             </div>
-            <div class="dev-row">
-                <span>💊 治愈药剂 (治疗生病)</span>
-                <button onclick="buyItem('medicine', 30)">30💰</button>
-            </div>
-            <div class="dev-row">
-                <span>☀️ 人造小太阳 (加速10%)</span>
-                <button onclick="buyItem('sun', 20)">20💰</button>
-            </div>
-            <button onclick="closeModal('shopModal')" style="width:100%; margin-top:20px; padding:10px;">离开</button>
+            <div id="shop-list" class="item-list"></div>
+            <button onclick="closeModal('shopModal')" style="width:100%; margin-top:20px; padding:10px; border:none; background:#eee; border-radius:10px;">离开</button>
         </div>
     </div>
 
-    <!-- 模态框：种子选择 -->
+    <!-- 种子选择播种 -->
     <div id="seedSelectModal" class="modal">
         <div class="modal-content">
-            <h3>🌱 选择种子播种</h3>
-            <div id="seed-select-list" class="seed-list"></div>
+            <h3>🌱 选择要播种的种子</h3>
+            <div id="seed-select-list" class="item-list"></div>
             <button onclick="closeModal('seedSelectModal')" style="width:100%; margin-top:20px; padding:10px;">取消</button>
         </div>
     </div>
-
-    <!-- 模态框：开发者验证 -->
-    <div id="devAuthModal" class="modal">
-        <div class="modal-content" style="text-align:center;">
-            <h3>🛡️ 开发者验证</h3>
-            <input type="password" id="dev-pwd" placeholder="输入密码" style="padding:10px; width:80%; margin:10px 0;">
-            <button onclick="checkDevPwd()" style="padding:10px 20px; background:var(--primary); color:white; border:none; border-radius:10px;">确认</button>
-            <button onclick="closeModal('devAuthModal')" style="margin-top:10px; background:none; border:none;">取消</button>
+    
+    <!-- 展览选择 -->
+    <div id="exhibitSelectModal" class="modal">
+        <div class="modal-content">
+            <h3>🏆 选择展品</h3>
+            <p style="font-size:12px; color:#888;">可以展示已解锁的图鉴内容</p>
+            <div id="exhibit-select-list" class="item-list"></div>
+            <button onclick="closeModal('exhibitSelectModal')" style="width:100%; margin-top:20px; padding:10px;">取消</button>
         </div>
     </div>
 
-    <!-- 模态框：开发者控制台 -->
-    <div id="devPanelModal" class="modal">
+    <!-- 开发者 -->
+    <div id="devModal" class="modal">
         <div class="modal-content">
-            <h3>🛠️ 上帝模式</h3>
-            <div class="dev-row">
-                <label>每日挖掘次数</label>
-                <input type="number" id="cfg-dig-limit" class="dev-input">
+            <h3>🛠️ 开发者控制台</h3>
+            <div style="display:grid; gap:10px;">
+                <button onclick="devAddCoins()">+1000 金币</button>
+                <button onclick="devAddXP()">+100 经验</button>
+                <button onclick="devAddDigs()">满挖掘次数</button>
+                <button onclick="devSpeedUp()">一键加速所有植物</button>
+                <button onclick="devGetSouvenir()">随机获得纪念品</button>
+                <button onclick="hardReset()" style="background:red; color:white;">⚠️ 删档重置</button>
             </div>
-            <div class="dev-row">
-                <label>基础生长速度 (ms)</label>
-                <input type="number" id="cfg-growth-speed" class="dev-input">
-            </div>
-            <div class="dev-row">
-                <label>金种子概率 (%)</label>
-                <input type="number" id="cfg-gold-rate" class="dev-input">
-            </div>
-            <div class="dev-row">
-                <label>增加金币</label>
-                <button onclick="addCoins(1000)">+1000💰</button>
-            </div>
-            <div class="dev-row">
-                <label>重置挖掘</label>
-                <button onclick="resetDigging()">重置</button>
-            </div>
-            <div class="dev-row">
-                <label>清除所有数据</label>
-                <button onclick="hardReset()" style="background:red; color:white;">⚠️清除</button>
-            </div>
-            <button onclick="saveDevConfig()" style="width:100%; margin-top:20px; padding:10px; background:var(--primary); color:white; border:none; border-radius:8px;">保存并生效</button>
+            <button onclick="closeModal('devModal')" style="margin-top:20px;">关闭</button>
         </div>
     </div>
 
     <script>
-        // ================= 配置与数据 =================
-        let CONFIG = {
-            dailyDigLimit: 5,
-            growthSpeedBase: 1000, // 基础生长tick (1秒)
-            probabilities: { 1: 50, 2: 30, 3: 15, 4: 4, 5: 1 }, // 白绿蓝紫金
-            maxPlots: 6
+        // ================= 数据定义 =================
+        const CONFIG = {
+            baseDigs: 5,
+            levelCap: 10,
+            xpTable: [0, 100, 300, 600, 1000, 1500, 2200, 3000, 4000, 5500, 99999]
         };
 
-        const PLANT_TYPES = {
-            1: { name: '狗尾草', emoji: '🌿', time: 60, reward: 10 },    // 1分钟
-            2: { name: '向日葵', emoji: '🌻', time: 180, reward: 30 },   // 3分钟
-            3: { name: '蓝玫瑰', emoji: '🌹', time: 600, reward: 80 },   // 10分钟
-            4: { name: '水晶兰', emoji: '🪷', time: 1800, reward: 200 },  // 30分钟
-            5: { name: '生命树', emoji: '🌳', time: 3600, reward: 1000 }  // 1小时
+        // 植物库 (type: 1=花草, 2=树木)
+        const PLANTS = {
+            1: { name: '狗尾草', type: 1, emoji: '🌿', stages: ['🌱','🌱','🌿','🌾'], time: 60, reward: 10, xp: 5, rarity: 1 },
+            2: { name: '向日葵', type: 1, emoji: '🌻', stages: ['🌱','🪴','🌻','🌻'], time: 180, reward: 30, xp: 15, rarity: 2 },
+            3: { name: '蓝玫瑰', type: 1, emoji: '🌹', stages: ['🌱','🪴','🥀','🌹'], time: 600, reward: 80, xp: 40, rarity: 3 },
+            4: { name: '橡树',   type: 2, emoji: '🌳', stages: ['🌰','🌱','🌲','🌳'], time: 1200, reward: 150, xp: 80, rarity: 3 },
+            5: { name: '水晶兰', type: 1, emoji: '🪷', stages: ['🌱','💠','🪷','🪷'], time: 2400, reward: 300, xp: 150, rarity: 4 },
+            6: { name: '黄金树', type: 2, emoji: '🎄', stages: ['🌰','🌱','🌲','🎄'], time: 3600, reward: 600, xp: 300, rarity: 5 },
+            7: { name: '食人花', type: 1, emoji: '🌺', stages: ['🌱','🪴','🌷','🌺'], time: 4800, reward: 800, xp: 400, rarity: 4 },
+            8: { name: '世界树', type: 2, emoji: '🎋', stages: ['✨','🎋','🎋','🎋'], time: 7200, reward: 1500, xp: 800, rarity: 5 }
         };
 
-        let gameState = {
+        // 纪念品库
+        const SOUVENIRS = {
+            's1': { name: '古代化石', emoji: '🦕', desc: '挖土时意外发现的恐龙骨头。' },
+            's2': { name: '四叶草', emoji: '🍀', desc: '象征幸运的植物标本。' },
+            's3': { name: '金铲子', emoji: '🔱', desc: '传说中农神使用过的工具。' },
+            's4': { name: '神秘外星人', emoji: '👽', desc: '它说它来自种子的故乡。' },
+            's5': { name: '时间胶囊', emoji: '💊', desc: '里面写着上一代园主的信。' },
+            's6': { name: '冠军奖杯', emoji: '🏆', desc: '园艺大赛第一名！' }
+        };
+
+        // 道具库
+        const TOOLS = {
+            'fertilizer': { name: '速效肥', emoji: '⚡', desc: '减少30%生长时间', price: 50 },
+            'water':      { name: '山泉水', emoji: '💧', desc: '减少10秒，免费', price: 0 },
+            'mystery_box':{ name: '神秘盲盒', emoji: '🎁', desc: '随机开出物品', price: 100 }
+        };
+
+        let state = {
             coins: 100,
-            digsLeft: 5,
-            lastDigDate: new Date().toDateString(),
-            inventory: { seeds: {}, fruits: {}, tools: { fertilizer: 0, medicine: 0, sun: 0 } },
-            plots: [], // { id, plantId, startTime, duration, status: 'growing'|'sick'|'ripe', health: 100 }
-            forest: [] // 展示已收获的高级植物
+            xp: 0,
+            level: 1,
+            digs: 5,
+            lastLogin: '',
+            plots: Array(6).fill(null), // { id, pid, start, duration, stageIndex }
+            inventory: { seeds: {}, fruits: {}, tools: { fertilizer: 0 }, souvenirs: [] },
+            exhibition: Array(4).fill(null), // 存 PLANT_ID 或 SOUVENIR_KEY
+            unlocked: [] // 记录解锁过的ID
         };
 
-        let currentActivePlotIndex = -1;
+        let activePlotIdx = -1;
+        let activeExhibitIdx = -1;
 
         // ================= 初始化 =================
-        window.onload = function() {
+        window.onload = () => {
             loadGame();
-            checkDailyReset();
             renderAll();
-            startGameLoop();
+            setInterval(gameLoop, 1000);
         };
 
         function loadGame() {
-            const saved = localStorage.getItem('my_plants_data');
-            if (saved) {
-                gameState = JSON.parse(saved);
-                // 确保数据结构完整
-                if(!gameState.forest) gameState.forest = [];
-            } else {
-                // 初始化地块
-                for(let i=0; i<CONFIG.maxPlots; i++) gameState.plots.push(null);
+            const saved = localStorage.getItem('garden_pro_v1');
+            if(saved) {
+                state = JSON.parse(saved);
+                // 数据迁移兼容
+                if(!state.exhibition) state.exhibition = Array(4).fill(null);
+                if(!state.unlocked) state.unlocked = [];
             }
-            
-            // 加载配置
-            const savedConfig = localStorage.getItem('my_plants_config');
-            if(savedConfig) CONFIG = JSON.parse(savedConfig);
-
-            // 应用主题
-            const theme = localStorage.getItem('theme');
-            if(theme === 'dark') document.body.setAttribute('data-theme', 'dark');
+            // 恢复主题
+            const theme = localStorage.getItem('garden_theme_color');
+            if(theme) setTheme(theme);
+            const dark = localStorage.getItem('garden_dark_mode');
+            if(dark === 'true') document.body.setAttribute('data-theme', 'dark');
         }
 
         function saveGame() {
-            localStorage.setItem('my_plants_data', JSON.stringify(gameState));
+            localStorage.setItem('garden_pro_v1', JSON.stringify(state));
         }
 
-        function checkDailyReset() {
-            const today = new Date().toDateString();
-            if (gameState.lastDigDate !== today) {
-                gameState.digsLeft = CONFIG.dailyDigLimit;
-                gameState.lastDigDate = today;
-                resetSoilUI(); // 重置土堆UI状态
-                saveGame();
-            }
-        }
-
-        // ================= 渲染系统 =================
         function renderAll() {
-            renderHeader();
-            renderSoil();
+            updateHeader();
+            renderLeftPanel();
             renderGarden();
-            renderForest();
+            renderRightPanel();
         }
 
-        function renderHeader() {
-            document.getElementById('coin-display').innerText = `💰 ${gameState.coins}`;
-            document.getElementById('dig-chances').innerText = gameState.digsLeft;
+        // ================= 逻辑与功能 =================
+
+        // --- 头部 & 主题 ---
+        function updateHeader() {
+            document.getElementById('coin-display').innerText = `💰 ${state.coins}`;
+            document.getElementById('level-display').innerText = `Lv.${state.level}`;
         }
 
-        // --- 挖土模块 ---
-        function renderSoil() {
-            const container = document.getElementById('soil-container');
-            container.innerHTML = '';
-            
-            // 每次生成5个土堆，如果当天挖过了，保持挖过的状态需要更复杂的逻辑，
-            // 这里简化为：每次刷新页面土堆重置，但扣除次数。次数为0则不能点。
-            for (let i = 0; i < 5; i++) { // 这里固定显示4个格子稍微美观些，改成4个或6个更好，按需求是5选1
-                // 为了布局好看，我们用CSS Grid 2列，所以生成4个或者6个比较好。
-                // 需求说5选1，那我们生成5个，最后一个单独一行或者用Grid排版
-            }
-            // 重新修正：需求是5次机会，每次挖土是5选1。
-            // 逻辑：点击“开始挖掘” -> 弹出5个土堆 -> 选择一个 -> 获得奖励 -> 扣除次数。
-            
-            // 简化版逻辑：左侧直接显示4个常驻土堆（模拟田地），点击直接挖。
-            // 为了符合“5选1”的感觉，我们生成6个土堆格子（Grid 2列，3行），最后一次机会。
-            
-            let html = '';
-            for(let i=0; i<4; i++) { // 保持界面整洁，放4个土堆图形
-                html += `<div class="soil-pile" onclick="digAction(this)">🕳️</div>`;
-            }
-            container.innerHTML = html;
+        function setTheme(color) {
+            document.documentElement.style.setProperty('--bg-color', color);
+            localStorage.setItem('garden_theme_color', color);
         }
 
-        function digAction(el) {
-            if (gameState.digsLeft <= 0) {
-                showToast("😫 今天的力气用光了，明天再来吧！");
-                return;
+        function toggleDarkMode() {
+            const isDark = document.body.hasAttribute('data-theme');
+            if(isDark) {
+                document.body.removeAttribute('data-theme');
+                localStorage.setItem('garden_dark_mode', 'false');
+            } else {
+                document.body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('garden_dark_mode', 'true');
             }
-            if (el.classList.contains('dug')) return;
+        }
+
+        // --- 左侧：等级、签到、挖土 ---
+        function renderLeftPanel() {
+            // 等级条
+            const maxXp = CONFIG.xpTable[state.level];
+            const currentLevelXp = state.level === 1 ? state.xp : state.xp - CONFIG.xpTable[state.level-1];
+            const levelRange = state.level === 1 ? 100 : CONFIG.xpTable[state.level] - CONFIG.xpTable[state.level-1];
+            
+            const pct = Math.min(100, Math.floor((currentLevelXp / levelRange) * 100));
+            document.getElementById('lvl-num').innerText = state.level;
+            document.getElementById('xp-bar').style.width = pct + '%';
+            document.getElementById('xp-val').innerText = state.xp;
+            document.getElementById('xp-max').innerText = maxXp;
+
+            // 签到按钮
+            const today = new Date().toDateString();
+            const btn = document.getElementById('check-in-btn');
+            if(state.lastLogin === today) {
+                btn.innerText = '✅ 已签到';
+                btn.disabled = true;
+                btn.style.background = '#ccc';
+            } else {
+                btn.innerText = '📅 签到';
+                btn.disabled = false;
+                btn.style.background = 'var(--accent)';
+                // 重置挖土次数
+                state.digs = CONFIG.baseDigs;
+            }
+            document.getElementById('dig-count').innerText = state.digs;
+
+            // 挖土格子
+            const box = document.getElementById('soil-container');
+            box.innerHTML = '';
+            for(let i=0; i<4; i++) {
+                box.innerHTML += `<div class="soil-pile" onclick="dig(this)">🕳️</div>`;
+            }
+        }
+
+        function dailyCheckIn() {
+            const reward = Math.floor(Math.random() * 100) + 10;
+            state.coins += reward;
+            state.lastLogin = new Date().toDateString();
+            showToast(`📅 签到成功！获得 ${reward} 金币`);
+            saveGame();
+            renderAll();
+        }
+
+        function dig(el) {
+            if(state.digs <= 0) return showToast('😫 次数用光了，去商城买点？');
+            if(el.classList.contains('dug')) return;
 
             el.classList.add('dug');
-            el.innerHTML = '✨';
+            state.digs--;
             
-            gameState.digsLeft--;
-            
-            // 计算掉落
-            const seed = generateRandomSeed();
-            addInventory('seeds', seed, 1);
-            
-            setTimeout(() => {
-                showToast(`🎉 挖到了：<span class="rarity-${seed}">Lv.${seed} ${PLANT_TYPES[seed].name}种子</span>`);
-                el.innerHTML = '🕳️'; // 恢复，为了游戏性
-                el.classList.remove('dug');
-                renderHeader();
-                saveGame();
-            }, 500);
-        }
-
-        function generateRandomSeed() {
-            const rand = Math.random() * 100;
-            let sum = 0;
-            for (let lv = 1; lv <= 5; lv++) {
-                sum += CONFIG.probabilities[lv];
-                if (rand <= sum) return lv;
+            // 挖土概率: 20%空, 40%种子, 20%金币, 15%道具, 5%纪念品
+            const rng = Math.random();
+            if(rng < 0.2) {
+                showToast('💨 哎呀，什么都没有挖到');
+            } else if (rng < 0.6) {
+                // 种子
+                const pid = Math.floor(Math.random() * 4) + 1; // 1-4号普通种子
+                addItem('seeds', pid, 1);
+                showToast(`🌱 挖到了：${PLANTS[pid].name}种子`);
+            } else if (rng < 0.8) {
+                // 金币
+                const c = Math.floor(Math.random() * 50) + 10;
+                state.coins += c;
+                showToast(`💰 挖到了 ${c} 金币`);
+            } else if (rng < 0.95) {
+                // 道具
+                addItem('tools', 'fertilizer', 1);
+                showToast(`⚡ 挖到了：速效肥`);
+            } else {
+                // 纪念品
+                const sKeys = Object.keys(SOUVENIRS);
+                const sKey = sKeys[Math.floor(Math.random() * sKeys.length)];
+                addSouvenir(sKey);
             }
-            return 1;
+            
+            updateHeader();
+            document.getElementById('dig-count').innerText = state.digs;
+            setTimeout(() => {
+                el.classList.remove('dug');
+                saveGame();
+            }, 1000); // 1秒后复原土堆方便下次
         }
 
-        // --- 种植模块 ---
+        // --- 中间：种植与成长 ---
         function renderGarden() {
-            const container = document.getElementById('garden-container');
-            container.innerHTML = '';
+            const grid = document.getElementById('garden-container');
+            grid.innerHTML = '';
 
-            gameState.plots.forEach((plot, index) => {
+            state.plots.forEach((p, idx) => {
                 const div = document.createElement('div');
-                div.className = `plot ${plot ? 'occupied' : ''}`;
-                
-                if (!plot) {
-                    div.innerHTML = `<span style="font-size:30px; color:#ccc;">➕</span><span style="font-size:12px; color:#999;">播种</span>`;
-                    div.onclick = () => openSeedSelect(index);
-                } else {
-                    const plantInfo = PLANT_TYPES[plot.plantId];
-                    const now = Date.now();
-                    const elapsed = (now - plot.startTime) / 1000;
-                    const progress = Math.min(100, (elapsed / plot.duration) * 100);
-                    
-                    let statusIcon = plantInfo.emoji;
-                    let statusText = '生长中...';
-                    
-                    // 阶段显示
-                    if (progress < 30) statusIcon = '🌱';
-                    else if (progress < 60) statusIcon = '🌿';
-                    else if (progress < 100) statusIcon = '🪴';
+                div.className = `plot ${p ? 'occupied' : ''}`;
 
-                    if (plot.status === 'sick') {
-                        statusIcon = '🥀';
-                        statusText = '生病了(需治疗)';
-                    } else if (progress >= 100) {
-                        statusIcon = plantInfo.emoji; // 成熟显示本体
-                        statusText = '✨ 可收获 ✨';
-                        div.style.borderColor = 'gold';
-                    }
+                if(!p) {
+                    div.innerHTML = `<span style="font-size:30px;color:#ccc;">➕</span><span style="font-size:12px;color:#aaa;">播种</span>`;
+                    div.onclick = () => openSeedSelect(idx);
+                } else {
+                    const info = PLANTS[p.pid];
+                    const now = Date.now();
+                    const elapsed = (now - p.start) / 1000;
+                    const timeLeft = Math.max(0, p.duration - elapsed);
+                    const progress = Math.min(1, elapsed / p.duration);
+                    
+                    // 计算阶段
+                    let stageIdx = 0;
+                    if(progress > 1) stageIdx = 3; // 成熟
+                    else if(progress > 0.6) stageIdx = 2; // 成年
+                    else if(progress > 0.3) stageIdx = 1; // 幼年
+                    else stageIdx = 0; // 发芽
+                    
+                    const isMature = progress >= 1;
+                    const stageName = isMature ? '成熟' : ['发芽','幼苗','生长','成熟'][stageIdx];
+                    const icon = info.stages[stageIdx];
 
                     div.innerHTML = `
-                        <div class="plant-emoji">${statusIcon}</div>
-                        <div class="plant-status rarity-${plot.plantId}">${plantInfo.name}</div>
-                        <div class="progress-bar"><div class="progress-fill" style="width:${progress}%"></div></div>
-                        <div class="plant-status" style="margin-top:2px;">${statusText}</div>
-                        
-                        <div class="plot-actions">
-                            ${plot.status === 'sick' 
-                                ? `<button class="action-mini-btn" style="background:#ff7675" onclick="treatPlant(${index})">💊 治疗</button>` 
-                                : progress >= 100 
-                                    ? `<button class="action-mini-btn" style="background:#f1c40f; color:black;" onclick="harvest(${index})">🪝 收获</button>`
-                                    : `
-                                        <button class="action-mini-btn" style="background:#3498db" onclick="useItemOnPlot(${index}, 'water')">💧</button>
-                                        <button class="action-mini-btn" style="background:#2ecc71" onclick="useItemOnPlot(${index}, 'fertilizer')">⚡</button>
-                                        <button class="action-mini-btn" style="background:#e67e22" onclick="useItemOnPlot(${index}, 'sun')">☀️</button>
-                                      `
-                            }
-                            <button class="action-mini-btn" style="background:#636e72" onclick="clearPlot(${index})">❌</button>
-                        </div>
+                        <div class="stage-tag">${stageName}</div>
+                        <div class="plant-emoji">${icon}</div>
+                        <div style="font-size:12px; font-weight:bold;">${info.name}</div>
+                        ${isMature ? 
+                            `<div class="plant-timer" style="background:gold; color:black;">可收获</div>` : 
+                            `<div class="plant-timer">⏳ ${formatTime(timeLeft)}</div>`
+                        }
                     `;
+                    
+                    // 点击事件：成熟收获，未成熟弹道具菜单
+                    if(isMature) {
+                        div.onclick = () => harvest(idx);
+                        div.style.borderColor = 'gold';
+                    } else {
+                        div.onclick = () => useTool(idx);
+                    }
                 }
-                container.appendChild(div);
+                grid.appendChild(div);
             });
         }
 
-        // --- 逻辑循环 ---
-        function startGameLoop() {
-            setInterval(() => {
-                let needRender = false;
-                gameState.plots.forEach(plot => {
-                    if (plot && plot.status === 'growing') {
-                        // 随机生病逻辑 (0.5%概率每秒)
-                        if (Math.random() < 0.005) {
-                            plot.status = 'sick';
-                            needRender = true;
-                        }
-                        // 检查是否刚刚成熟
-                        const now = Date.now();
-                        if ((now - plot.startTime) / 1000 >= plot.duration && !plot.isMature) {
-                            plot.isMature = true;
-                            needRender = true;
-                        }
-                        // 仅为了更新进度条
-                        needRender = true; 
-                    }
-                });
-                if (needRender) renderGarden();
-            }, CONFIG.growthSpeedBase); // 基础刷新率
+        function gameLoop() {
+            // 每秒刷新一次种植区和倒计时
+            renderGarden();
         }
 
-        // --- 交互动作 ---
-        function openSeedSelect(index) {
-            currentActivePlotIndex = index;
+        function formatTime(sec) {
+            const h = Math.floor(sec / 3600).toString().padStart(2,'0');
+            const m = Math.floor((sec % 3600) / 60).toString().padStart(2,'0');
+            const s = Math.floor(sec % 60).toString().padStart(2,'0');
+            return `${h}:${m}:${s}`;
+        }
+
+        function openSeedSelect(idx) {
+            activePlotIdx = idx;
             const list = document.getElementById('seed-select-list');
             list.innerHTML = '';
             
             let hasSeed = false;
-            for (let id in gameState.inventory.seeds) {
-                const count = gameState.inventory.seeds[id];
-                if (count > 0) {
+            for(let id in state.inventory.seeds) {
+                if(state.inventory.seeds[id] > 0) {
                     hasSeed = true;
-                    const info = PLANT_TYPES[id];
+                    const info = PLANTS[id];
                     list.innerHTML += `
-                        <div class="seed-item rarity-${id}" onclick="plantSeed(${id})">
+                        <div class="game-item rarity-${info.rarity}" onclick="plant(${id})">
                             <div style="font-size:24px;">${info.emoji}</div>
                             <div>${info.name}</div>
-                            <div style="font-size:12px;">库存: ${count}</div>
+                            <div style="font-size:10px;">x${state.inventory.seeds[id]}</div>
                         </div>
                     `;
                 }
             }
-            if (!hasSeed) list.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#999;">背包里没有种子，快去挖土吧！</div>';
+            if(!hasSeed) list.innerHTML = '<div>🎒 背包里没有种子</div>';
             openModal('seedSelectModal');
         }
 
-        function plantSeed(seedId) {
-            if (currentActivePlotIndex === -1) return;
-            
-            gameState.inventory.seeds[seedId]--;
-            const info = PLANT_TYPES[seedId];
-            
-            gameState.plots[currentActivePlotIndex] = {
+        function plant(pid) {
+            state.inventory.seeds[pid]--;
+            const info = PLANTS[pid];
+            state.plots[activePlotIdx] = {
                 id: Date.now(),
-                plantId: seedId,
-                startTime: Date.now(),
-                duration: info.time, // 秒
-                status: 'growing',
-                isMature: false
+                pid: pid,
+                start: Date.now(),
+                duration: info.time
             };
-            
             closeModal('seedSelectModal');
             saveGame();
             renderAll();
         }
 
-        function useItemOnPlot(index, type) {
-            const plot = gameState.plots[index];
-            if (!plot) return;
-
-            // 检查是否有道具 (除了水，水是免费的)
-            if (type !== 'water') {
-                if (!gameState.inventory.tools[type] || gameState.inventory.tools[type] <= 0) {
-                    showToast(`缺少道具: ${type === 'fertilizer'?'营养液':'小太阳'}，请去商城购买`);
-                    return;
+        function useTool(idx) {
+            // 简单处理：点击未成熟植物直接施肥（如果背包有）
+            if(state.inventory.tools['fertilizer'] > 0) {
+                if(confirm('使用⚡速效肥加速30%？')) {
+                    state.inventory.tools['fertilizer']--;
+                    const p = state.plots[idx];
+                    const reduce = p.duration * 0.3;
+                    // 实际上是把开始时间往前推
+                    p.start -= reduce * 1000;
+                    showToast('⚡ 施肥成功！');
+                    saveGame();
+                    renderGarden();
                 }
-                gameState.inventory.tools[type]--;
-            }
-
-            // 效果
-            if (type === 'water') {
-                // 浇水减少10秒
-                plot.duration = Math.max(1, plot.duration - 10);
-                showToast("💧 浇水成功，加速成长！");
-            } else if (type === 'fertilizer') {
-                // 肥料减少30%剩余时间
-                const elapsed = (Date.now() - plot.startTime) / 1000;
-                const remaining = plot.duration - elapsed;
-                plot.startTime -= (remaining * 0.3) * 1000; // 倒推开始时间来模拟加速
-                showToast("⚡ 使用营养液，大幅加速！");
-            } else if (type === 'sun') {
-                // 太阳减少10%
-                const elapsed = (Date.now() - plot.startTime) / 1000;
-                const remaining = plot.duration - elapsed;
-                plot.startTime -= (remaining * 0.1) * 1000;
-                showToast("☀️ 阳光普照，暖洋洋的！");
-            }
-
-            saveGame();
-            renderGarden();
-        }
-
-        function treatPlant(index) {
-            const plot = gameState.plots[index];
-            if (gameState.inventory.tools.medicine > 0) {
-                gameState.inventory.tools.medicine--;
-                plot.status = 'growing';
-                // 治疗后补偿一点时间，防止刚治疗完就成熟没有中间态（如果已经过时）
-                plot.startTime = Date.now() - ((Date.now() - plot.startTime)); 
-                showToast("💊 植物治好了！");
-                saveGame();
-                renderGarden();
             } else {
-                showToast("缺少治愈药剂，请去商城购买");
+                if(confirm('给它浇点水吗？(免费加速10秒)')) {
+                    const p = state.plots[idx];
+                    p.start -= 10000;
+                    showToast('💧 浇水成功！');
+                    renderGarden();
+                }
             }
         }
 
-        function harvest(index) {
-            const plot = gameState.plots[index];
-            if (!plot) return;
-            
-            const info = PLANT_TYPES[plot.plantId];
+        function harvest(idx) {
+            const p = state.plots[idx];
+            const info = PLANTS[p.pid];
             
             // 奖励
-            gameState.coins += info.reward;
-            addInventory('fruits', plot.plantId, 1);
+            state.coins += info.reward;
+            addItem('fruits', p.pid, 1);
+            addXP(info.xp);
             
-            // 几率掉落特殊道具或种子
-            if (Math.random() > 0.7) {
-                const backSeed = plot.plantId;
-                addInventory('seeds', backSeed, 1);
-                showToast(`♻️ 意外收获了一颗${info.name}种子！`);
+            // 解锁图鉴
+            if(!state.unlocked.includes('p'+p.pid)) {
+                state.unlocked.push('p'+p.pid);
+                showToast(`🔓 解锁图鉴：${info.name}`);
             }
 
-            // 记录到森林 (只记录稀有度3及以上)
-            if (plot.plantId >= 3) {
-                addToForest(plot.plantId);
+            // 随机掉落纪念品
+            if(Math.random() < 0.05) {
+                const sKey = Object.keys(SOUVENIRS)[Math.floor(Math.random()*Object.keys(SOUVENIRS).length)];
+                addSouvenir(sKey);
             }
 
-            showToast(`收获 ${info.name}! 金币 +${info.reward}`);
-            
-            // 清空土地
-            gameState.plots[index] = null;
+            state.plots[idx] = null;
+            showToast(`收获 ${info.name}! +${info.reward}金币 +${info.xp}XP`);
             saveGame();
             renderAll();
         }
 
-        function clearPlot(index) {
-            if(confirm('确定要铲除这株植物吗？不会获得任何奖励。')) {
-                gameState.plots[index] = null;
-                saveGame();
-                renderGarden();
+        // --- 右侧：展览与图鉴 ---
+        function switchRightTab(tab) {
+            document.getElementById('tab-exhibit').style.display = tab === 'exhibit' ? 'block' : 'none';
+            document.getElementById('tab-gallery').style.display = tab === 'gallery' ? 'block' : 'none';
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            if(tab === 'gallery') renderGallery();
+            if(tab === 'exhibit') renderExhibit();
+        }
+
+        function renderExhibit() {
+            const grid = document.getElementById('exhibition-grid');
+            grid.innerHTML = '';
+            // 展位数量随等级增加，每2级加1个，基础2个，最多4个
+            const slots = Math.min(4, 2 + Math.floor((state.level-1)/2));
+            
+            for(let i=0; i<4; i++) {
+                if(i < slots) {
+                    const content = state.exhibition[i];
+                    let inner = '<span style="color:#ccc; font-size:20px;">➕</span>';
+                    if(content) {
+                        // 内容可能是 p+id (植物) 或 s+key (纪念品)
+                        if(content.startsWith('p')) {
+                            const info = PLANTS[content.substring(1)];
+                            inner = `<span style="font-size:30px;">${info.emoji}</span><span style="font-size:10px;">${info.name}</span>`;
+                        } else {
+                            const info = SOUVENIRS[content.substring(1)];
+                            inner = `<span style="font-size:30px;">${info.emoji}</span><span style="font-size:10px;">${info.name}</span>`;
+                        }
+                    }
+                    grid.innerHTML += `<div class="exhibit-slot" onclick="setExhibit(${i})">${inner}</div>`;
+                } else {
+                    grid.innerHTML += `<div class="exhibit-slot locked"><span style="font-size:10px; color:#999;">Lv.${(i-1)*2 + 1}解锁</span></div>`;
+                }
             }
         }
 
-        // --- 森林 & 背包 ---
-        function addToForest(plantId) {
-            // 简单的添加记录，实际可以做成去重或者计数
-            gameState.forest.unshift({
-                plantId: plantId,
-                date: new Date().toLocaleDateString()
+        function setExhibit(idx) {
+            activeExhibitIdx = idx;
+            // 弹出选择框，显示已解锁的植物和纪念品
+            const list = document.getElementById('exhibit-select-list');
+            list.innerHTML = `<div class="game-item" onclick="clearExhibit()">🚫 清空</div>`;
+            
+            state.unlocked.forEach(uKey => {
+                if(uKey.startsWith('p')) {
+                    const info = PLANTS[uKey.substring(1)];
+                    list.innerHTML += getItemHtml(info.emoji, info.name, '', `rarity-${info.rarity}`, `selectExhibitItem('${uKey}')`);
+                }
             });
-            // 限制展示数量
-            if(gameState.forest.length > 20) gameState.forest.pop();
+            state.inventory.souvenirs.forEach(sKey => {
+                const info = SOUVENIRS[sKey];
+                list.innerHTML += getItemHtml(info.emoji, info.name, '', 'rarity-S', `selectExhibitItem('s${sKey}')`);
+            });
+            
+            openModal('exhibitSelectModal');
         }
 
-        function renderForest() {
-            const div = document.getElementById('forest-container');
-            if (gameState.forest.length === 0) {
-                div.innerHTML = '<div style="text-align:center; color:#999; margin-top:20px;">空空如也...<br>快去种植稀有植物吧！</div>';
-                return;
-            }
-            div.innerHTML = gameState.forest.map(item => {
-                const info = PLANT_TYPES[item.plantId];
-                return `
-                    <div class="forest-item rarity-${item.plantId}" style="border-left-color: currentColor;">
-                        <span style="font-size:24px; margin-right:10px;">${info.emoji}</span>
-                        <div>
-                            <div style="font-weight:bold;">${info.name}</div>
-                            <div style="font-size:10px; color:#999;">${item.date}</div>
-                        </div>
+        function selectExhibitItem(key) {
+            state.exhibition[activeExhibitIdx] = key;
+            saveGame();
+            closeModal('exhibitSelectModal');
+            renderExhibit();
+        }
+        
+        function clearExhibit() {
+            state.exhibition[activeExhibitIdx] = null;
+            saveGame();
+            closeModal('exhibitSelectModal');
+            renderExhibit();
+        }
+
+        function renderGallery() {
+            const list = document.getElementById('gallery-list');
+            list.innerHTML = '';
+            // 植物图鉴
+            for(let pid in PLANTS) {
+                const unlocked = state.unlocked.includes('p'+pid);
+                const p = PLANTS[pid];
+                list.innerHTML += `
+                    <div class="game-item ${unlocked ? 'rarity-'+p.rarity : ''}" style="opacity:${unlocked?1:0.3}">
+                        <div style="font-size:20px;">${unlocked ? p.emoji : '❓'}</div>
+                        <div style="font-size:10px;">${p.name}</div>
                     </div>
                 `;
-            }).join('');
-        }
-
-        function addInventory(cat, id, amount) {
-            if (!gameState.inventory[cat]) gameState.inventory[cat] = {};
-            if (!gameState.inventory[cat][id]) gameState.inventory[cat][id] = 0;
-            gameState.inventory[cat][id] += amount;
-            // 刷新背包UI如果打开着
-            if(document.getElementById('inventoryModal').style.display === 'flex') {
-                renderInventory();
+            }
+            // 纪念品图鉴
+            for(let skey in SOUVENIRS) {
+                const has = state.inventory.souvenirs.includes(skey);
+                const s = SOUVENIRS[skey];
+                list.innerHTML += `
+                    <div class="game-item ${has ? 'rarity-S' : ''}" style="opacity:${has?1:0.3}">
+                        <div style="font-size:20px;">${has ? s.emoji : '❓'}</div>
+                        <div style="font-size:10px;">${has ? s.name : '???'}</div>
+                    </div>
+                `;
             }
         }
 
-        function renderInventory() {
+        // --- 通用系统 ---
+        function addXP(amount) {
+            state.xp += amount;
+            if(state.level < CONFIG.levelCap && state.xp >= CONFIG.xpTable[state.level]) {
+                state.level++;
+                showToast(`🎉 升级啦！当前等级 Lv.${state.level}`);
+            }
+            updateHeader();
+            renderLeftPanel();
+        }
+
+        function addItem(cat, id, amount) {
+            if(!state.inventory[cat]) state.inventory[cat] = {};
+            if(!state.inventory[cat][id]) state.inventory[cat][id] = 0;
+            state.inventory[cat][id] += amount;
+        }
+
+        function addSouvenir(key) {
+            if(!state.inventory.souvenirs.includes(key)) {
+                state.inventory.souvenirs.push(key);
+                // 弹窗
+                const s = SOUVENIRS[key];
+                document.getElementById('pop-emoji').innerText = s.emoji;
+                document.getElementById('pop-name').innerText = s.name;
+                document.getElementById('pop-desc').innerText = s.desc;
+                document.getElementById('souvenirPopup').classList.add('show');
+            }
+        }
+        
+        function closeSouvenirPopup() {
+            document.getElementById('souvenirPopup').classList.remove('show');
+        }
+
+        function showToast(msg) {
+            const d = document.getElementById('dig-msg');
+            d.innerText = msg;
+            setTimeout(() => d.innerText = '', 3000);
+        }
+
+        // --- 背包与商城 ---
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; renderInventory(); renderShop(); }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function filterBag(type, btn) {
+            document.querySelectorAll('.bag-tabs .filter-chip').forEach(c=>c.classList.remove('active'));
+            btn.classList.add('active');
+            renderInventory(type);
+        }
+
+        function renderInventory(filter = 'all') {
             const list = document.getElementById('inventory-list');
             list.innerHTML = '';
-            
+
             // 种子
-            for(let id in gameState.inventory.seeds) {
-                if(gameState.inventory.seeds[id] > 0) {
-                    const info = PLANT_TYPES[id];
-                    list.innerHTML += getItemHtml(info.emoji, info.name + '种子', gameState.inventory.seeds[id], `rarity-${id}`);
+            if(filter === 'all' || filter === 'seed') {
+                for(let id in state.inventory.seeds) {
+                    if(state.inventory.seeds[id]>0) {
+                        const i = PLANTS[id];
+                        list.innerHTML += getItemHtml(i.emoji, i.name, state.inventory.seeds[id], 'rarity-'+i.rarity);
+                    }
                 }
             }
             // 果实
-            for(let id in gameState.inventory.fruits) {
-                if(gameState.inventory.fruits[id] > 0) {
-                    const info = PLANT_TYPES[id];
-                    list.innerHTML += getItemHtml(info.emoji, info.name + '果实', gameState.inventory.fruits[id], '');
+            if(filter === 'all' || filter === 'fruit') {
+                for(let id in state.inventory.fruits) {
+                    if(state.inventory.fruits[id]>0) {
+                        const i = PLANTS[id];
+                        list.innerHTML += getItemHtml(i.emoji, i.name+'果', state.inventory.fruits[id], '');
+                    }
                 }
             }
             // 道具
-            const toolsMap = { 'fertilizer': '⚡ 营养液', 'medicine': '💊 药剂', 'sun': '☀️ 小太阳' };
-            for(let key in gameState.inventory.tools) {
-                if(gameState.inventory.tools[key] > 0) {
-                    list.innerHTML += getItemHtml('🔧', toolsMap[key], gameState.inventory.tools[key], '');
+            if(filter === 'all' || filter === 'tool') {
+                for(let k in state.inventory.tools) {
+                    if(state.inventory.tools[k]>0) {
+                        const i = TOOLS[k];
+                        list.innerHTML += getItemHtml(i.emoji, i.name, state.inventory.tools[k], '');
+                    }
                 }
+            }
+            // 纪念品
+            if(filter === 'all' || filter === 'souvenir') {
+                state.inventory.souvenirs.forEach(k => {
+                    const s = SOUVENIRS[k];
+                    list.innerHTML += getItemHtml(s.emoji, s.name, 1, 'rarity-S');
+                });
             }
         }
 
-        function getItemHtml(icon, name, count, cls) {
+        function getItemHtml(emoji, name, count, cls, onClick='') {
             return `
-                <div style="text-align:center; border:1px solid #eee; border-radius:10px; padding:5px;" class="${cls}">
-                    <div style="font-size:20px;">${icon}</div>
+                <div class="game-item ${cls}" onclick="${onClick}">
+                    ${count > 1 ? `<span class="badge-count">${count}</span>` : ''}
+                    <div style="font-size:24px;">${emoji}</div>
                     <div style="font-size:12px;">${name}</div>
-                    <div style="font-size:10px; font-weight:bold;">x${count}</div>
                 </div>
             `;
         }
 
-        // --- 商城 ---
-        function buyItem(itemKey, price) {
-            if (gameState.coins >= price) {
-                gameState.coins -= price;
-                if (!gameState.inventory.tools[itemKey]) gameState.inventory.tools[itemKey] = 0;
-                gameState.inventory.tools[itemKey]++;
-                showToast("购买成功！");
-                renderHeader();
-                saveGame();
-            } else {
-                showToast("金币不足！");
+        function filterShop(type, btn) {
+            document.querySelectorAll('.shop-tabs .filter-chip').forEach(c=>c.classList.remove('active'));
+            btn.classList.add('active');
+            renderShop(type);
+        }
+
+        function renderShop(type = 'seed') {
+            const list = document.getElementById('shop-list');
+            list.innerHTML = '';
+            
+            if(type === 'seed') {
+                for(let pid in PLANTS) {
+                    const p = PLANTS[pid];
+                    // 树木要等级高一点才能买
+                    if(p.type === 2 && state.level < 3) continue; 
+                    const price = p.reward * 0.5; // 假定价格
+                    list.innerHTML += getShopHtml(p.emoji, p.name, Math.floor(price), `buySeed(${pid}, ${price})`);
+                }
+            } else if (type === 'tool') {
+                for(let k in TOOLS) {
+                    const t = TOOLS[k];
+                    if(t.price > 0) list.innerHTML += getShopHtml(t.emoji, t.name, t.price, `buyTool('${k}', ${t.price})`);
+                }
+            } else if (type === 'chance') {
+                list.innerHTML += getShopHtml('⛏️', '5次挖掘', 50, `buyDigs(50)`);
+                list.innerHTML += getShopHtml('🎫', '经验卡(+50)', 100, `buyXP(100)`);
             }
         }
 
-        // ================= 辅助功能 =================
-        function showToast(msg) {
-            const div = document.getElementById('dig-msg');
-            div.innerHTML = msg;
-            div.style.opacity = 1;
-            setTimeout(() => { div.style.opacity = 0; }, 3000);
+        function getShopHtml(emoji, name, price, action) {
+            return `
+                <div class="game-item" onclick="${action}">
+                    <div style="font-size:24px;">${emoji}</div>
+                    <div style="font-size:12px; font-weight:bold;">${name}</div>
+                    <div style="font-size:12px; color:var(--accent);">💰${price}</div>
+                </div>
+            `;
         }
 
-        function openModal(id) {
-            document.getElementById(id).style.display = 'flex';
-            if (id === 'inventoryModal') renderInventory();
-            if (id === 'devPanelModal') loadDevConfigToUI();
+        function buySeed(pid, price) {
+            if(state.coins >= price) {
+                state.coins -= price;
+                addItem('seeds', pid, 1);
+                showToast('购买成功');
+                updateHeader(); saveGame();
+            } else showToast('金币不足');
         }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-        function toggleTheme() {
-            const body = document.body;
-            if (body.hasAttribute('data-theme')) {
-                body.removeAttribute('data-theme');
-                localStorage.setItem('theme', 'light');
-            } else {
-                body.setAttribute('data-theme', 'dark');
-                localStorage.setItem('theme', 'dark');
-            }
+        function buyTool(key, price) {
+            if(state.coins >= price) {
+                state.coins -= price;
+                addItem('tools', key, 1);
+                showToast('购买成功');
+                updateHeader(); saveGame();
+            } else showToast('金币不足');
+        }
+        function buyDigs(price) {
+            if(state.coins >= price) {
+                state.coins -= price;
+                state.digs += 5;
+                showToast('体力充沛！挖掘+5');
+                updateHeader(); renderLeftPanel(); saveGame();
+            } else showToast('金币不足');
+        }
+        function buyXP(price) {
+            if(state.coins >= price) {
+                state.coins -= price;
+                addXP(50);
+                showToast('知识增加！经验+50');
+                updateHeader(); saveGame();
+            } else showToast('金币不足');
         }
 
-        // ================= 开发者模式 =================
+        // --- 开发者 ---
         function openDevAuth() {
-            openModal('devAuthModal');
+            const p = prompt('请输入开发者密码:');
+            if(p === '597') document.getElementById('devModal').style.display = 'flex';
         }
-
-        function checkDevPwd() {
-            const pwd = document.getElementById('dev-pwd').value;
-            if (pwd === '597') {
-                closeModal('devAuthModal');
-                openModal('devPanelModal');
-            } else {
-                alert('密码错误');
-            }
-        }
-
-        function loadDevConfigToUI() {
-            document.getElementById('cfg-dig-limit').value = CONFIG.dailyDigLimit;
-            document.getElementById('cfg-growth-speed').value = CONFIG.growthSpeedBase;
-            document.getElementById('cfg-gold-rate').value = CONFIG.probabilities[5];
-        }
-
-        function saveDevConfig() {
-            CONFIG.dailyDigLimit = parseInt(document.getElementById('cfg-dig-limit').value);
-            CONFIG.growthSpeedBase = parseInt(document.getElementById('cfg-growth-speed').value);
-            // 简单修改概率：修改金种子概率，其他相应减少
-            const goldRate = parseInt(document.getElementById('cfg-gold-rate').value);
-            CONFIG.probabilities[5] = goldRate;
-            CONFIG.probabilities[1] = Math.max(0, 100 - goldRate - 30 - 15 - 4); // 粗暴平衡白种子概率
-
-            localStorage.setItem('my_plants_config', JSON.stringify(CONFIG));
-            closeModal('devPanelModal');
-            alert('配置已保存，部分设置需刷新生效');
-            renderHeader(); // 更新显示的挖土上限
-        }
-
-        function addCoins(amount) {
-            gameState.coins += amount;
-            renderHeader();
-        }
-
-        function resetDigging() {
-            gameState.digsLeft = CONFIG.dailyDigLimit;
-            renderHeader();
-            resetSoilUI();
-        }
-        
-        function resetSoilUI() {
-            const piles = document.querySelectorAll('.soil-pile');
-            piles.forEach(p => {
-                p.classList.remove('dug');
-                p.innerHTML = '🕳️';
-            });
-        }
-
-        function hardReset() {
-            if(confirm('确定要删档重来吗？')) {
-                localStorage.removeItem('my_plants_data');
-                localStorage.removeItem('my_plants_config');
-                location.reload();
-            }
-        }
+        function devAddCoins() { state.coins += 1000; updateHeader(); saveGame(); }
+        function devAddXP() { addXP(100); saveGame(); }
+        function devAddDigs() { state.digs = 99; renderLeftPanel(); saveGame(); }
+        function devSpeedUp() { state.plots.forEach(p => { if(p) p.start -= p.duration * 1000; }); renderGarden(); saveGame(); }
+        function devGetSouvenir() { const k = Object.keys(SOUVENIRS)[0]; addSouvenir(k); saveGame(); }
+        function hardReset() { localStorage.removeItem('garden_pro_v1'); location.reload(); }
 
     </script>
 </body>
