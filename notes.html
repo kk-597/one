@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>超级便签 Pro Max</title>
+    <title>超级便签 Pro Max Ultra</title>
     
     <!-- CDN 依赖 -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -36,7 +36,9 @@
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -ms-overflow-style: none; scrollbar-width: none; }
         
         body {
-            font-family: var(--font-family); background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
+            font-family: var(--font-family); 
+            background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
+            background-size: cover; background-position: center; background-attachment: fixed;
             color: var(--text-main); height: 100vh; overflow: hidden; display: flex; flex-direction: column;
             transition: background 0.3s;
         }
@@ -58,32 +60,23 @@
         /* 主体 */
         .main-container { display: flex; flex: 1; height: calc(100vh - 60px); }
         
-        /* 侧边栏（支持树形） */
-        .sidebar {
-            width: 260px; background: var(--card-bg); backdrop-filter: var(--card-blur);
-            border-right: 1px solid var(--border); display: flex; flex-direction: column;
-        }
+        /* 侧边栏 */
+        .sidebar { width: 260px; background: var(--card-bg); backdrop-filter: var(--card-blur); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
         .sidebar-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-solid); }
         .folder-list { flex: 1; overflow-y: auto; padding: 10px; }
-        .folder-item {
-            padding: 8px 10px; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between;
-            align-items: center; margin-bottom: 2px; transition: 0.2s; color: var(--text-main);
-        }
+        .folder-item { padding: 8px 10px; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; transition: 0.2s; color: var(--text-main); }
         .folder-item:hover { background: var(--hover); }
         .folder-item.active { background: var(--accent); color: white; }
         .folder-children { margin-left: 15px; border-left: 1px dashed var(--border-solid); padding-left: 5px; }
-        .folder-add-btn { opacity: 0; transition: 0.2s; padding: 2px; border-radius: 4px; }
+        .folder-add-btn { opacity: 0; padding: 2px; border-radius: 4px; }
         .folder-item:hover .folder-add-btn { opacity: 1; }
-        .folder-add-btn:hover { background: rgba(0,0,0,0.1); }
 
-        /* 内容区 & 布局系统 */
+        /* 内容区与布局引擎 */
         .content-area { flex: 1; display: flex; flex-direction: column; padding: 20px; overflow: hidden; }
         .notes-container { flex: 1; overflow-y: auto; padding-bottom: 20px; }
         
-        /* -- 布局方案 -- */
         .layout-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; align-content: start; }
         .layout-waterfall { column-count: 3; column-gap: 16px; }
-        @media(max-width:900px){ .layout-waterfall { column-count: 2; } }
         .layout-waterfall .note-card { break-inside: avoid; margin-bottom: 16px; height: auto; }
         .layout-default { display: flex; flex-direction: column; gap: 12px; }
         .layout-default .note-card { height: auto; }
@@ -95,16 +88,11 @@
         .layout-timeline .note-card { position: relative; height: auto; overflow: visible; }
         .layout-timeline .note-card::before { content:''; position:absolute; left:-27px; top:20px; width:12px; height:12px; background:var(--accent); border-radius:50%; box-shadow:0 0 0 4px var(--card-bg); }
 
-        .note-card {
-            background: var(--card-bg); backdrop-filter: var(--card-blur); border: 1px solid var(--border);
-            border-radius: 12px; padding: 16px; cursor: pointer; transition: 0.2s;
-            display: flex; flex-direction: column; height: 160px;
-        }
+        .note-card { background: var(--card-bg); backdrop-filter: var(--card-blur); border: 1px solid var(--border); border-radius: 12px; padding: 16px; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; height: 160px; }
         .note-card:hover { transform: scale(1.02); border-color: var(--accent); box-shadow: var(--shadow); }
         .note-title { font-weight: bold; font-size: 1.1rem; margin-bottom: 5px; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .note-preview { font-size: 0.9rem; color: var(--text-sub); flex: 2; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; line-height: 1.5; }
         
-        /* 下拉菜单 */
         .dropdown { position: relative; display: inline-block; }
         .dropdown-content { display: none; position: absolute; right: 0; background: var(--card-bg); backdrop-filter: var(--card-blur); min-width: 140px; box-shadow: var(--shadow); border-radius: 8px; border: 1px solid var(--border); z-index: 1000; padding: 5px 0; }
         .dropdown:hover .dropdown-content { display: block; }
@@ -112,52 +100,74 @@
         .dropdown-content a:hover { background: var(--hover); }
 
         /* 编辑器模态 */
-        .editor-modal {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--editor-bg);
-            z-index: 2000; display: none; flex-direction: column; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
-        }
+        .editor-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--editor-bg); z-index: 2000; display: none; flex-direction: column; transform: translateY(100%); transition: 0.3s; }
         .editor-modal.show { display: flex; transform: translateY(0); }
         .editor-header { height: 60px; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-solid); }
         .editor-title-input { border: none; background: transparent; font-size: 1.2rem; font-weight: bold; color: inherit; font-family: inherit; width: 40%; }
         
-        /* 强大的工具栏容器 */
-        .toolbar-wrapper { display: flex; border-bottom: 1px solid var(--border-solid); background: var(--bg-start); position: relative; }
-        .editor-toolbar { flex: 1; display: flex; gap: 4px; padding: 8px 10px; overflow-x: auto; white-space: nowrap; scroll-behavior: smooth; }
-        .toolbar-settings-btn { width: 50px; display: flex; justify-content: center; align-items: center; background: var(--bg-start); border-left: 1px solid var(--border-solid); box-shadow: -4px 0 10px rgba(0,0,0,0.05); z-index: 10; cursor: pointer; }
-        .toolbar-settings-btn:hover { color: var(--accent); }
-        
+        /* 修复后的完美工具栏：不会被压缩，超长可顺滑拖动 */
+        .toolbar-wrapper { display: flex; align-items: stretch; border-bottom: 1px solid var(--border-solid); background: var(--bg-start); width: 100%; overflow: hidden; }
+        .editor-toolbar { 
+            flex: 1; display: flex; gap: 4px; padding: 8px 10px; overflow-x: auto; overflow-y: hidden; 
+            white-space: nowrap; -webkit-overflow-scrolling: touch; scroll-behavior: smooth;
+        }
+        .toolbar-settings-btn { 
+            width: 50px; display: flex; justify-content: center; align-items: center; 
+            background: var(--bg-start); border-left: 1px solid var(--border-solid); z-index: 10; cursor: pointer; 
+            box-shadow: -4px 0 10px rgba(0,0,0,0.05); flex-shrink: 0;
+        }
         .tool-btn {
             background: transparent; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; color: var(--text-main);
             display: inline-flex; flex-direction: column; align-items: center; gap: 2px; min-width: 44px; transition: 0.2s; font-family: inherit;
+            flex-shrink: 0; /* 绝对禁止收缩挤压 */
         }
         .tool-btn:hover { background: var(--hover); }
-        .tool-btn i { width: 18px; height: 18px; }
         .tool-btn span { font-size: 10px; margin-top: 2px; }
         
         #editor-wrapper { flex: 1; overflow-y: auto; display: flex; justify-content: center; background-size: cover; background-position: center; }
         #editor-content { width: 100%; max-width: 900px; padding: 40px; min-height: 100%; font-size: 1.1rem; line-height: 1.8; outline: none; background: transparent; }
 
-        /* 模态框系统 */
+        /* 通用模态框系统 */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 3000; display: none; justify-content: center; align-items: center; opacity: 0; transition: 0.2s; }
         .modal-overlay.active { display: flex; opacity: 1; }
-        .modal-box { background: var(--editor-bg); width: 90%; max-width: 500px; max-height: 85vh; border-radius: 16px; padding: 24px; box-shadow: 0 20px 25px rgba(0,0,0,0.15); overflow-y: auto; }
-        .modal-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 20px; display: flex; justify-content: space-between; }
+        .modal-box { background: var(--editor-bg); width: 90%; max-width: 500px; max-height: 85vh; border-radius: 16px; padding: 24px; box-shadow: 0 20px 25px rgba(0,0,0,0.15); overflow-y: auto; position: relative;}
+        .modal-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;}
         
-        /* 工具栏配置拖拽UI */
-        .tb-config-item { display: flex; align-items: center; justify-content: space-between; padding: 10px; border: 1px solid var(--border-solid); margin-bottom: 8px; border-radius: 8px; background: var(--card-bg); }
-        .tb-config-left { display: flex; align-items: center; gap: 10px; }
-        .drag-handle { cursor: grab; color: var(--text-sub); }
-        .drag-handle:active { cursor: grabbing; }
+        /* 颜色选择器方块 */
+        .color-swatch { width: 36px; height: 36px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
+        .color-swatch:hover { transform: scale(1.1); border-color: var(--text-main); }
 
-        /* 开关组件 */
-        .switch { position: relative; display: inline-block; width: 36px; height: 20px; }
+        /* 全局设置多分类UI */
+        .mega-settings { display: flex; height: 65vh; margin: -10px; }
+        .ms-sidebar { width: 160px; border-right: 1px solid var(--border-solid); display: flex; flex-direction: column; overflow-y: auto; }
+        .ms-nav { padding: 12px; cursor: pointer; font-size: 0.9rem; transition: 0.2s; display: flex; align-items: center; gap: 8px; color: var(--text-sub); border-bottom: 1px solid transparent; }
+        .ms-nav.active { background: var(--hover); color: var(--accent); font-weight: bold; border-right: 3px solid var(--accent); }
+        .ms-content { flex: 1; overflow-y: auto; padding: 20px; }
+        
+        .ms-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border-solid); }
+        .ms-item-info { flex: 1; padding-right: 15px; }
+        .ms-item-title { font-size: 0.95rem; }
+        .ms-item-sub { font-size: 0.75rem; color: var(--text-sub); margin-top: 4px; }
+        .ms-arrow { color: var(--text-sub); cursor: pointer; padding: 5px; background: var(--hover); border-radius: 6px; }
+
+        /* 开关与拖拽UI */
+        .switch { position: relative; display: inline-block; width: 36px; height: 20px; flex-shrink: 0; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .3s; border-radius: 20px; }
         .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 2px; bottom: 2px; background-color: white; transition: .3s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--accent); }
         input:checked + .slider:before { transform: translateX(16px); }
+        
+        .tb-config-item { display: flex; align-items: center; justify-content: space-between; padding: 10px; border: 1px solid var(--border-solid); margin-bottom: 8px; border-radius: 8px; background: var(--card-bg); }
+        .drag-handle { cursor: grab; color: var(--text-sub); }
+        .drag-handle:active { cursor: grabbing; }
 
-        .hidden { display: none !important; }
+        @media (max-width: 768px) {
+            .mega-settings { flex-direction: column; }
+            .ms-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border-solid); flex-direction: row; overflow-x: auto; }
+            .ms-nav { white-space: nowrap; border-right: none; border-bottom: 3px solid transparent; }
+            .ms-nav.active { border-bottom: 3px solid var(--accent); }
+        }
     </style>
 </head>
 <body>
@@ -165,20 +175,19 @@
     <!-- 顶栏 -->
     <header class="top-bar">
         <div style="display: flex; gap: 15px; align-items: center;">
-            <!-- 新增返回首页按钮 -->
-            <a href="index.html" class="btn-icon" style="color: var(--accent); font-weight:bold;">
-                <i data-lucide="home"></i> 返回首页
-            </a>
+            <a href="index.html" class="btn-icon" style="color: var(--accent); font-weight:bold;"><i data-lucide="home"></i> 返回首页</a>
             <div style="font-weight: bold; font-size: 1.2rem; border-left: 2px solid var(--border-solid); padding-left: 15px;">超级便签</div>
         </div>
-        <div style="display: flex; gap: 8px;">
-            <button class="btn-icon" onclick="toggleNightMode()" title="日夜切换"><i data-lucide="moon"></i></button>
-            <button class="btn-icon" onclick="openModal('settings-modal')" title="全局设置"><i data-lucide="settings"></i></button>
+        <div style="display: flex; gap: 4px;">
+            <!-- 新增全局主题、日夜、设置 -->
+            <button class="btn-icon" onclick="openModal('global-theme-modal')" title="全局主题"><i data-lucide="palette"></i></button>
+            <button class="btn-icon" onclick="toggleNightMode()" title="一键日夜切换"><i data-lucide="moon"></i></button>
+            <button class="btn-icon" onclick="openSettingsModal()" title="全局庞大设置"><i data-lucide="settings"></i></button>
         </div>
     </header>
 
     <div class="main-container">
-        <!-- 侧边栏 -->
+        <!-- 侧边栏 (支持嵌套) -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <span>便签夹</span>
@@ -197,15 +206,14 @@
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h2 id="current-folder-title">全部便签</h2>
                 <div style="display: flex; gap: 10px;">
-                    <!-- 聚合多布局按钮 -->
                     <div class="dropdown">
                         <button class="btn-icon"><i data-lucide="layout"></i> 布局视图</button>
                         <div class="dropdown-content">
-                            <a onclick="changeLayout('grid')"><i data-lucide="layout-grid" style="width:14px; margin-right:5px"></i>网格</a>
+                            <a onclick="changeLayout('grid')"><i data-lucide="layout-grid" style="width:14px; margin-right:5px"></i>默认网格</a>
                             <a onclick="changeLayout('waterfall')"><i data-lucide="align-justify" style="width:14px; margin-right:5px"></i>瀑布流</a>
-                            <a onclick="changeLayout('image-text')"><i data-lucide="image" style="width:14px; margin-right:5px"></i>图文</a>
+                            <a onclick="changeLayout('image-text')"><i data-lucide="image" style="width:14px; margin-right:5px"></i>大图文</a>
                             <a onclick="changeLayout('timeline')"><i data-lucide="clock" style="width:14px; margin-right:5px"></i>时间轴</a>
-                            <a onclick="changeLayout('default')"><i data-lucide="list" style="width:14px; margin-right:5px"></i>默认列表</a>
+                            <a onclick="changeLayout('default')"><i data-lucide="list" style="width:14px; margin-right:5px"></i>经典列表</a>
                             <a onclick="changeLayout('single-line')"><i data-lucide="minus" style="width:14px; margin-right:5px"></i>单行极简</a>
                         </div>
                     </div>
@@ -222,78 +230,118 @@
             <button class="btn-icon" onclick="closeEditor()"><i data-lucide="chevron-left"></i> 返回</button>
             <input type="text" id="note-title" class="editor-title-input" placeholder="输入标题...">
             <div style="display:flex; gap:5px;">
-                <button class="btn-icon" onclick="openModal('bg-modal')" title="背景"><i data-lucide="image"></i></button>
+                <button class="btn-icon" onclick="openModal('bg-modal')" title="便签背景"><i data-lucide="image"></i></button>
             </div>
         </div>
 
         <div class="toolbar-wrapper">
             <div class="editor-toolbar" id="toolbar-container"></div>
-            <!-- 固定在最右侧的设置按钮 -->
             <div class="toolbar-settings-btn" onclick="openModal('tb-settings-modal')">
                 <i data-lucide="settings-2"></i>
             </div>
         </div>
 
         <div id="editor-wrapper">
-            <div id="editor-content" contenteditable="true" placeholder="开始记录..."></div>
+            <div id="editor-content" contenteditable="true" placeholder="记录灵感..."></div>
         </div>
     </div>
 
-    <!-- ================= 模态框区 ================= -->
+    <!-- ================= 所有模态框 ================= -->
     
-    <!-- 工具栏高级设置模态框 -->
+    <!-- 全局主题设置模态框 -->
+    <div id="global-theme-modal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-title">全局主题 <button class="btn-icon" onclick="closeModal('global-theme-modal')"><i data-lucide="x"></i></button></div>
+            
+            <p style="font-size: 0.9rem; margin-bottom: 10px;">经典纯色</p>
+            <div style="display:flex; gap:10px; margin-bottom: 20px;">
+                <div class="color-swatch" style="background: #fdf6e3" onclick="setGlobalTheme('solid', '#fdf6e3')"></div>
+                <div class="color-swatch" style="background: #e0f2fe" onclick="setGlobalTheme('solid', '#e0f2fe')"></div>
+                <div class="color-swatch" style="background: #fce7f3" onclick="setGlobalTheme('solid', '#fce7f3')"></div>
+            </div>
+            
+            <p style="font-size: 0.9rem; margin-bottom: 10px;">梦幻渐变</p>
+            <div style="display:flex; gap:10px; margin-bottom: 20px;">
+                <div class="color-swatch" style="background: linear-gradient(135deg, #a8edea, #fed6e3)" onclick="setGlobalTheme('gradient', ['#a8edea', '#fed6e3'])"></div>
+                <div class="color-swatch" style="background: linear-gradient(135deg, #667eea, #764ba2)" onclick="setGlobalTheme('gradient', ['#667eea', '#764ba2'])"></div>
+                <div class="color-swatch" style="background: linear-gradient(135deg, #fbc2eb, #a6c1ee)" onclick="setGlobalTheme('gradient', ['#fbc2eb', '#a6c1ee'])"></div>
+            </div>
+
+            <p style="font-size: 0.9rem; margin-bottom: 10px;">自定义色盘与图片 (自动压缩)</p>
+            <div style="display:flex; gap:15px;">
+                <input type="color" onchange="setGlobalTheme('solid', this.value)" style="flex:1; height:40px; cursor:pointer;">
+                <input type="file" accept="image/*" onchange="uploadGlobalBg(this)" style="flex:2;">
+            </div>
+        </div>
+    </div>
+
+    <!-- 颜色选择器模态框 (给工具栏文字变色用) -->
+    <div id="color-picker-modal" class="modal-overlay">
+        <div class="modal-box" style="width: 320px;">
+            <div class="modal-title">选择颜色 <button class="btn-icon" onclick="closeModal('color-picker-modal')"><i data-lucide="x"></i></button></div>
+            <div style="display: flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
+                <div class="color-swatch" style="background: #ef4444" onclick="applyColor('#ef4444')"></div>
+                <div class="color-swatch" style="background: #3b82f6" onclick="applyColor('#3b82f6')"></div>
+                <div class="color-swatch" style="background: #10b981" onclick="applyColor('#10b981')"></div>
+                <div class="color-swatch" style="background: #f59e0b" onclick="applyColor('#f59e0b')"></div>
+                <div class="color-swatch" style="background: #8b5cf6" onclick="applyColor('#8b5cf6')"></div>
+                <div class="color-swatch" style="background: #ec4899" onclick="applyColor('#ec4899')"></div>
+                <div class="color-swatch" style="background: #000000" onclick="applyColor('#000000')"></div>
+                <div class="color-swatch" style="background: #ffffff; border: 1px solid #ccc" onclick="applyColor('#ffffff')"></div>
+            </div>
+            <label style="font-size: 0.9rem;">自定义调色板</label>
+            <input type="color" onchange="applyColor(this.value)" style="width: 100%; height: 40px; margin-top: 5px;">
+        </div>
+    </div>
+
+    <!-- 工具栏高级设置拖拽 -->
     <div id="tb-settings-modal" class="modal-overlay">
         <div class="modal-box" style="max-width: 600px;">
             <div class="modal-title">自定义工具栏 <button class="btn-icon" onclick="closeModal('tb-settings-modal')"><i data-lucide="x"></i></button></div>
-            <p style="font-size:0.9rem; color:var(--text-sub); margin-bottom:15px;">拖动左侧手柄排序，控制功能开关与文字显示。</p>
-            <div id="tb-config-list" style="max-height: 50vh; overflow-y: auto;">
-                <!-- JS 渲染 -->
-            </div>
+            <p style="font-size:0.9rem; color:var(--text-sub); margin-bottom:15px;">上下拖动排序，控制功能是否显示及文字展示。</p>
+            <div id="tb-config-list" style="max-height: 50vh; overflow-y: auto;"></div>
         </div>
     </div>
 
-    <!-- 背景设置 -->
+    <!-- 便签背景设置 -->
     <div id="bg-modal" class="modal-overlay">
-        <div class="modal-box">
+        <div class="modal-box" style="width:350px;">
             <div class="modal-title">便签背景 <button class="btn-icon" onclick="closeModal('bg-modal')"><i data-lucide="x"></i></button></div>
-            <div style="margin-bottom:15px;">
-                <label>纯色背景</label>
-                <input type="color" onchange="updateBg({color: this.value, img: ''})" style="width:100%; height:40px; margin-top:5px;">
-            </div>
-            <div style="margin-bottom:15px;">
-                <label>图片背景 (自动压缩防崩溃)</label>
-                <input type="file" accept="image/*" onchange="uploadBgImg(this)" style="display:block; margin-top:5px;">
-            </div>
-            <div style="text-align:right;">
-                <button class="btn-icon" onclick="updateBg({color:'', img:''})">清除背景</button>
-            </div>
+            <input type="color" onchange="updateNoteBg({color: this.value, img: ''})" style="width:100%; height:40px; margin-bottom: 15px;">
+            <input type="file" accept="image/*" onchange="uploadNoteBg(this)" style="display:block; margin-bottom: 15px;">
+            <div style="text-align:right;"><button class="btn-icon" onclick="updateNoteBg({color:'', img:''})">清除</button></div>
         </div>
     </div>
 
-    <!-- 全局设置占位 -->
+    <!-- 超级全局设置中心 (框架构建完成) -->
     <div id="settings-modal" class="modal-overlay">
-        <div class="modal-box">
-            <div class="modal-title">全局设置 <button class="btn-icon" onclick="closeModal('settings-modal')"><i data-lucide="x"></i></button></div>
-            <div style="margin-bottom:15px;">
-                <label>全局字体</label>
-                <select id="font-select" onchange="changeFont(this.value)" style="width:100%; padding:8px; margin-top:5px; border-radius:6px;">
-                    <option value="'LXGW WenKai Screen', sans-serif">霞鹜文楷 (当前)</option>
-                    <option value="'Segoe UI', Roboto, sans-serif">现代黑体</option>
-                    <option value="'Courier New', monospace">等宽代码体</option>
-                </select>
+        <div class="modal-box" style="max-width: 800px; padding: 0; overflow: hidden;">
+            <div style="padding: 20px; border-bottom: 1px solid var(--border-solid); display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 1.2rem; font-weight: bold;">设置中心</span>
+                <button class="btn-icon" onclick="closeModal('settings-modal')"><i data-lucide="x"></i></button>
             </div>
-            <p style="color:var(--text-sub); font-size:0.9rem;">更多几百项设置后续接口已预留，由于篇幅先展示核心。</p>
+            <div class="mega-settings">
+                <div class="ms-sidebar" id="ms-sidebar">
+                    <!-- JS 生成分类导航 -->
+                </div>
+                <div class="ms-content" id="ms-content">
+                    <!-- JS 生成海量配置项 -->
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- 隐藏系统文件域 -->
+    <!-- 系统隐藏组件 -->
     <input type="file" id="sys-img-upload" hidden accept="image/*">
 
     <script>
-        // ================= 1. 核心字典与底层配置 =================
-        const DB_KEY = 'super_notes_v3';
+        // ================= 1. 超级字典与设置矩阵 =================
+        const DB_KEY = 'super_notes_v4';
 
-        // 注册所有 50+ 工具栏能力
+        // 颜色操作的临时类型记录
+        let currentColorAction = ''; // 'foreColor' or 'hiliteColor'
+
+        // 强大的 50+ 工具栏映射
         const ALL_TOOLS_REGISTRY = {
             save: { icon: 'save', label: '立即保存', action: () => saveNote() },
             toTop: { icon: 'arrow-up-to-line', label: '滑到顶部', action: () => document.getElementById('editor-wrapper').scrollTop = 0 },
@@ -301,8 +349,8 @@
             undo: { icon: 'undo-2', label: '撤回', action: () => exec('undo') },
             redo: { icon: 'redo-2', label: '反撤回', action: () => exec('redo') },
             indentFirst: { icon: 'indent', label: '首段缩进', action: () => exec('insertHTML', '&nbsp;&nbsp;&nbsp;&nbsp;') },
-            findReplace: { icon: 'replace', label: '查找替换', action: () => alert('呼出查找替换面板') },
-            search: { icon: 'search', label: '搜索', action: () => alert('全局搜索功能') },
+            findReplace: { icon: 'replace', label: '查找替换', action: () => alert('查找替换') },
+            search: { icon: 'search', label: '搜索', action: () => alert('搜索') },
             bold: { icon: 'bold', label: '加粗', action: () => exec('bold') },
             ol: { icon: 'list-ordered', label: '有序列表', action: () => exec('insertOrderedList') },
             ul: { icon: 'list', label: '无序列表', action: () => exec('insertUnorderedList') },
@@ -313,76 +361,128 @@
             alignRight: { icon: 'align-right', label: '右对齐', action: () => exec('justifyRight') },
             formatClear: { icon: 'eraser', label: '格式化', action: () => exec('removeFormat') },
             todo: { icon: 'check-square', label: '待办', action: () => exec('insertHTML', '<input type="checkbox" style="margin-right:5px;">') },
-            bgHighlight: { icon: 'highlighter', label: '文字背景色', action: () => exec('hiliteColor', '#ffff00') },
-            nameHelper: { icon: 'venetian-mask', label: '取名助手', action: () => alert('打开取名AI') },
+            bgHighlight: { icon: 'highlighter', label: '文字背景色', action: () => openColorPicker('hiliteColor') }, // 挂载颜色选择器
+            fontColor: { icon: 'palette', label: '文字颜色', action: () => openColorPicker('foreColor') }, // 挂载颜色选择器
+            nameHelper: { icon: 'venetian-mask', label: '取名助手', action: () => alert('取名助手') },
             insertTime: { icon: 'clock', label: '快捷时间', action: () => exec('insertHTML', new Date().toLocaleString()) },
             insertImage: { icon: 'image-plus', label: '插入图片', action: () => document.getElementById('sys-img-upload').click() },
             alignLeft: { icon: 'align-left', label: '左对齐', action: () => exec('justifyLeft') },
             underline: { icon: 'underline', label: '下划线', action: () => exec('underline') },
             copyAll: { icon: 'copy', label: '一键复制', action: () => { navigator.clipboard.writeText(document.getElementById('editor-content').innerText); alert('已复制'); } },
-            mindmap: { icon: 'network', label: '思维导图', action: () => alert('导图引擎挂载区') },
-            fontColor: { icon: 'palette', label: '文字颜色', action: () => exec('foreColor', '#ff0000') },
-            colorMark: { icon: 'tag', label: '颜色标记', action: () => alert('标记功能') },
-            formatPainter: { icon: 'paint-roller', label: '格式刷', action: () => alert('格式刷已启用') },
+            mindmap: { icon: 'network', label: '思维导图', action: () => alert('思维导图接口') },
+            colorMark: { icon: 'tag', label: '颜色标记', action: () => alert('颜色标记') },
+            formatPainter: { icon: 'paint-roller', label: '格式刷', action: () => alert('格式刷') },
             hr: { icon: 'minus', label: '分割线', action: () => exec('insertHorizontalRule') },
-            prevNote: { icon: 'chevron-up', label: '上一篇', action: () => alert('切换上一篇') },
-            nextNote: { icon: 'chevron-down', label: '下一篇', action: () => alert('切换下一篇') },
+            prevNote: { icon: 'chevron-up', label: '上一篇', action: () => alert('上一篇') },
+            nextNote: { icon: 'chevron-down', label: '下一篇', action: () => alert('下一篇') },
             bgImage: { icon: 'wallpaper', label: '背景图片', action: () => openModal('bg-modal') },
             delParagraph: { icon: 'delete', label: '删除段落', action: () => exec('delete') },
-            qrcode: { icon: 'qr-code', label: '插入二维码', action: () => alert('二维码生成器') },
+            qrcode: { icon: 'qr-code', label: '二维码', action: () => alert('二维码') },
             moveDown: { icon: 'arrow-down', label: '段落下移', action: () => alert('下移选中') },
             moveUp: { icon: 'arrow-up', label: '段落上移', action: () => alert('上移选中') },
-            selectParagraph: { icon: 'text-cursor-input', label: '选中段落', action: () => alert('全选段落') },
+            selectParagraph: { icon: 'text-cursor-input', label: '选中段落', action: () => alert('选中段落') },
             strike: { icon: 'strikethrough', label: '删除线', action: () => exec('strikeThrough') },
             symbol: { icon: 'pi', label: '插入符号', action: () => alert('符号面板') },
-            location: { icon: 'map-pin', label: '快捷地点', action: () => exec('insertHTML', '📍未知地点') },
-            table: { icon: 'table', label: '插入表格', action: () => alert('表格面板') },
-            tts: { icon: 'mic', label: '语音合成', action: () => alert('调用TTS朗读') },
-            ocr: { icon: 'scan-text', label: '图转文字', action: () => alert('开启OCR扫描') },
-            reminder: { icon: 'bell', label: '文字提醒', action: () => alert('添加到日程') },
-            moveFolder: { icon: 'folder-input', label: '移动便签夹', action: () => alert('弹窗选择移动位置') },
+            location: { icon: 'map-pin', label: '快捷地点', action: () => exec('insertHTML', '📍地球') },
+            table: { icon: 'table', label: '插入表格', action: () => alert('表格接口') },
+            tts: { icon: 'mic', label: '语音合成', action: () => alert('TTS') },
+            ocr: { icon: 'scan-text', label: '图转文字', action: () => alert('OCR') },
+            reminder: { icon: 'bell', label: '文字提醒', action: () => alert('提醒') },
+            moveFolder: { icon: 'folder-input', label: '移动便签夹', action: () => alert('移动文件夹') },
             pasteAll: { icon: 'clipboard-paste', label: '一键粘贴', action: () => exec('paste') },
-            s2t: { icon: 'languages', label: '繁简转换', action: () => alert('繁简转换引擎') },
-            lineSpace: { icon: 'arrow-up-down', label: '行间距', action: () => document.getElementById('editor-content').style.lineHeight = '2' },
-            marginSet: { icon: 'maximize', label: '边距设置', action: () => document.getElementById('editor-content').style.padding = '60px' }
+            s2t: { icon: 'languages', label: '繁简转换', action: () => alert('繁体转简体') },
+            lineSpace: { icon: 'arrow-up-down', label: '行距设置', action: () => alert('设置行距') },
+            marginSet: { icon: 'maximize', label: '边距设置', action: () => alert('设置边距') }
         };
 
-        // 默认启用的核心工具（其它的在设置中关着）
-        const DEFAULT_TOOLBAR = ['save','undo','redo','bold','italic','underline','alignLeft','alignCenter','todo','insertImage','bgImage'];
+        const DEFAULT_TOOLBAR = ['save','undo','redo','bold','italic','underline','fontColor','bgHighlight','alignLeft','todo','insertImage','bgImage'];
+
+        // ====== 巨型设置分类对象映射表 ======
+        const MEGA_SETTINGS_STRUCTURE = [
+            { id: 'basic', name: '系统与语言', icon: 'settings', items: [
+                { type: 'select', label: '语言设置', options: ['简体中文', 'English', '繁體中文'] },
+                { type: 'switch', label: '默认使用Markdown模式' },
+                { type: 'switch', label: '启动便签默认打开便签夹' },
+                { type: 'switch', label: '退出App自动切换到全部便签' },
+                { type: 'arrow', label: '检查更新 (V3.0.0)' }
+            ]},
+            { id: 'appearance', name: '外观与主题', icon: 'palette', items: [
+                { type: 'select', label: '夜间模式 (自动)', options: ['跟随系统', '20:00 - 08:00', '关闭'] },
+                { type: 'switch', label: '夜间模式优先手动' },
+                { type: 'select', label: '全局字体', options: ['霞鹜文楷', '系统默认', '黑体'] },
+                { type: 'arrow', label: '主题设置-桌面小工具' },
+                { type: 'arrow', label: '主题设置-编辑界面' },
+                { type: 'arrow', label: '主题设置-首页和便签夹' },
+                { type: 'arrow', label: '自定义主题管理' }
+            ]},
+            { id: 'editor', name: '编辑体验', icon: 'edit-3', items: [
+                { type: 'select', label: '全局行间距', options: ['1.5', '1.8', '2.0'] },
+                { type: 'select', label: '全局字间距', options: ['默认', '宽松', '紧凑'] },
+                { type: 'switch', label: '新建便签自动空2格' },
+                { type: 'switch', label: '换行自动跟随上行缩进' },
+                { type: 'switch', label: '换行自动追加数字序号' },
+                { type: 'switch', label: '进入编辑界面保持屏幕常亮' },
+                { type: 'switch', label: '记住上次滚动位置' },
+                { type: 'switch', label: '禁用编辑界面侧滑返回' },
+                { type: 'arrow', label: '短语栏高级设置' }
+            ]},
+            { id: 'read', name: '阅读模式', icon: 'book-open', items: [
+                { type: 'switch', label: '默认开启阅读模式' },
+                { type: 'switch', label: '阅读模式下隐藏工具栏' },
+                { type: 'switch', label: '阅读模式显示悬浮按钮' },
+                { type: 'switch', label: '双击快速切换编辑模式' },
+                { type: 'switch', label: '使用音量键控制翻页' },
+                { type: 'switch', label: '长按进入搜索模式' }
+            ]},
+            { id: 'media', name: '媒体与分享', icon: 'image', items: [
+                { type: 'switch', label: '相册选图模式' },
+                { type: 'select', label: '图片插入质量', options: ['高清', '标准压缩', '极速压缩'] },
+                { type: 'switch', label: '图片自动带边框' },
+                { type: 'switch', label: '长图分享带背景时渐变过渡' },
+                { type: 'arrow', label: '长图分享边框设置' },
+                { type: 'arrow', label: '导出水印设置 (文字/时间)' },
+                { type: 'arrow', label: '绘制导出PDF分页拼接线' }
+            ]},
+            { id: 'data', name: '数据与安全', icon: 'shield-check', items: [
+                { type: 'switch', label: '私密便签夹启用' },
+                { type: 'arrow', label: '指纹解锁设置' },
+                { type: 'arrow', label: '修改手势密码' },
+                { type: 'switch', label: '加入回收站是否二次确认', value: true },
+                { type: 'switch', label: '便签无内容自动删除' },
+                { type: 'select', label: '编辑时定时保存便签', options: ['关闭', '10秒', '30秒', '1分钟'] },
+                { type: 'switch', label: '退出编辑将内容复制到剪切板' },
+                { type: 'arrow', label: '云端备份与恢复' },
+                { type: 'arrow', label: '扫码获取与分享 (WIFI直连)' }
+            ]},
+            { id: 'reset', name: '重置', icon: 'rotate-ccw', items: [
+                { type: 'arrow', label: '重置新手引导' },
+                { type: 'arrow', label: '重置所有系统设置' }
+            ]}
+        ];
 
         let appData = {
-            folders: [{ id: 'root', name: '全部便签', parentId: null }],
-            notes: [],
-            settings: { layout: 'grid', fontFamily: "'LXGW WenKai Screen', sans-serif" },
-            toolbar: [] // 工具栏配置数组
+            folders: [{ id: 'root', name: '全部便签', parentId: null }], notes: [],
+            settings: { layout: 'grid' }, toolbar: [], globalTheme: null
         };
-        let cur = { folderId: 'root', noteId: null };
+        let cur = { folderId: 'root', noteId: null, settingsTab: 'basic' };
 
-        // ================= 2. 生命周期与初始化 =================
+        // ================= 2. 初始化 =================
         window.onload = () => {
             loadData();
-            applyGlobalFont();
             renderSidebar();
             renderNotes();
             renderToolbar();
             lucide.createIcons();
             
-            // 初始化工具栏拖拽设置
             new Sortable(document.getElementById('tb-config-list'), {
-                handle: '.drag-handle', animation: 150,
-                onEnd: () => { syncToolbarConfig(); renderToolbar(); }
+                handle: '.drag-handle', animation: 150, onEnd: () => { syncToolbarConfig(); renderToolbar(); }
             });
 
-            // 图片插入压缩逻辑
             document.getElementById('sys-img-upload').addEventListener('change', e => {
                 const f = e.target.files[0];
                 if(f) {
                     const reader = new FileReader();
-                    reader.onload = ev => {
-                        compressImage(ev.target.result, 800, base64 => {
-                            exec('insertHTML', `<img src="${base64}" style="max-width:100%; border-radius:8px;">`);
-                        });
-                    };
+                    reader.onload = ev => compressImage(ev.target.result, 800, base64 => exec('insertHTML', `<img src="${base64}" style="max-width:100%; border-radius:8px; margin:10px 0;">`));
                     reader.readAsDataURL(f);
                 }
             });
@@ -397,29 +497,24 @@
                     appData.notes = d.notes || [];
                     appData.settings = {...appData.settings, ...d.settings};
                     appData.toolbar = d.toolbar || [];
+                    appData.globalTheme = d.globalTheme || null;
                 }
             } catch(e) {}
             
-            // 初始化工具栏配置：如果没数据，则初始化全量数据
             if(appData.toolbar.length === 0) {
                 appData.toolbar = Object.keys(ALL_TOOLS_REGISTRY).map(key => ({
                     id: key, visible: DEFAULT_TOOLBAR.includes(key), text: true
                 }));
             }
             if(appData.settings.layout) changeLayout(appData.settings.layout, false);
+            if(appData.globalTheme) applyGlobalThemeLogic(appData.globalTheme);
         }
 
         function saveData() {
-            try {
-                localStorage.setItem(DB_KEY, JSON.stringify(appData));
-                return true;
-            } catch(e) {
-                alert("⚠️ 保存失败：浏览器存储空间已满(通常是因为图片过大)。系统已拦截崩溃，请删除部分图片后重试！");
-                return false;
-            }
+            try { localStorage.setItem(DB_KEY, JSON.stringify(appData)); return true; } 
+            catch(e) { alert("⚠️ 保存失败：本地存储已满(超出5MB)。系统已拦截崩溃，请减少插入的原图数量！"); return false; }
         }
 
-        // 图片压缩引擎 (防止存储爆满核心)
         function compressImage(base64Str, maxWidth, callback) {
             const img = new Image();
             img.onload = () => {
@@ -428,29 +523,19 @@
                 if(w > maxWidth) { h = Math.round(h * maxWidth / w); w = maxWidth; }
                 cvs.width = w; cvs.height = h;
                 cvs.getContext('2d').drawImage(img, 0, 0, w, h);
-                callback(cvs.toDataURL('image/jpeg', 0.6)); // 压缩至60%质量
+                callback(cvs.toDataURL('image/jpeg', 0.6));
             };
             img.src = base64Str;
         }
 
-        // ================= 3. 字体与布局 =================
-        function applyGlobalFont() {
-            document.documentElement.style.setProperty('--font-family', appData.settings.fontFamily);
-        }
-        function changeFont(val) {
-            appData.settings.fontFamily = val;
-            applyGlobalFont();
-            saveData();
-        }
+        // ================= 3. 页面布局与便签管理 =================
         function changeLayout(type, save=true) {
             document.getElementById('notes-grid').className = `notes-container layout-${type}`;
             if(save) { appData.settings.layout = type; saveData(); }
         }
 
-        // ================= 4. 树形便签夹系统 =================
         function renderSidebar() {
-            const list = document.getElementById('folder-list');
-            list.innerHTML = buildFolderTree('root', 0);
+            document.getElementById('folder-list').innerHTML = buildFolderTree('root', 0);
             lucide.createIcons();
             document.getElementById('folder-trash').classList.toggle('active', cur.folderId === 'trash');
         }
@@ -458,24 +543,21 @@
         function buildFolderTree(parentId, level) {
             let html = '';
             const children = appData.folders.filter(f => f.parentId === parentId);
-            if(parentId === 'root') { // 渲染Root自身
+            if(parentId === 'root') { 
                 const r = appData.folders.find(x => x.id === 'root');
-                const cnt = appData.notes.filter(n=>n.folderId==='root' && !n.isDeleted).length;
                 html += `
                     <div class="folder-item ${cur.folderId==='root'?'active':''}" onclick="switchFolder('root')">
-                        <div style="display:flex; align-items:center; gap:8px;"><i data-lucide="inbox"></i> ${r.name} (${cnt})</div>
-                        <div class="folder-add-btn" onclick="event.stopPropagation(); addFolder('root')" title="新建子文件夹"><i data-lucide="plus" style="width:14px;height:14px"></i></div>
+                        <div style="display:flex; align-items:center; gap:8px;"><i data-lucide="inbox"></i> ${r.name}</div>
+                        <div class="folder-add-btn" onclick="event.stopPropagation(); addFolder('root')"><i data-lucide="plus" style="width:14px;"></i></div>
                     </div>
                 `;
             }
-            
             children.forEach(f => {
-                const cnt = appData.notes.filter(n=>n.folderId===f.id && !n.isDeleted).length;
                 html += `
                     <div class="folder-children" style="margin-left: ${level>0 ? '15px' : '0'};">
                         <div class="folder-item ${cur.folderId===f.id?'active':''}" onclick="switchFolder('${f.id}')">
-                            <div style="display:flex; align-items:center; gap:8px;"><i data-lucide="folder"></i> ${f.name} (${cnt})</div>
-                            <div class="folder-add-btn" onclick="event.stopPropagation(); addFolder('${f.id}')" title="新建子文件夹"><i data-lucide="plus" style="width:14px;height:14px"></i></div>
+                            <div style="display:flex; align-items:center; gap:8px;"><i data-lucide="folder"></i> ${f.name}</div>
+                            <div class="folder-add-btn" onclick="event.stopPropagation(); addFolder('${f.id}')"><i data-lucide="plus" style="width:14px;"></i></div>
                         </div>
                         ${buildFolderTree(f.id, level + 1)}
                     </div>
@@ -485,30 +567,21 @@
         }
 
         function switchFolder(id) { cur.folderId = id; renderSidebar(); renderNotes(); }
-        
-        function addFolder(parentId) {
-            const name = prompt("输入子便签夹名称：");
-            if(name && name.trim()) {
-                appData.folders.push({ id: 'f_'+Date.now(), name: name.trim(), parentId: parentId });
-                saveData(); renderSidebar();
-            }
-        }
+        function addFolder(parentId) { const name = prompt("输入便签夹名："); if(name) { appData.folders.push({ id: 'f_'+Date.now(), name: name.trim(), parentId }); saveData(); renderSidebar(); } }
 
-        // ================= 5. 便签内容管理 =================
         function renderNotes() {
             const grid = document.getElementById('notes-grid');
             let nts = cur.folderId === 'trash' ? appData.notes.filter(n => n.isDeleted) : appData.notes.filter(n => n.folderId === cur.folderId && !n.isDeleted);
-            
             const f = appData.folders.find(x => x.id === cur.folderId);
-            document.getElementById('current-folder-title').innerText = cur.folderId === 'trash' ? '回收站' : (f?f.name:'');
+            document.getElementById('current-folder-title').innerText = cur.folderId === 'trash' ? '回收站' : (f?f.name:'全部便签');
 
             grid.innerHTML = nts.map(n => `
                 <div class="note-card" onclick="openNote('${n.id}')">
                     <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
                         <div class="note-title">${n.title || '无标题'}</div>
                         ${cur.folderId === 'trash' 
-                          ? `<button class="btn-icon" style="padding:2px;" onclick="event.stopPropagation(); restoreNote('${n.id}')"><i data-lucide="refresh-cw" style="width:16px;"></i></button>`
-                          : `<button class="btn-icon" style="padding:2px;" onclick="event.stopPropagation(); deleteNote('${n.id}')"><i data-lucide="trash" style="width:16px;"></i></button>`}
+                          ? `<button class="btn-icon" style="padding:2px" onclick="event.stopPropagation(); restoreNote('${n.id}')"><i data-lucide="refresh-cw" style="width:16px;"></i></button>`
+                          : `<button class="btn-icon" style="padding:2px" onclick="event.stopPropagation(); deleteNote('${n.id}')"><i data-lucide="trash" style="width:16px;"></i></button>`}
                     </div>
                     <div class="note-preview">${n.content.replace(/<[^>]+>/g, '') || '空'}</div>
                 </div>
@@ -531,7 +604,7 @@
             cur.noteId = id;
             document.getElementById('note-title').value = n.title;
             document.getElementById('editor-content').innerHTML = n.content;
-            applyBg(n.bg);
+            applyNoteBg(n.bg);
             const mod = document.getElementById('editor-modal');
             mod.style.display = 'flex'; setTimeout(() => mod.classList.add('show'), 10);
         }
@@ -548,17 +621,111 @@
         }
 
         function closeEditor() {
-            if(saveNote()) { // 只有保存成功(没爆满)才退出
+            if(saveNote()) {
                 const mod = document.getElementById('editor-modal');
                 mod.classList.remove('show'); setTimeout(() => mod.style.display = 'none', 300);
             }
         }
         function exec(cmd, val=null) { document.execCommand(cmd, false, val); document.getElementById('editor-content').focus(); }
 
-        // ================= 6. 超级工具栏引擎 =================
+        // ================= 4. 全局主题系统 =================
+        function toggleNightMode() { document.body.classList.toggle('night-mode'); }
+        
+        function setGlobalTheme(type, value) {
+            appData.globalTheme = { type, value };
+            applyGlobalThemeLogic(appData.globalTheme);
+            saveData();
+            closeModal('global-theme-modal');
+        }
+        function uploadGlobalBg(input) {
+            if(input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => compressImage(e.target.result, 1500, base64 => setGlobalTheme('image', base64));
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        function applyGlobalThemeLogic(theme) {
+            if(!theme) return;
+            document.body.style.background = '';
+            document.body.style.backgroundImage = '';
+            if(theme.type === 'solid') { document.body.style.background = theme.value; }
+            if(theme.type === 'gradient') { document.body.style.background = `linear-gradient(135deg, ${theme.value[0]}, ${theme.value[1]})`; }
+            if(theme.type === 'image') { document.body.style.backgroundImage = `url(${theme.value})`; }
+        }
+
+        // ================= 5. 便签背景与颜色选取 =================
+        function applyNoteBg(bg) {
+            const w = document.getElementById('editor-wrapper');
+            const c = document.getElementById('editor-content');
+            if(!bg) return;
+            w.style.backgroundColor = bg.color || '';
+            w.style.backgroundImage = bg.img ? `url(${bg.img})` : '';
+            c.style.backgroundColor = bg.img ? 'rgba(255,255,255,0.85)' : 'transparent';
+        }
+        function updateNoteBg(bg) {
+            const n = appData.notes.find(x => x.id === cur.noteId);
+            if(n) { n.bg = {...n.bg, ...bg}; applyNoteBg(n.bg); saveData(); closeModal('bg-modal'); }
+        }
+        function uploadNoteBg(input) {
+            if(input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => compressImage(e.target.result, 1200, base64 => updateNoteBg({img: base64, color: ''}));
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // 颜色选择器引擎
+        function openColorPicker(actionCmd) {
+            currentColorAction = actionCmd;
+            openModal('color-picker-modal');
+        }
+        function applyColor(hex) {
+            if(currentColorAction) { exec(currentColorAction, hex); }
+            closeModal('color-picker-modal');
+        }
+
+        // ================= 6. 超级设置引擎 =================
+        function openSettingsModal() {
+            renderSettingsUI();
+            openModal('settings-modal');
+        }
+
+        function renderSettingsUI() {
+            const sidebar = document.getElementById('ms-sidebar');
+            const content = document.getElementById('ms-content');
+            
+            sidebar.innerHTML = MEGA_SETTINGS_STRUCTURE.map(cat => `
+                <div class="ms-nav ${cur.settingsTab === cat.id ? 'active' : ''}" onclick="switchSettingTab('${cat.id}')">
+                    <i data-lucide="${cat.icon}" style="width:16px;"></i> ${cat.name}
+                </div>
+            `).join('');
+
+            const activeCat = MEGA_SETTINGS_STRUCTURE.find(c => c.id === cur.settingsTab);
+            if(activeCat) {
+                content.innerHTML = activeCat.items.map(item => {
+                    if(item.type === 'switch') {
+                        return `<div class="ms-item"><div class="ms-item-info"><div class="ms-item-title">${item.label}</div></div>
+                                <label class="switch"><input type="checkbox"><span class="slider"></span></label></div>`;
+                    }
+                    if(item.type === 'select') {
+                        return `<div class="ms-item"><div class="ms-item-info"><div class="ms-item-title">${item.label}</div></div>
+                                <select style="padding:6px; border-radius:6px; background:var(--card-bg); border:1px solid var(--border-solid); color:inherit;">
+                                ${item.options.map(o=>`<option>${o}</option>`).join('')}</select></div>`;
+                    }
+                    if(item.type === 'arrow') {
+                        return `<div class="ms-item" style="cursor:pointer;" onclick="alert('进入次级设置菜单：${item.label}')"><div class="ms-item-info"><div class="ms-item-title">${item.label}</div></div>
+                                <i data-lucide="chevron-right" class="ms-arrow"></i></div>`;
+                    }
+                }).join('');
+            }
+            lucide.createIcons();
+        }
+
+        function switchSettingTab(id) { cur.settingsTab = id; renderSettingsUI(); }
+
+        // ================= 7. 工具栏系统 =================
         function renderToolbar() {
             const con = document.getElementById('toolbar-container');
-            // 按配置数组顺序过滤并渲染
             con.innerHTML = appData.toolbar.filter(t => t.visible).map(t => {
                 const core = ALL_TOOLS_REGISTRY[t.id];
                 if(!core) return '';
@@ -570,7 +737,7 @@
                 `;
             }).join('');
             lucide.createIcons();
-            renderToolbarSettings(); // 同步更新设置面板
+            renderToolbarSettings();
         }
 
         function renderToolbarSettings() {
@@ -580,16 +747,16 @@
                 if(!core) return '';
                 return `
                     <div class="tb-config-item" data-id="${t.id}">
-                        <div class="tb-config-left">
+                        <div style="display:flex; align-items:center; gap:10px;">
                             <i data-lucide="grip-vertical" class="drag-handle"></i>
                             <i data-lucide="${core.icon}"></i>
-                            <span style="font-size:0.95rem; width:100px;">${core.label}</span>
+                            <span style="font-size:0.95rem; width:80px;">${core.label}</span>
                         </div>
                         <div style="display:flex; gap:15px; align-items:center;">
                             <label style="font-size:0.8rem; display:flex; align-items:center; gap:5px;">文字 
                                 <label class="switch"><input type="checkbox" ${t.text ? 'checked':''} onchange="updateTbConf(${idx}, 'text', this.checked)"><span class="slider"></span></label>
                             </label>
-                            <label style="font-size:0.8rem; display:flex; align-items:center; gap:5px; border-left:1px solid #ccc; padding-left:10px;">显示 
+                            <label style="font-size:0.8rem; display:flex; align-items:center; gap:5px; border-left:1px solid var(--border-solid); padding-left:10px;">显示 
                                 <label class="switch"><input type="checkbox" ${t.visible ? 'checked':''} onchange="updateTbConf(${idx}, 'visible', this.checked)"><span class="slider"></span></label>
                             </label>
                         </div>
@@ -599,52 +766,14 @@
             lucide.createIcons();
         }
 
-        function updateTbConf(idx, key, val) {
-            appData.toolbar[idx][key] = val;
-            saveData(); renderToolbar(); // 实时生效
-        }
-
+        function updateTbConf(idx, key, val) { appData.toolbar[idx][key] = val; saveData(); renderToolbar(); }
         function syncToolbarConfig() {
-            // Sortable 拖拽后同步DOM顺序到数据
             const items = document.querySelectorAll('.tb-config-item');
             const newArr = [];
-            items.forEach(el => {
-                const id = el.getAttribute('data-id');
-                newArr.push(appData.toolbar.find(t => t.id === id));
-            });
-            appData.toolbar = newArr;
-            saveData();
+            items.forEach(el => newArr.push(appData.toolbar.find(t => t.id === el.getAttribute('data-id'))));
+            appData.toolbar = newArr; saveData();
         }
 
-        // ================= 7. 背景与模态框系统 =================
-        function applyBg(bg) {
-            const w = document.getElementById('editor-wrapper');
-            const c = document.getElementById('editor-content');
-            if(!bg) return;
-            w.style.backgroundColor = bg.color || '';
-            w.style.backgroundImage = bg.img ? `url(${bg.img})` : '';
-            c.style.backgroundColor = bg.img ? 'rgba(255,255,255,0.85)' : 'transparent';
-        }
-
-        function updateBg(bg) {
-            const n = appData.notes.find(x => x.id === cur.noteId);
-            if(n) { n.bg = {...n.bg, ...bg}; applyBg(n.bg); saveData(); closeModal('bg-modal'); }
-        }
-
-        function uploadBgImg(input) {
-            if(input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    // 背景图也进行一次强力压缩，防止撑爆
-                    compressImage(e.target.result, 1200, base64 => {
-                        updateBg({img: base64, color: ''});
-                    });
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        function toggleNightMode() { document.body.classList.toggle('night-mode'); }
         function openModal(id) { const e = document.getElementById(id); e.style.display='flex'; setTimeout(()=>e.classList.add('active'),10); }
         function closeModal(id) { const e = document.getElementById(id); e.classList.remove('active'); setTimeout(()=>e.style.display='none',200); }
 
